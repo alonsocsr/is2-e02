@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+from decouple import config
 from pathlib import Path
 
 import os
@@ -67,8 +68,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-          os.path.join(PROJECT_DIR, "templates/home"),
-          BASE_DIR / "templates"
+            os.path.join(PROJECT_DIR, "templates/home"),
+            BASE_DIR / "templates"
         ],
         'APP_DIRS': True,
         'OPTIONS': {
