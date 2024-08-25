@@ -6,10 +6,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}{% endblock %}</title>
-  <link href="{% static "css/output.css" %}" rel="stylesheet">
+  <link href="{% static 'css/output.css' %}" rel="stylesheet">
+  <style>
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      color: #fff;
+      background-color: #be185d; 
+      border-radius: 8px;
+    }
+
+  </style>
 </head>
 <body>
-  
+  {% if request.user.is_authenticated %}
+    <a href="{% url 'account_logout' %}" class="btn">Logout</a>
+  {% else %}
+    <a href="{% url 'account_login' %}" class="btn">Login</a>
+  {% endif %}
+
   {% block content %}
   {% endblock content %}
 
