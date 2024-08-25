@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block title %}
+    Regístrate
+{% endblock title %}
+
+{% block content %}
+    <link href="{% static 'css/tailwind.min.css' %}" rel="stylesheet"> 
+
+    <!-- superior -->
+    <div class="absolute top-0 left-0 bg-gradient-to-b from-white via-pink-100 to-pink-200 h-1/2 w-full overflow-hidden"></div>
+
+    <!--  inferior -->
+    <div class="absolute bottom-0 left-0 bg-pink-200 h-1/2 w-full overflow-hidden"></div>
+
+    <div class="relative min-h-screen sm:flex sm:flex-row justify-center bg-transparent rounded-3xl shadow-xl">
+        <div class="flex-col flex self-center lg:px-14 sm:max-w-4xl xl:max-w-md z-10">
+            <div class="self-start hidden lg:flex flex-col text-black-300">
+                <h1 class="my-3 font-semibold text-4xl">¡Bienvenido!</h1>
+                <p class="pr-3 text-sm opacity-75">te amo jon snou.</p>
+            </div>
+        </div>
+        <div class="flex justify-center self-center z-10">
+            <div class="p-12 bg-white mx-auto rounded-3xl w-96">
+                <div class="mb-7">
+                    <h3 class="font-semibold text-2xl text-gray-800">Regístrate</h3>
+                    <p class="text-gray-400">¿Ya tienes una cuenta? <a href="{% url 'account_login' %}" class="text-sm text-pink-600 hover:text-pink-600">Inicia sesión</a></p>
+                </div>
+                <form method="post" action="{% url 'account_signup' %}" class="space-y-6">
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                        <div>
+                            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700">{{ field.label }}</label>
+                            <div class="mt-1">
+                                <input type="text" name="{{ field.name }}" id="{{ field.id_for_label }}" placeholder="{{ field.label }}" class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-pink-400" value="{{ field.value|default_if_none:'' }}" required>
+                            </div>
+                            {% if field.errors %}
+                                <ul class="errorlist mt-2 text-red-600 text-sm ">
+                                    {% for error in field.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+                    <div>
+                        <button type="submit" class="w-full flex justify-center bg-pink-800 hover:bg-pink-700 text-pink-100 p-3 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500">
+                            Regístrate
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- be185d o 9d174d-->
+    <svg class="absolute bottom-0 left-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+        <path fill="#9d174d " fill-opacity="1" d="M0,0L40,42.7C80,85,160,171,240,197.3C320,224,400,192,480,154.7C560,117,640,75,720,74.7C800,75,880,117,960,154.7C1040,192,1120,224,1200,213.3C1280,203,1360,149,1400,122.7L1440,96L1440,320L1400,320C1360,320,1280,320,1200,320C1120,320,1040,320,960,320C880,320,800,320,720,320C640,320,560,320,480,320C400,320,320,320,240,320C160,320,80,320,40,320L0,320Z"></path>
+    </svg>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.js"></script>
+{% endblock content %}
