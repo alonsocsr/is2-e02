@@ -3,7 +3,6 @@ from django.db import models
 from django.db import models
 from django.contrib.auth.models import Group,Permission
 
-from guardian.shortcuts import assign_perm
 
 class Roles(models.Model):
     
