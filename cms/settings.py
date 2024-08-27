@@ -33,10 +33,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'django.contrib.sites', 
-    'allauth', 
-    'allauth.account', 
-    #'allauth.socialaccount', 
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    # 'allauth.socialaccount',
 ]
 
 MIDDLEWARE = [
@@ -48,7 +48,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'allauth.account.middleware.AccountMiddleware',  
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'cms.urls'
@@ -118,7 +118,7 @@ USE_I18N = True
 USE_TZ = True
 # settings.py
 
-LANGUAGE_CODE = 'es'  
+LANGUAGE_CODE = 'es'
 
 USE_I18N = True
 
@@ -132,33 +132,45 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 
-SITE_ID = 1 
+SITE_ID = 1
 LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/' 
-ACCOUNT_AUTHENTICATION_METHOD= 'email' 
-ACCOUNT_CONFIRM_EMAIL_ON_GET = False 
-ACCOUNT_EMAIL_REQUIRED = True 
-ACCOUNT_EMAIL_VERIFICATION = 'none' 
-ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True 
-ACCOUNT_LOGOUT_ON_GET = True 
-ACCOUNT_LOGIN_ON_PASSWORD_RESET = True 
-ACCOUNT_LOGOUT_REDIRECT = '/' 
-ACCOUNT_PRESERVE_USERNAME_CASING = False 
-ACCOUNT_SESSION_REMEMBER = True 
-ACCOUNT_SINGUP_PASSWORD_ENTER_TWICE = True 
-ACCOUNT_USERNAME_MIN_LENGTH = 2 
+LOGIN_REDIRECT_URL = '/'
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_CONFIRM_EMAIL_ON_GET = False        # True
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'none'         # mandatory
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_LOGOUT_ON_GET = True
+ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
+ACCOUNT_LOGOUT_REDIRECT = '/'
+ACCOUNT_PRESERVE_USERNAME_CASING = False
+ACCOUNT_SESSION_REMEMBER = True
+ACCOUNT_SINGUP_PASSWORD_ENTER_TWICE = True
+ACCOUNT_USERNAME_MIN_LENGTH = 2
 ACCOUNT_UNIQUE_EMAIL = True
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
-] 
+]
 
 
 ACCOUNT_RATE_LIMITS = {
-    "login.failed": "3/1m",  
+    "login.failed": "3/1m",
 }
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+# Reemplaza con tu dirección de Gmail
+EMAIL_HOST_USER = 'cmstarkv1@gmail.com'
+# Reemplaza con tu contraseña de Gmail
+EMAIL_HOST_PASSWORD = 'pckm lwmv nlka eyyf'
+# Reemplaza con tu dirección de Gmail
+DEFAULT_FROM_EMAIL = 'cms Stark <cmstarkv1@gmail.com>'
+# ACCOUNT_EMAIL_SUBJECT_PREFIX = 'Stark '
