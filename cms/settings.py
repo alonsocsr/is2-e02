@@ -25,6 +25,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'home',
     'permissions',
+    'profiles',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -33,6 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'sorl.thumbnail',
     'django.contrib.sites', 
     'allauth', 
     'allauth.account', 
@@ -131,6 +133,9 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
+
+MEDIA_ROOT = BASE_DIR / "uploads"
+MEDIA_URL = "/files/"
 
 SITE_ID = 1 
 LOGIN_URL = '/login/'
