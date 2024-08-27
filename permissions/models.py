@@ -72,13 +72,19 @@ class Roles(models.Model):
         funcion para crear un rol o actualizarlo segun se quiera
         """
         
-        # crear un grupo con el nombre del rol
-        grupo, created = Group.objects.get_or_create(name=self.nombre_rol)
+        """
+        crear un grupo con el nombre del rol
+        """
+
+        grupo,created=Group.objects.get_or_create(name=self.nombre_rol)
         
         grupo.save()
 
-        # obtener los permisos y asignarlos al grupo
+        """
+        obtener los permisos y asignarlos al grupo
+        """
         lista_permisos = Permission.objects.filter(codename__in=self.permisos)
+        
         
         grupo.permissions.set(lista_permisos)
 
@@ -86,7 +92,16 @@ class Roles(models.Model):
         """asignar permisos a nivel modelo"""
         self.permisos.set(lista_permisos)
         self.save()
-            
+    
+    def obtener_permisos(self):
+        """
+        Funcion que retorna los permisos asignados a un grupo
+        params: el grupo
+        return: lista de permisos del grupo
+        """
+        permisos=list(self.permisos.all())
+        
+        return permisos
         
     
    
