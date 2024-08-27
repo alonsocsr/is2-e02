@@ -168,9 +168,9 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 # Reemplaza con tu dirección de Gmail
-EMAIL_HOST_USER = 'cmstarkv1@gmail.com'
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 # Reemplaza con tu contraseña de Gmail
-EMAIL_HOST_PASSWORD = 'pckm lwmv nlka eyyf'
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 # Reemplaza con tu dirección de Gmail
-DEFAULT_FROM_EMAIL = 'cms Stark <cmstarkv1@gmail.com>'
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 # ACCOUNT_EMAIL_SUBJECT_PREFIX = 'Stark '
