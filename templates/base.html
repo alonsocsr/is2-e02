@@ -7,9 +7,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}{% endblock %}</title>
   <link href="{% static 'css/output.css' %}" rel="stylesheet">
-  <link href="{% static 'css/tailwind.min.css' %}" rel="stylesheet">
-  <style>
-  </style>
 </head>
 <body>
   <div class="flex h-screen">
@@ -21,7 +18,7 @@
       {% include "includes/navbar.html" %}
       
       <!-- contenido -->
-      <main class="flex-1 overflow-y-auto mt-8 px-6 py-4 bg-gray-100 dark:bg-gray-800">
+      <main class="flex-1 overflow-y-auto mt-8 px-6 py-4 bg-gray-100">
         {% block content %} {% endblock %}
       </main>
     </div>

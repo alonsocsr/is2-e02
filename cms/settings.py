@@ -25,6 +25,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'home',
     'permissions',
+    'profiles',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -33,10 +34,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    # 'allauth.socialaccount',
+    'sorl.thumbnail',
+    'django.contrib.sites', 
+    'allauth', 
+    'allauth.account', 
+    #'allauth.socialaccount', 
 ]
 
 MIDDLEWARE = [
@@ -132,7 +134,10 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 
-SITE_ID = 1
+MEDIA_ROOT = BASE_DIR / "uploads"
+MEDIA_URL = "/files/"
+
+SITE_ID = 1 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
