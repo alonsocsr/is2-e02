@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Crear Categoria{% endblock title %}
+
+{% block content %}
+<div class="bg-gray-100 min-h-screen">
+    <div class="header my-3 h-12 px-10 flex items-center justify-between">
+        <h1 class="font-medium text-2xl">Categorias</h1>
+    </div>
+
+    <!-- Sección de mensajes -->
+    <div class="mx-3 mt-4">
+        {% if messages %}
+            <div class="space-y-4">
+                {% for message in messages %}
+                    <div class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    <!-- Fin de la sección de mensajes -->
+
+    <div class="flex flex-col mx-3 mt-6 lg:flex-row h-[calc(100vh-7rem)] space-y-6 lg:space-y-0 lg:space-x-4">
+        <div class="w-full lg:w-1/4 bg-white shadow-md p-4 rounded-md">
+            <form method="post" class="w-full">
+                {% csrf_token %}
+                <div class="space-y-6">
+                    {{ form.as_p }}
+                </div>
+                <button type="submit" class="btn mt-7 w-full">
+                    Crear Categoría
+                </button>
+            </form>
+        </div>
+
+        <div class="w-full lg:w-3/4 bg-white shadow-lg rounded-md border border-gray-200 overflow-hidden">
+            <div class="overflow-auto h-full">
+                <table class="table-auto w-full">
+                    <thead class="bg-gray-50 sticky top-0 z-10">
+                        <tr class="text-sm font-semibold text-gray-800">
+                            <th class="p-2 w-16 text-center">ID</th>
+                            <th class="p-2 text-center">Categoría</th>
+                            <th class="p-2 text-left">Descripción</th>
+                            <th class="p-2 text-center">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for categoria in categorias %}
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="p-2 text-center">{{ forloop.counter }}</td>
+                            <td class="p-2 text-center">{{ categoria.nombre_categoria }}</td>
+                            <td class="p-2 text-left">{{ categoria.descripcion }}</td>
+                            <td class="p-2 text-center">
+                                <div class="flex justify-center space-x-2">
+                                    <a href="#" class="text-green-600 hover:bg-green-100 p-2 rounded-md">
+                                        Modificar
+                                    </a>
+                                    <button class="text-red-600 hover:bg-red-100 p-2 rounded-md">
+                                        Eliminar
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center p-4">No existen categorías</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
