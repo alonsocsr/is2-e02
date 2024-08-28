@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static  %}
+
+{% block title %}
+    Asignar Rol a Usuario
+{% endblock %}
+
+{% block content %}
+
+    <div class="flex justify-center mt-10">
+        <form method="post" class="w-full max-w-lg bg-gray-100 p-8 rounded-lg shadow-md">
+            {% csrf_token %}
+            {{form.as_p}}
+            <div class="text-center mt-6"> 
+                <button class="w-full bg-pink-700 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded transition duration-300" type="submit">Asignar</button>
+            </div>
+        </form> 
+
+    </div>
+
+{% endblock %}
