@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission,User,Group
 from .models import Roles
 
 class Rol_Form(forms.ModelForm):
@@ -41,4 +41,24 @@ class Rol_Form(forms.ModelForm):
             raise forms.ValidationError("Ya existe un rol con este nombre. Por favor elija otro nombre")
         
         return nombre
+
+class Asignar_Rol_Form(forms.Form):
+    """
+    Clase que define un modelo de form para asignar roles a un usuario
+    Se utiliza el ModelForm proveido por Django
+    """
+    
+    nombre_rol=forms.ModelChoiceField(
+        queryset=Group.objects.all().order_by('name'),
+        widget=forms.Select,
+        label="Roles disponibles"
+    )
+    
+    usuarios=forms.ModelChoiceField(
+        queryset=User.objects.all().order_by('first_name'),
+        widget=forms.Select,
+        label="Lista de Usuarios"
+    )
+    
         
+    
