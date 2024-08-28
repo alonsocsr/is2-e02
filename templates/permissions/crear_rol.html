@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static  %}
+
+{% block title %}
+    Crear Roles del sistema
+{% endblock %}
+
+{% block content %}
+    <div class="mt-10">
+        <form method="post">
+            {% csrf_token %}
+            <div class="pageholder relative">
+                {{form.as_p}}
+            </div>
+            <div class="titleholder"> 
+                <button class="ourbutton"type="submit">Crear</button>
+            </div>
+        </form> 
+
+    </div>
+
+{% endblock %}
