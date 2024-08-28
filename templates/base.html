@@ -11,7 +11,9 @@
 <body>
   <div class="flex h-screen">
     <!-- sidebar -->
-    {% include 'includes/sidebar.html' %}
+    {% if user.is_authenticated %}
+      {% include 'includes/sidebar.html' %}
+    {% endif %}
 
     <div class="flex flex-col flex-1 w-full">
       <!-- navbar -->

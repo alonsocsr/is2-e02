@@ -6,16 +6,17 @@
 {% endblock %}
 
 {% block content %}
-    <div>
+    <div class="mt-10">
         <form method="post">
             {% csrf_token %}
-            <div class="pageholder">
-                <div class="titleholder"> 
-                    <button class="ourbutton"type="submit">Aceptar</button>
-                </div>
+            <div class="pageholder relative">
                 {{form.as_p}}
             </div>
-        </form>                                      
+            <div class="titleholder"> 
+                <button class="ourbutton"type="submit">Crear</button>
+            </div>
+        </form> 
+
     </div>
 
 {% endblock %}
