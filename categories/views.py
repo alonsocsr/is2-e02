@@ -19,7 +19,7 @@ class CrearCategoriaView(FormView):
             tipo_categoria=tipo_categoria_cargar,
             precio=precio_cargar
         )
-        messages.success(self.request, 'Categoría creada con éxito.')
+        messages.success(self.request, 'Categoría creada con éxito.', extra_tags='categoria')
 
         # Redirige a la misma vista para mostrar el mensaje y limpiar el formulario
         return super().form_valid(form)
