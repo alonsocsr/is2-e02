@@ -6,14 +6,42 @@
 {% endblock %}
 
 {% block content %}
-    <div class="mt-10">
-        <form method="post">
+
+    <div class="flex justify-center mt-10">
+        <form method="post" class="w-full max-w-lg bg-gray-100 p-8 rounded-lg shadow-md">
             {% csrf_token %}
-            <div class="pageholder relative">
-                {{form.as_p}}
+            <div class="space-y-6" >
+                <div>
+                    <h3 class="font-medium " >Ingrese el nombre del rol</h3>
+                    <label for="id_nombre_rol" class="sr-only">Nombre del Rol</label>
+                    <input id="id_nombre_rol" name="nombre_rol" type="text" placeholder="Nombre del Rol" class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-pink-400" value="{{ form.nombre_rol.value |default_if_none:'' }}" required>
+                </div>
+                <div>
+                    <label for="id_rol_por_defecto" class="inline-flex items-center">
+                        <input id="id_rol_por_defecto" name="rol_por_defecto" type="checkbox" class="text-pink-600 focus:ring-pink-500 border-gray-300 rounded">
+                        <span class="ml-2">Rol por defecto</span>
+                    </label>
+                </div>
+                <div>
+                    <h3 class="font-medium">Ingrese la descripcion del Rol</h3>
+                    <label for="id_descripcion" class="sr-only">Descripción</label>
+                    <textarea id="id_descripcion" name="descripcion" placeholder="Descripción del Rol" class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-pink-400">{{ form.descripcion.value |default_if_none:'' }}</textarea>
+                </div>
+                
+                <div style="max-height: 200px; overflow-y: scroll;">
+                    <label for="id_permisos" class="sr-only">Permisos a ser asignados</label>
+                    <div class="space-y-4">
+                        {% for permission in form.permisos.field.queryset %}
+                            <div class="flex items-center">
+                                <input id="id_permisos_{{ permission.id }}" name="permisos" type="checkbox" value="{{ permission.id }}" {% if permission in form.permisos.value %}checked{% endif %} class="text-pink-600 focus:ring-pink-500 border-gray-300 rounded">
+                                <label for="id_permisos_{{ permission.id }}" class="ml-2">{{ permission.name }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
-            <div class="titleholder"> 
-                <button class="ourbutton"type="submit">Crear</button>
+            <div class="text-center mt-6"> 
+                <button class="w-full bg-pink-700 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded transition duration-300" type="submit">Crear</button>
             </div>
         </form> 
 
