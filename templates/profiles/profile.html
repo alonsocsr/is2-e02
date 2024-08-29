@@ -4,46 +4,117 @@
 {% block title %}
   Perfil de Usuario
 {% endblock title %}
-  
+
 {% block content %}
-
-<div class="bg-gray-100 w-full max-h-screen lg:w-1/2 m-auto">
-
-    <div class="flex mt-6 items-center">
-        {% if user.profile.image %}
-            {% thumbnail user.profile.image "80x80" crop="center" as im %}
-            <img class="rounded-full" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
-            {% endthumbnail %}
-        {% else %}
-            <div class="w-20 h-20 block rounded-full bg-white"></div>
-        {% endif %}
-        
-        <h2 class="font-bold m-2 text-2xl">Bienvenido, {{ user.first_name }}</h2>
-    </div>
-    
-  <div class="header my-3 h-12 px-1 flex items-center justify-between">
-      <h1 class="font-medium text-2xl">Actualiza tu información</h1>
-  </div>
-  
-  <div class="w-full bg-white shadow-md p-4 rounded-md">
-    <form enctype="multipart/form-data" method="post" class="w-full">
-        {% csrf_token %}
-        {% for form_field in form %}
-            <div class="p-2">
-                {{ form_field.label_tag }}
-                <div class="border">
-                    {{ form_field }}
+            <!-- Mensajes de avisos/exitos -->
+<div class="mx-1 mb-4">
+    {% if messages %}
+        <div class="space-y-3">
+            {% for message in messages %}
+                <div class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
+                    {{ message }}
                 </div>
-                {{ form_field.errors }}
-            </div>
-        {% endfor %}
-        <button type="submit" class="btn p-2 mt-7 border rounded-md">
-            Guargar Cambios
-        </button>
-    </form>
-  </div>
-
-    
+            {% endfor %}
+        </div>
+    {% endif %}
 </div>
+<div class="flex justify-center mt-10">
+    <div class="flex w-full max-w-5xl bg-gray-200 p-8 rounded-lg shadow-md">
 
+        <!-- Sección de perfil -->
+        <div class="w-full">
+            <div class="flex items-center justify-center mt-6">
+                {% if user.profile.image %}
+                    {% thumbnail user.profile.image "80x80" crop="center" as im %}
+                    <img class="rounded-full shadow-md" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                {% else %}
+                    <div class="w-20 h-20 block rounded-full bg-white shadow-md"></div>
+                {% endif %}
+            </div>
+
+            <div class="header my-3 h-7 px-2 lg:px-6 flex items-center justify-between">
+                <h1 class="font-semibold text-2xl text-gray-800">Actualiza tu información</h1>
+            </div>
+
+
+
+            <!-- form de perfil -->
+            <div class="w-full bg-gray-100 shadow-md p-4 rounded-md">
+                <form enctype="multipart/form-data" method="post" class="flex flex-col space-y-6">
+                    {% csrf_token %}
+                    <div class="space-y-3">
+                        <!-- Nombre -->
+                        <div>
+                            <label for="id_first_name" class="block text-sm font-medium text-gray-700">Nombres</label>
+                            <input 
+                                id="id_first_name"
+                                name="first_name"
+                                type="text"
+                                class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-400"
+                                value="{{ form.first_name.value|default_if_none:'' }}"
+                                {% if form.first_name.field.required %}required{% endif %}>
+                            <div class="text-red-600 text-sm mt-1">
+                                {{ form.first_name.errors }}
+                            </div>
+                        </div>
+
+                        <!-- Apellido -->
+                        <div>
+                            <label for="id_last_name" class="block text-sm font-medium text-gray-700">Apellidos</label>
+                            <input 
+                                id="id_last_name"
+                                name="last_name"
+                                type="text"
+                                class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-400"
+                                value="{{ form.last_name.value|default_if_none:'' }}"
+                                {% if form.last_name.field.required %}required{% endif %}>
+                            <div class="text-red-600 text-sm mt-1">
+                                {{ form.last_name.errors }}
+                            </div>
+                        </div>
+
+                        <!-- Nombre de usuario -->
+                        <div>
+                            <label for="id_username" class="block text-sm font-medium text-gray-700">Nombre de usuario</label>
+                            <input 
+                                id="id_username"
+                                name="username"
+                                type="text"
+                                class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-400"
+                                value="{{ form.username.value|default_if_none:'' }}">
+                            <div class="text-red-600 text-sm mt-1">
+                                {{ form.username.errors }}
+                            </div>
+                        </div>
+
+                        <!-- Imagen -->
+                        <div>
+                            <label for="customFile" class="block text-sm font-medium text-gray-700">Foto de Perfil</label>
+                            <div class="flex items-center">
+                                <button type="button" class="px-4 py-2 bg-pink-800 text-white rounded-lg shadow-md hover:bg-pink-700 focus:outline-none"
+                                        onclick="document.getElementById('id_image').click();">
+                                    Seleccionar Archivo
+                                </button>
+                                <span id="fileName" class="ml-3 text-sm text-gray-600">No se ha seleccionado ningún archivo</span>
+                            </div>
+                            <input id="id_image" name="image" type="file" class="hidden"
+                                   onchange="document.getElementById('fileName').textContent = this.files[0].name;">
+                            <div class="text-red-600 text-sm mt-1">
+                                {{ form.image.errors }}
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    <div class="text-center mt-6">
+                        <button type="submit" class="w-full flex justify-center bg-pink-800 hover:bg-pink-700 text-pink-100 p-2 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500">
+                            Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}
