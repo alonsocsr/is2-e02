@@ -154,3 +154,5 @@ desktop.ini
 uploads/profiles
 uploads/media
 uploads/cache
+
+static/css/output.css
