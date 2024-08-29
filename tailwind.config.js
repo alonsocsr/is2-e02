@@ -8,7 +8,11 @@ module.exports = {
     '../../**/templates/**/*.html',
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily:{
+        'sans': ["Lora", "serif"],
+      }
+    },
   },
   plugins: [],
 }
