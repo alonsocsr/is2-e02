@@ -7,12 +7,43 @@
   
 {% block content %}
 
-  <div style="text-align:center; margin: top 20rem;">
-    <h1>
-      lalalala
-    </h1>
-    <br>
-    <h1>prueba perfil</h1>
+<div class="bg-gray-100 w-full max-h-screen lg:w-1/2 m-auto">
+
+    <div class="flex mt-6 items-center">
+        {% if user.profile.image %}
+            {% thumbnail user.profile.image "80x80" crop="center" as im %}
+            <img class="rounded-full" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+            {% endthumbnail %}
+        {% else %}
+            <div class="w-20 h-20 block rounded-full bg-white"></div>
+        {% endif %}
+        
+        <h2 class="font-bold m-2 text-2xl">Bienvenido, {{ user.first_name }}</h2>
+    </div>
+    
+  <div class="header my-3 h-12 px-1 flex items-center justify-between">
+      <h1 class="font-medium text-2xl">Actualiza tu información</h1>
   </div>
+  
+  <div class="w-full bg-white shadow-md p-4 rounded-md">
+    <form enctype="multipart/form-data" method="post" class="w-full">
+        {% csrf_token %}
+        {% for form_field in form %}
+            <div class="p-2">
+                {{ form_field.label_tag }}
+                <div class="border">
+                    {{ form_field }}
+                </div>
+                {{ form_field.errors }}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn p-2 mt-7 border rounded-md">
+            Guargar Cambios
+        </button>
+    </form>
+  </div>
+
+    
+</div>
 
 {% endblock content %}
