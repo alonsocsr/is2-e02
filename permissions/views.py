@@ -124,9 +124,10 @@ def eliminar_rol(request, rol_id):
     return:render(request,'path de retorno',contexto)
     """
     rol = get_object_or_404(Roles, id=rol_id)
-
+    group=Group.objects.get(name=rol)
     if request.method == 'POST':
         rol.delete()
+        group.delete()
         messages.success(
             request, f'El rol {rol.nombre_rol} ha sido eliminado exitosamente.')
         return redirect('crear_rol')
