@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Modificar Roles del sistema
+{% endblock %}
+
+{% block content %}
+<div class="flex justify-center mt-10">
+    <div class="flex w-full max-w-5xl bg-gray-100 p-8 rounded-lg shadow-md">
+        <!-- lista de roles -->
+        <div class="w-1/3 pr-4">
+            <h2 class="font-bold mb-4">Roles Personalizados</h2>
+            <ul class="space-y-2">
+                {% for rol in roles %}
+                <li>
+                    <a href="{% url 'modificar_rol' rol.id %}"
+                        class="block bg-gray-200 hover:bg-pink-300 px-4 py-2 rounded text-gray-700 font-medium">
+                        {{ rol.nombre_rol }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- formulario para editar el rrol -->
+        <div class="w-2/3 pl-4">
+            {% if rol_seleccionado %}
+            <h2 class="font-bold mb-4">Modificar Rol: {{ rol_seleccionado.nombre_rol }}</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="space-y-6">
+                    <div>
+                        <label for="id_nombre_rol" class="sr-only">Nombre del Rol</label>
+                        <input id="id_nombre_rol" name="nombre_rol" type="text"
+                            placeholder="Nombre del Rol"
+                            class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-pink-400"
+                            value="{{ form.nombre_rol.value }}" required>
+                    </div>
+                    <div>
+                        <label for="id_rol_por_defecto" class="inline-flex items-center">
+                            <input id="id_rol_por_defecto" name="rol_por_defecto" type="checkbox"
+                                class="text-pink-600 focus:ring-pink-500 border-gray-300 rounded"
+                                {% if form.rol_por_defecto.value %}checked{% endif %}>
+                            <span class="ml-2">Rol por defecto</span>
+                        </label>
+                    </div>
+                    <div>
+                        <label for="id_descripcion" class="sr-only">Descripción</label>
+                        <textarea id="id_descripcion" name="descripcion"
+                            class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-pink-400">{{ form.descripcion.value }}</textarea>
+                    </div>
+                    <div style="max-height: 200px; overflow-y: scroll;">
+                        <label for="id_permisos" class="sr-only">Permisos</label>
+                        <div class="space-y-4">
+                            {% for permission in form.permisos.field.queryset %}
+                            <div class="flex items-center">
+                                <input id="id_permisos_{{ permission.id }}" name="permisos" type="checkbox"
+                                    value="{{ permission.id }}"
+                                    {% if permission.id in form.permisos.value %}checked{% endif %}
+                                    class="text-pink-600 focus:ring-pink-500 border-gray-300 rounded">
+                                <label for="id_permisos_{{ permission.id }}"
+                                    class="ml-2">{{ permission.name }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-6">
+                    <button
+                        class="w-full bg-pink-700 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded transition duration-300"
+                        type="submit">Guardar Cambios</button>
+                </div>
+            </form>
+            {% else %}
+            <p class="text-gray-500">Selecciona un rol de la lista para modificar su información.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

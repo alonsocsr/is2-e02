@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Eliminar Rol
+{% endblock %}
+
+{% block content %}
+<div class="flex justify-center mt-10">
+    <div class="w-full max-w-lg bg-gray-100 p-8 rounded-lg shadow-md text-center">
+        <h2 class="font-bold text-xl mb-4">Confirmar Eliminación</h2>
+        <p>¿Estás seguro de que deseas eliminar el rol <strong>{{ rol.nombre_rol }}</strong>?</p>
+        <div class="mt-6 flex justify-center space-x-4">
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                    Eliminar
+                </button>
+            </form>
+            <a href="{% url 'crear_rol' %}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                Cancelar
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
