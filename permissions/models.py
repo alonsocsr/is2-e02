@@ -60,7 +60,7 @@ class Roles(models.Model):
         ]
 
     def __str__(self):
-        return self.nombre
+        return self.nombre_rol
     
     def get_nombre_rol(self):
       return self.nombre_rol
@@ -78,16 +78,17 @@ class Roles(models.Model):
 
         grupo,created=Group.objects.get_or_create(name=self.nombre_rol)
         
-        grupo.save()
 
         """
         obtener los permisos y asignarlos al grupo
         """
-        lista_permisos = Permission.objects.filter(codename__in=self.permisos)
+        permisos = Permission.objects.filter(codename__in=[perm.name for perm in lista_permisos])
         
+       
         
-        grupo.permissions.set(lista_permisos)
+        grupo.permissions.set(permisos)
 
+        grupo.save()
         
         """asignar permisos a nivel modelo"""
         self.permisos.set(lista_permisos)
@@ -104,6 +105,8 @@ class Roles(models.Model):
         return permisos
         
     
+    
+        
    
         
         
