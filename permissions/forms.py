@@ -21,7 +21,7 @@ class Rol_Form(forms.ModelForm):
     )
     
     permisos=forms.ModelMultipleChoiceField(
-        queryset=Permission.objects.all().order_by('name'),
+        queryset=Permission.objects.all().order_by('name').filter(codename__startswith='_'),
         widget=forms.CheckboxSelectMultiple,
         label="Permisos a ser asignados"
     )
@@ -49,7 +49,7 @@ class Asignar_Rol_Form(forms.Form):
     """
     
     nombre_rol=forms.ModelChoiceField(
-        queryset=Group.objects.all().order_by('name'),
+        queryset=Permission.objects.all().order_by('name').filter(codename__startswith='_'),
         widget=forms.Select,
         label="Roles disponibles"
     )
