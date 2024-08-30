@@ -41,3 +41,21 @@ class CategoriaListView(ListView):
         context = super().get_context_data(**kwargs)
         context['form'] = CategoriaForm()  # Incluir el formulario de creación
         return context
+
+
+from django.shortcuts import render
+
+""" def categoria_perms(request):
+    permission_codenames = ['_crear_categoria', '_modificar_categoria', '_eliminar_categoria', '_inactivar_categoria']
+
+    user_has_permission_cat = any(
+        perm.codename in permission_codenames
+        for group in request.user.groups.all()
+        for perm in group.permissions.all()
+    )
+
+    context = {
+        'user_has_permission_cat': user_has_permission_cat,
+    }
+
+    return render(request, 'templates/includes/sidebar.html', context) """
