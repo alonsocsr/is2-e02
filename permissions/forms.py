@@ -21,7 +21,7 @@ class Rol_Form(forms.ModelForm):
     )
     
     permisos=forms.ModelMultipleChoiceField(
-        queryset=Permission.objects.all().order_by('name').filter(codename__startswith='_'),
+        queryset=Permission.objects.all().order_by('name').filter(content_type_id=1),
         widget=forms.CheckboxSelectMultiple,
         label="Permisos a ser asignados"
     )

@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 
+
 @login_required
 def crear_rol(request):
     """
@@ -16,7 +17,7 @@ def crear_rol(request):
     return:render(request,'path de retorno',contexto)
     """
     form = Rol_Form(request.POST or None)
-    roles = Roles.objects.all() 
+    roles = Roles.objects.all()
 
     if request.POST:
         if form.is_valid():
@@ -29,20 +30,21 @@ def crear_rol(request):
 
             messages.success(
                 request, f'Ha sido creado el rol {rol.nombre_rol}')
-            
+
         else:
             form = Rol_Form()
 
     context = {
         'user': request.user,
         'form': form,
-        'roles': roles 
+        'roles': roles
     }
 
     if request.user.is_authenticated:
         return render(request, 'permissions/crear_rol.html', context)
     else:
         return HttpResponseNotFound()
+
 
 @login_required
 def asignar_rol_usuario(request):
@@ -74,6 +76,11 @@ def asignar_rol_usuario(request):
                 return render(request, 'permissions/asignar_rol.html', context)
             else:
                 usuario.groups.add(group)
+
+                permisos = group.permissions.all()
+                for permiso in permisos:
+                    usuario.user_permissions.add(permiso)
+
                 usuario.save()
 
                 messages.success(
@@ -90,6 +97,7 @@ def asignar_rol_usuario(request):
         return render(request, 'permissions/asignar_rol.html', context)
     else:
         return HttpResponseNotFound()
+
 
 @login_required
 def modificar_rol(request, rol_id=None):
@@ -120,6 +128,7 @@ def modificar_rol(request, rol_id=None):
     }
     return render(request, 'permissions/modificar_rol.html', context)
 
+
 @login_required
 def eliminar_rol(request, rol_id):
     """
@@ -128,7 +137,7 @@ def eliminar_rol(request, rol_id):
     return:render(request,'path de retorno',contexto)
     """
     rol = get_object_or_404(Roles, id=rol_id)
-    group=Group.objects.get(name=rol)
+    group = Group.objects.get(name=rol)
     if request.method == 'POST':
         rol.delete()
         group.delete()
@@ -141,6 +150,7 @@ def eliminar_rol(request, rol_id):
     }
     return render(request, 'permissions/eliminar_rol.html', context)
 
+
 @login_required
 def modificar_usuario(request, user_id=None):
     """
@@ -152,9 +162,9 @@ def modificar_usuario(request, user_id=None):
     roles = Group.objects.all()
 
     if user_id:
-        
+
         usuario_seleccionado = get_object_or_404(User, id=user_id)
-        roles_usuario = usuario_seleccionado.groups.all() 
+        roles_usuario = usuario_seleccionado.groups.all()
 
         if request.method == "POST":
             # obtener los roles seleccionados en el formulario
@@ -162,7 +172,7 @@ def modificar_usuario(request, user_id=None):
 
             for rol in roles:
                 if str(rol.id) in roles_seleccionados:
-                    if rol.name != 'Suscriptor' or rol in roles_usuario: 
+                    if rol.name != 'Suscriptor' or rol in roles_usuario:
                         # si el rol seleccionado no es suscriptor o si el rol ya esta asignado
                         if rol not in usuario_seleccionado.groups.all():
                             # si el rol no esta asignado se asigna
@@ -172,7 +182,8 @@ def modificar_usuario(request, user_id=None):
                         # todo rol no seleccionado que no sea suscriptor se elimina
                         usuario_seleccionado.groups.remove(rol)
 
-            messages.success(request, f'Se han actualizado los roles del usuario {usuario_seleccionado.username}.')
+            messages.success(
+                request, f'Se han actualizado los roles del usuario {usuario_seleccionado.username}.')
             return redirect('modificar_usuario', user_id=user_id)
     else:
         usuario_seleccionado = None

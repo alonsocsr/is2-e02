@@ -24,6 +24,9 @@ class Categorias(models.Model):
     precio = models.IntegerField(
         null=True
     )
+    
+    class Meta:
+        default_permissions = ()
 
 
     def __str__(self):
