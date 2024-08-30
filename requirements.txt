@@ -14,3 +14,4 @@ python-decouple==3.8
 python-dotenv==1.0.1
 sorl-thumbnail==12.10.0
 sqlparse==0.5.1
+whitenoise==6.7.0
