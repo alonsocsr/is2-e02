@@ -83,11 +83,14 @@ class Roles(models.Model):
         """
         obtener los permisos y asignarlos al grupo
         """
-        permisos = Permission.objects.filter(codename__in=[perm.name for perm in lista_permisos])
+        """ if isinstance(lista_permisos[0], Permission):
         
-       
+            permisos = lista_permisos
+        else:
         
-        grupo.permissions.set(permisos)
+            permisos = Permission.objects.filter(codename__in=lista_permisos) """
+        
+        grupo.permissions.set(lista_permisos)
 
         grupo.save()
         
