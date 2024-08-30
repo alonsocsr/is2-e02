@@ -94,7 +94,7 @@ def asignar_rol_usuario(request):
 @login_required
 def modificar_rol(request, rol_id=None):
     """
-    Funcion que se encarga de modificar un rol que no sea por defectotomando los datos del formulario de Rol_Form
+    Funcion que se encarga de modificar un rol que no sea por defecto tomando los datos del formulario de Rol_Form
     params: request, rol_id
     return:render(request,'path de retorno',contexto)
     """
