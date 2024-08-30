@@ -29,7 +29,7 @@ def crear_rol(request):
 
             messages.success(
                 request, f'Ha sido creado el rol {rol.nombre_rol}')
-            # return render(request, 'home/home.html')
+            
         else:
             form = Rol_Form()
 
@@ -53,6 +53,10 @@ def asignar_rol_usuario(request):
     """
     form = Asignar_Rol_Form(request.POST or None)
 
+    context = {
+        'user': request.user,
+        'form': form
+    }
     if request.POST:
         if form.is_valid():
             """
@@ -72,9 +76,9 @@ def asignar_rol_usuario(request):
                 usuario.groups.add(group)
                 usuario.save()
 
-            messages.success(
-                request, f'Ha sido asignado el rol {group.name} a {usuario}')
-            return render(request, 'home/home.html')
+                messages.success(
+                    request, f'Ha sido asignado el rol {group.name} a {usuario}')
+                return redirect('asignar_rol')
         else:
             form = Asignar_Rol_Form()
 

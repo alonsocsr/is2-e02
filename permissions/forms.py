@@ -49,7 +49,7 @@ class Asignar_Rol_Form(forms.Form):
     """
     
     nombre_rol=forms.ModelChoiceField(
-        queryset=Permission.objects.all().order_by('name').filter(codename__startswith='_'),
+        queryset=Group.objects.all().order_by('name'),
         widget=forms.Select,
         label="Roles disponibles"
     )
