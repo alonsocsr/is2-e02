@@ -26,6 +26,11 @@ def create_user_profile(sender, instance, created, **kwargs):
   if created:
     Profile.objects.create(user=instance)
   
-  group = Group.objects.get(name='Suscriptor')
-  instance.groups.add(group)
-  instance.profile.save()
+  if instance.id == 1:
+    group = Group.objects.get(name='Admin')
+    instance.groups.add(group)
+    instance.profile.save()
+  else:
+    group = Group.objects.get(name='Suscriptor')
+    instance.groups.add(group)
+    instance.profile.save()
