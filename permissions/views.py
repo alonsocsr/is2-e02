@@ -140,3 +140,49 @@ def eliminar_rol(request, rol_id):
         'rol': rol
     }
     return render(request, 'permissions/eliminar_rol.html', context)
+
+@login_required
+def modificar_usuario(request, user_id=None):
+    """
+    Funcion que se encarga de modificar un usuario tomando los datos del formulario de Asignar_Rol_Form
+    params: request, user_id
+    return:render(request,'path de retorno',contexto)
+    """
+    usuarios = User.objects.all()
+    roles = Group.objects.all()
+
+    if user_id:
+        
+        usuario_seleccionado = get_object_or_404(User, id=user_id)
+        roles_usuario = usuario_seleccionado.groups.all() 
+
+        if request.method == "POST":
+            # obtener los roles seleccionados en el formulario
+            roles_seleccionados = request.POST.getlist('roles')
+
+            for rol in roles:
+                if str(rol.id) in roles_seleccionados:
+                    if rol.name != 'Suscriptor' or rol in roles_usuario: 
+                        # si el rol seleccionado no es suscriptor o si el rol ya esta asignado
+                        if rol not in usuario_seleccionado.groups.all():
+                            # si el rol no esta asignado se asigna
+                            usuario_seleccionado.groups.add(rol)
+                else:
+                    if rol.name != 'Suscriptor' and rol in usuario_seleccionado.groups.all():
+                        # todo rol no seleccionado que no sea suscriptor se elimina
+                        usuario_seleccionado.groups.remove(rol)
+
+            messages.success(request, f'Se han actualizado los roles del usuario {usuario_seleccionado.username}.')
+            return redirect('modificar_usuario', user_id=user_id)
+    else:
+        usuario_seleccionado = None
+        roles_usuario = None
+
+    context = {
+        'usuarios': usuarios,
+        'roles': roles,
+        'usuario_seleccionado': usuario_seleccionado,
+        'roles_usuario': roles_usuario,
+    }
+
+    return render(request, 'permissions/modificar_usuario.html', context)

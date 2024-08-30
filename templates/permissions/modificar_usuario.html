@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Modificar Roles del Usuario
+{% endblock %}
+
+{% block content %}
+ <!-- Mensajes de avisos/exitos -->
+<div class="mx-1 mb-4">
+    {% if messages %}
+        <div class="space-y-3">
+            {% for message in messages %}
+                <div class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+<div class="flex justify-center mt-10">
+    <div class="flex w-full max-w-5xl bg-gray-100 p-8 rounded-lg shadow-md">
+        <!-- lista de usuarios -->
+        <div class="w-1/3 pr-4">
+            <h2 class="font-bold mb-4">Usuarios</h2>
+            <ul class="space-y-2">
+                {% for usuario in usuarios %}
+                <li>
+                    <a href="{% url 'modificar_usuario' usuario.id %}"
+                        class="block bg-gray-200 hover:bg-pink-300 px-4 py-2 rounded text-gray-700 font-medium">
+                        {{ usuario.username }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- formulario para modificar los roles del usuario -->
+        <div class="w-2/3 pl-4">
+            {% if usuario_seleccionado %}
+            <h2 class="font-bold mb-4">Modificar Roles de: {{ usuario_seleccionado.username }}</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="space-y-6">
+                    <div style="max-height: 200px; overflow-y: scroll;">
+                        <label for="id_roles" class="sr-only">Roles</label>
+                        <div class="space-y-4">
+                            {% for rol in roles %}
+                            <div class="flex items-center">
+                                <input id="id_roles_{{ rol.id }}" name="roles" type="checkbox"
+                                    value="{{ rol.id }}"
+                                    {% if rol in roles_usuario %}checked{% endif %}
+                                    class="text-pink-600 focus:ring-pink-500 border-gray-300 rounded">
+                                <label for="id_roles_{{ rol.id }}"
+                                    class="ml-2">{{ rol.name }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-6">
+                    <button
+                        class="w-full bg-pink-700 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded transition duration-300"
+                        type="submit">Guardar Cambios</button>
+                </div>
+            </form>
+            {% else %}
+            <p class="text-gray-500">Selecciona un usuario de la lista para modificar sus roles.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
