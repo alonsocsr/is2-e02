@@ -24,6 +24,27 @@
                         </div>
                     </div>
                 </div>
+            
+            <div class="space-y-3 "> 
+                {%if perms.permissions.crear_contenido %}
+                <label class="px-3 text-xs text-gray-500 uppercase ">Contenido</label>
+                    <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-gray-100 hover:text-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500" href="#">
+                        
+                        <span class="mx-2 text-sm font-medium">Escribir</span>
+                    </a>
+                {%elif perms.permissions.editar_contenido%}
+                    <label class="px-3 text-xs text-gray-500 uppercase ">Contenido</label>
+                    <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-gray-100 hover:text-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500" href="#">
+                        
+                        <span class="mx-2 text-sm font-medium">Editar</span>
+                    </a>
+                {%elif perms.permissions.Publicar_contenido%}
+                    <label class="px-3 text-xs text-gray-500 uppercase ">Contenido</label>
+                    <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-gray-100 hover:text-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500" href="#">
+                        
+                        <span class="mx-2 text-sm font-medium">Publicar</span>
+                    </a>
+                {%endif%} 
 
                 {% if perms.permissions.ver_estadisticas_contenido %}
                 <a class="flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg hover:bg-gray-100 hover:text-pink-700" href="#">
