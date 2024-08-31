@@ -1,0 +1,34 @@
+[
+    {
+        "model": "profiles.Profile",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "image": "default.png"
+        }
+    },
+    {
+        "model": "profiles.Profile",
+        "pk": 2,
+        "fields": {
+            "user": 2,
+            "image": "default.png"
+        }
+    },
+    {
+        "model": "profiles.Profile",
+        "pk": 3,
+        "fields": {
+            "user": 3,
+            "image": "default.png"
+        }
+    },
+    {
+        "model": "profiles.Profile",
+        "pk": 4,
+        "fields": {
+            "user": 4,
+            "image": "default.png"
+        }
+    }
+]

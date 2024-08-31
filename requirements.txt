@@ -15,3 +15,5 @@ python-dotenv==1.0.1
 sorl-thumbnail==12.10.0
 sqlparse==0.5.1
 whitenoise==6.7.0
+Sphinx==7.4.7
+sphinx-rtd-theme==2.0.0
