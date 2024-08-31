@@ -6,7 +6,7 @@ def home(request):
 
     Esta vista renderiza la página de inicio del sitio web.
 
-    Parámetros:
+    Params:
     -----------
     request : HttpRequest
         La solicitud HTTP que se recibe.

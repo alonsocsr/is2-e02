@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load thumbnail %}
+{% load static %}
 
 {% block title %}
   Perfil de Usuario
@@ -29,7 +30,7 @@
                     <img class="rounded-full shadow-md" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                     {% endthumbnail %}
                 {% else %}
-                    <div class="w-20 h-20 block rounded-full bg-white shadow-md"></div>
+                    <img src="{% static 'default.png' %}" alt="Default Profile Picture" class="w-10 h-10 rounded-full border border-gray-300">
                 {% endif %}
             </div>
 
@@ -114,6 +115,21 @@
                     </div>
                 </form>
             </div>
+
+            <!-- roles 
+            <h2 class="font-semibold text-lg text-gray-800  mt-4 mb-2">Roles Asignados</h2>
+            <div class="bg-gray-100 shadow-md p-4 rounded-md mt-4 mb-4 max-h-20 overflow-y-auto">
+                <ul class="list-inside text-gray-700">
+                    {% if user_roles %}
+                        {% for role in user_roles %}
+                            <li>{{ role.name }}</li>
+                        {% endfor %}
+                    {% else %}
+                        <li>No se han asignado roles.</li>
+                    {% endif %}
+                </ul>
+            </div> -->
+
         </div>
     </div>
 </div>

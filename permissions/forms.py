@@ -6,6 +6,7 @@ class Rol_Form(forms.ModelForm):
     """
     Clase que define un modelo de form para roles
     Se utiliza el ModelForm proveido por Django
+
     """
     
     nombre_rol=forms.CharField(
@@ -34,6 +35,7 @@ class Rol_Form(forms.ModelForm):
         """
         Funcion que comprueba que el nombre del rol a ser creado no haya sido utilizado
         return: el nombre del rol, Excepction: el nombre del rol ya existe
+
         """
         
         nombre=self.cleaned_data.get('nombre_rol')
@@ -46,6 +48,7 @@ class Asignar_Rol_Form(forms.Form):
     """
     Clase que define un modelo de form para asignar roles a un usuario
     Se utiliza el ModelForm proveido por Django
+    
     """
     
     nombre_rol=forms.ModelChoiceField(

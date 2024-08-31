@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="es" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>permissions package &mdash; documentación de cms - 1.0</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=4936afed"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=d190bf04"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="permissions.migrations package" href="permissions.migrations.html" />
+    <link rel="prev" title="manage module" href="manage.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            cms
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">is2-e02</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="categories.html">categories package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cms.html">cms package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="home.html">home package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manage.html">manage module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">permissions package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="permissions.migrations.html">permissions.migrations package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-permissions.admin">permissions.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-permissions.apps">permissions.apps module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#permissions.apps.PermissionsConfig"><code class="docutils literal notranslate"><span class="pre">PermissionsConfig</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-permissions.forms">permissions.forms module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#permissions.forms.Asignar_Rol_Form"><code class="docutils literal notranslate"><span class="pre">Asignar_Rol_Form</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#permissions.forms.Rol_Form"><code class="docutils literal notranslate"><span class="pre">Rol_Form</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-permissions.models">permissions.models module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#permissions.models.Roles"><code class="docutils literal notranslate"><span class="pre">Roles</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-permissions.tests">permissions.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-permissions.urls">permissions.urls module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-permissions.views">permissions.views module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#permissions.views.asignar_rol_usuario"><code class="docutils literal notranslate"><span class="pre">asignar_rol_usuario()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#permissions.views.crear_rol"><code class="docutils literal notranslate"><span class="pre">crear_rol()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#permissions.views.eliminar_rol"><code class="docutils literal notranslate"><span class="pre">eliminar_rol()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#permissions.views.modificar_rol"><code class="docutils literal notranslate"><span class="pre">modificar_rol()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#permissions.views.modificar_usuario"><code class="docutils literal notranslate"><span class="pre">modificar_usuario()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-permissions">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="profiles.html">profiles package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">cms</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">is2-e02</a></li>
+      <li class="breadcrumb-item active">permissions package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/permissions.rst.txt" rel="nofollow"> Ver código fuente de la página</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="permissions-package">
+<h1>permissions package<a class="headerlink" href="#permissions-package" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="permissions.migrations.html">permissions.migrations package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="permissions.migrations.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="permissions.migrations.html#module-permissions.migrations.0001_initial">permissions.migrations.0001_initial module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="permissions.migrations.html#permissions.migrations.0001_initial.Migration"><code class="docutils literal notranslate"><span class="pre">Migration</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="permissions.migrations.html#permissions.migrations.0001_initial.Migration.dependencies"><code class="docutils literal notranslate"><span class="pre">Migration.dependencies</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="permissions.migrations.html#permissions.migrations.0001_initial.Migration.initial"><code class="docutils literal notranslate"><span class="pre">Migration.initial</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="permissions.migrations.html#permissions.migrations.0001_initial.Migration.operations"><code class="docutils literal notranslate"><span class="pre">Migration.operations</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="permissions.migrations.html#module-permissions.migrations.0002_auto_20240829_2337">permissions.migrations.0002_auto_20240829_2337 module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="permissions.migrations.html#permissions.migrations.0002_auto_20240829_2337.Migration"><code class="docutils literal notranslate"><span class="pre">Migration</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="permissions.migrations.html#permissions.migrations.0002_auto_20240829_2337.Migration.dependencies"><code class="docutils literal notranslate"><span class="pre">Migration.dependencies</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="permissions.migrations.html#permissions.migrations.0002_auto_20240829_2337.Migration.operations"><code class="docutils literal notranslate"><span class="pre">Migration.operations</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="permissions.migrations.html#permissions.migrations.0002_auto_20240829_2337.configurar_roles_predefinidos"><code class="docutils literal notranslate"><span class="pre">configurar_roles_predefinidos()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="permissions.migrations.html#permissions.migrations.0002_auto_20240829_2337.crear_permisos"><code class="docutils literal notranslate"><span class="pre">crear_permisos()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="permissions.migrations.html#module-permissions.migrations.0003_alter_roles_options">permissions.migrations.0003_alter_roles_options module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="permissions.migrations.html#permissions.migrations.0003_alter_roles_options.Migration"><code class="docutils literal notranslate"><span class="pre">Migration</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="permissions.migrations.html#permissions.migrations.0003_alter_roles_options.Migration.dependencies"><code class="docutils literal notranslate"><span class="pre">Migration.dependencies</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="permissions.migrations.html#permissions.migrations.0003_alter_roles_options.Migration.operations"><code class="docutils literal notranslate"><span class="pre">Migration.operations</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="permissions.migrations.html#module-permissions.migrations">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-permissions.admin">
+<span id="permissions-admin-module"></span><h2>permissions.admin module<a class="headerlink" href="#module-permissions.admin" title="Link to this heading"></a></h2>
+</section>
+<section id="module-permissions.apps">
+<span id="permissions-apps-module"></span><h2>permissions.apps module<a class="headerlink" href="#module-permissions.apps" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="permissions.apps.PermissionsConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">permissions.apps.</span></span><span class="sig-name descname"><span class="pre">PermissionsConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app_module</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/permissions/apps.html#PermissionsConfig"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#permissions.apps.PermissionsConfig" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">AppConfig</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="permissions.apps.PermissionsConfig.default_auto_field">
+<span class="sig-name descname"><span class="pre">default_auto_field</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'django.db.models.BigAutoField'</span></em><a class="headerlink" href="#permissions.apps.PermissionsConfig.default_auto_field" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="permissions.apps.PermissionsConfig.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'permissions'</span></em><a class="headerlink" href="#permissions.apps.PermissionsConfig.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-permissions.forms">
+<span id="permissions-forms-module"></span><h2>permissions.forms module<a class="headerlink" href="#module-permissions.forms" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="permissions.forms.Asignar_Rol_Form">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">permissions.forms.</span></span><span class="sig-name descname"><span class="pre">Asignar_Rol_Form</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_id='id_%s'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_class=&lt;class</span> <span class="pre">'django.forms.utils.ErrorList'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_suffix=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">empty_permitted=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_order=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_required_attribute=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">renderer=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/permissions/forms.html#Asignar_Rol_Form"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#permissions.forms.Asignar_Rol_Form" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Form</span></code></p>
+<p>Clase que define un modelo de form para asignar roles a un usuario
+Se utiliza el ModelForm proveido por Django</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="permissions.forms.Asignar_Rol_Form.base_fields">
+<span class="sig-name descname"><span class="pre">base_fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'nombre_rol':</span> <span class="pre">&lt;django.forms.models.ModelChoiceField</span> <span class="pre">object&gt;,</span> <span class="pre">'usuarios':</span> <span class="pre">&lt;django.forms.models.ModelChoiceField</span> <span class="pre">object&gt;}</span></em><a class="headerlink" href="#permissions.forms.Asignar_Rol_Form.base_fields" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="permissions.forms.Asignar_Rol_Form.declared_fields">
+<span class="sig-name descname"><span class="pre">declared_fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'nombre_rol':</span> <span class="pre">&lt;django.forms.models.ModelChoiceField</span> <span class="pre">object&gt;,</span> <span class="pre">'usuarios':</span> <span class="pre">&lt;django.forms.models.ModelChoiceField</span> <span class="pre">object&gt;}</span></em><a class="headerlink" href="#permissions.forms.Asignar_Rol_Form.declared_fields" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="permissions.forms.Asignar_Rol_Form.media">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">media</span></span><a class="headerlink" href="#permissions.forms.Asignar_Rol_Form.media" title="Link to this definition"></a></dt>
+<dd><p>Return all media required to render the widgets on this form.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="permissions.forms.Rol_Form">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">permissions.forms.</span></span><span class="sig-name descname"><span class="pre">Rol_Form</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_id='id_%s'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_class=&lt;class</span> <span class="pre">'django.forms.utils.ErrorList'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_suffix=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">empty_permitted=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_required_attribute=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">renderer=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/permissions/forms.html#Rol_Form"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#permissions.forms.Rol_Form" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ModelForm</span></code></p>
+<p>Clase que define un modelo de form para roles
+Se utiliza el ModelForm proveido por Django</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="permissions.forms.Rol_Form.Meta">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Meta</span></span><a class="reference internal" href="_modules/permissions/forms.html#Rol_Form.Meta"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#permissions.forms.Rol_Form.Meta" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="permissions.forms.Rol_Form.Meta.fields">
+<span class="sig-name descname"><span class="pre">fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['nombre_rol',</span> <span class="pre">'rol_por_defecto',</span> <span class="pre">'descripcion',</span> <span class="pre">'permisos']</span></em><a class="headerlink" href="#permissions.forms.Rol_Form.Meta.fields" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="permissions.forms.Rol_Form.Meta.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#permissions.forms.Rol_Form.Meta.model" title="Link to this definition"></a></dt>
+<dd><p>alias de <a class="reference internal" href="#permissions.models.Roles" title="permissions.models.Roles"><code class="xref py py-class docutils literal notranslate"><span class="pre">Roles</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="permissions.forms.Rol_Form.base_fields">
+<span class="sig-name descname"><span class="pre">base_fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'descripcion':</span> <span class="pre">&lt;django.forms.fields.CharField</span> <span class="pre">object&gt;,</span> <span class="pre">'nombre_rol':</span> <span class="pre">&lt;django.forms.fields.CharField</span> <span class="pre">object&gt;,</span> <span class="pre">'permisos':</span> <span class="pre">&lt;django.forms.models.ModelMultipleChoiceField</span> <span class="pre">object&gt;,</span> <span class="pre">'rol_por_defecto':</span> <span class="pre">&lt;django.forms.fields.BooleanField</span> <span class="pre">object&gt;}</span></em><a class="headerlink" href="#permissions.forms.Rol_Form.base_fields" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="permissions.forms.Rol_Form.declared_fields">
+<span class="sig-name descname"><span class="pre">declared_fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'descripcion':</span> <span class="pre">&lt;django.forms.fields.CharField</span> <span class="pre">object&gt;,</span> <span class="pre">'nombre_rol':</span> <span class="pre">&lt;django.forms.fields.CharField</span> <span class="pre">object&gt;,</span> <span class="pre">'permisos':</span> <span class="pre">&lt;django.forms.models.ModelMultipleChoiceField</span> <span class="pre">object&gt;,</span> <span class="pre">'rol_por_defecto':</span> <span class="pre">&lt;django.forms.fields.BooleanField</span> <span class="pre">object&gt;}</span></em><a class="headerlink" href="#permissions.forms.Rol_Form.declared_fields" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="permissions.forms.Rol_Form.media">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">media</span></span><a class="headerlink" href="#permissions.forms.Rol_Form.media" title="Link to this definition"></a></dt>
+<dd><p>Return all media required to render the widgets on this form.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permissions.forms.Rol_Form.rol_name_exists">
+<span class="sig-name descname"><span class="pre">rol_name_exists</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/permissions/forms.html#Rol_Form.rol_name_exists"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#permissions.forms.Rol_Form.rol_name_exists" title="Link to this definition"></a></dt>
+<dd><p>Funcion que comprueba que el nombre del rol a ser creado no haya sido utilizado
+return: el nombre del rol, Excepction: el nombre del rol ya existe</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-permissions.models">
+<span id="permissions-models-module"></span><h2>permissions.models module<a class="headerlink" href="#module-permissions.models" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="permissions.models.Roles">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">permissions.models.</span></span><span class="sig-name descname"><span class="pre">Roles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nombre_rol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rol_por_defecto</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">descripcion</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/permissions/models.html#Roles"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#permissions.models.Roles" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="permissions.models.Roles.DoesNotExist">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#permissions.models.Roles.DoesNotExist" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="permissions.models.Roles.MultipleObjectsReturned">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#permissions.models.Roles.MultipleObjectsReturned" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permissions.models.Roles.asginar_permisos_rol">
+<span class="sig-name descname"><span class="pre">asginar_permisos_rol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lista_permisos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/permissions/models.html#Roles.asginar_permisos_rol"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#permissions.models.Roles.asginar_permisos_rol" title="Link to this definition"></a></dt>
+<dd><p>funcion para crear un rol o actualizarlo segun se quiera</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="permissions.models.Roles.descripcion">
+<span class="sig-name descname"><span class="pre">descripcion</span></span><a class="headerlink" href="#permissions.models.Roles.descripcion" title="Link to this definition"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permissions.models.Roles.get_nombre_rol">
+<span class="sig-name descname"><span class="pre">get_nombre_rol</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/permissions/models.html#Roles.get_nombre_rol"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#permissions.models.Roles.get_nombre_rol" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="permissions.models.Roles.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#permissions.models.Roles.id" title="Link to this definition"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="permissions.models.Roles.nombre_rol">
+<span class="sig-name descname"><span class="pre">nombre_rol</span></span><a class="headerlink" href="#permissions.models.Roles.nombre_rol" title="Link to this definition"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="permissions.models.Roles.objects">
+<span class="sig-name descname"><span class="pre">objects</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;django.db.models.manager.Manager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#permissions.models.Roles.objects" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permissions.models.Roles.obtener_permisos">
+<span class="sig-name descname"><span class="pre">obtener_permisos</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/permissions/models.html#Roles.obtener_permisos"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#permissions.models.Roles.obtener_permisos" title="Link to this definition"></a></dt>
+<dd><p>Funcion que retorna los permisos asignados a un grupo
+params: el grupo
+return: lista de permisos del grupo</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="permissions.models.Roles.permisos">
+<span class="sig-name descname"><span class="pre">permisos</span></span><a class="headerlink" href="#permissions.models.Roles.permisos" title="Link to this definition"></a></dt>
+<dd><p>Accessor to the related objects manager on the forward and reverse sides of
+a many-to-many relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Pizza</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">toppings</span> <span class="o">=</span> <span class="n">ManyToManyField</span><span class="p">(</span><span class="n">Topping</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;pizzas&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Pizza.toppings</span></code> and <code class="docutils literal notranslate"><span class="pre">Topping.pizzas</span></code> are <code class="docutils literal notranslate"><span class="pre">ManyToManyDescriptor</span></code>
+instances.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal notranslate"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="permissions.models.Roles.rol_por_defecto">
+<span class="sig-name descname"><span class="pre">rol_por_defecto</span></span><a class="headerlink" href="#permissions.models.Roles.rol_por_defecto" title="Link to this definition"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-permissions.tests">
+<span id="permissions-tests-module"></span><h2>permissions.tests module<a class="headerlink" href="#module-permissions.tests" title="Link to this heading"></a></h2>
+</section>
+<section id="module-permissions.urls">
+<span id="permissions-urls-module"></span><h2>permissions.urls module<a class="headerlink" href="#module-permissions.urls" title="Link to this heading"></a></h2>
+</section>
+<section id="module-permissions.views">
+<span id="permissions-views-module"></span><h2>permissions.views module<a class="headerlink" href="#module-permissions.views" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="permissions.views.asignar_rol_usuario">
+<span class="sig-prename descclassname"><span class="pre">permissions.views.</span></span><span class="sig-name descname"><span class="pre">asignar_rol_usuario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/permissions/views.html#asignar_rol_usuario"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#permissions.views.asignar_rol_usuario" title="Link to this definition"></a></dt>
+<dd><p>Funcion que se encarga de asignar un rol tomando los datos del formulario de Asignar_Rol_Form
+params: request
+return:render(request,”path de retorno”,contexto)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="permissions.views.crear_rol">
+<span class="sig-prename descclassname"><span class="pre">permissions.views.</span></span><span class="sig-name descname"><span class="pre">crear_rol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/permissions/views.html#crear_rol"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#permissions.views.crear_rol" title="Link to this definition"></a></dt>
+<dd><p>Funcion que se encarga de crear un rol tomando los datos del formulario de Rol_Form
+params: request
+return:render(request,”path de retorno”,contexto)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="permissions.views.eliminar_rol">
+<span class="sig-prename descclassname"><span class="pre">permissions.views.</span></span><span class="sig-name descname"><span class="pre">eliminar_rol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rol_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/permissions/views.html#eliminar_rol"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#permissions.views.eliminar_rol" title="Link to this definition"></a></dt>
+<dd><p>Funcion que se encarga de eliminar un rol tomando los datos del formulario de Rol_Form
+params: request, rol_id
+return:render(request,”path de retorno”,contexto)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="permissions.views.modificar_rol">
+<span class="sig-prename descclassname"><span class="pre">permissions.views.</span></span><span class="sig-name descname"><span class="pre">modificar_rol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rol_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/permissions/views.html#modificar_rol"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#permissions.views.modificar_rol" title="Link to this definition"></a></dt>
+<dd><p>Funcion que se encarga de modificar un rol que no sea por defecto tomando los datos del formulario de Rol_Form
+params: request, rol_id
+return:render(request,”path de retorno”,contexto)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="permissions.views.modificar_usuario">
+<span class="sig-prename descclassname"><span class="pre">permissions.views.</span></span><span class="sig-name descname"><span class="pre">modificar_usuario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/permissions/views.html#modificar_usuario"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#permissions.views.modificar_usuario" title="Link to this definition"></a></dt>
+<dd><p>Funcion que se encarga de modificar un usuario tomando los datos del formulario de Asignar_Rol_Form
+params: request, user_id
+return:render(request,”path de retorno”,contexto)</p>
+</dd></dl>
+
+</section>
+<section id="module-permissions">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-permissions" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pie de página">
+        <a href="manage.html" class="btn btn-neutral float-left" title="manage module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+        <a href="permissions.migrations.html" class="btn btn-neutral float-right" title="permissions.migrations package" accesskey="n" rel="next">Siguiente <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2024, grupo_02.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
