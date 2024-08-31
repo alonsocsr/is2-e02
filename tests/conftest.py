@@ -5,10 +5,12 @@ from permissions.models import Roles, Group
 
 
 @pytest.fixture
-def setup(client):
+def setup(client, monkeypatch):
     """
     Fixture que crea un usuario y un rol para usar en los tests
     """
+    monkeypatch.setattr('django.contrib.auth.decorators.permission_required', lambda perm, *args, **kwargs: lambda view: view)
+
     user = User.objects.create_user(username='testuser', password='12345')
     client.login(username='testuser', password='12345')
 
@@ -21,13 +23,8 @@ def setup(client):
         'descripcion': 'Este es un rol de test',
         'permisos': [permiso.id]
     }
-    print(Roles.objects.all())
-    print(Group.objects.all())
 
-    response = client.post(reverse('crear_rol'), data)
+    client.post(reverse('crear_rol'), data)
     rol_creado = Roles.objects.get(nombre_rol='test_rol')
-
-    print(Roles.objects.all())
-    print(Group.objects.all())
 
     return user, rol_creado

@@ -62,10 +62,10 @@ def test_modificar_rol(client, setup):
         'permisos': [Permission.objects.get(codename='modificar').id]
     }
 
-    print(rol_creado.permisos.all())
+    # print(rol_creado.permisos.all())
     response = client.post(
         reverse('modificar_rol', args=[rol_creado.id]), data)
-    print(rol_creado.permisos.all())
+    # print(rol_creado.permisos.all())
 
     assert response.status_code == 302
 
