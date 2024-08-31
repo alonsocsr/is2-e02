@@ -7,12 +7,25 @@ from django.contrib import messages
 
 
 class UpdateProfile(LoginRequiredMixin, FormView, PermissionRequiredMixin):
+    """
+    La clase `UpdateProfile` define la vista para actualizar el perfil del usuario actual.
+
+    Esta vista utiliza un formulario para permitir que los usuarios autenticados 
+    modifiquen su información personal, como nombre, apellido, nombre de usuario y foto de perfil.
+    
+    """
     template_name = "profiles/profile.html"
     permission_required = 'permissions.editar_perfil'
 
     form_class = ProfileForm
 
     def get_initial(self):
+        """
+        Inicializa los valores del formulario con la información actual del usuario.
+
+        Returns:
+            dict: Un diccionario con los datos iniciales para el formulario.
+        """
         initial = super().get_initial()
         user = self.request.user
         initial['first_name'] = user.first_name
@@ -22,6 +35,18 @@ class UpdateProfile(LoginRequiredMixin, FormView, PermissionRequiredMixin):
         return initial
 
     def form_valid(self, form):
+        """
+        Procesa los datos cuando el formulario es valido.
+
+        Actualiza el perfil del usuario con los nuevos datos proporcionados en el formulario.
+        Muestra un mensaje de éxito al usuario.
+
+        Args:
+            form: El formulario validado.
+
+        Returns:
+            HttpResponse: La respuesta redirige a la URL de éxito.
+        """
         user = self.request.user
         profile = Profile.objects.get(user=user)
 
@@ -39,4 +64,10 @@ class UpdateProfile(LoginRequiredMixin, FormView, PermissionRequiredMixin):
         return super().form_valid(form)
 
     def get_success_url(self):
+        """
+        Define la URL de redirección después de que el formulario se haya procesado correctamente.
+
+        Returns:
+            str: La URL a la que se redirige al usuario.
+        """
         return self.request.path

@@ -5,7 +5,21 @@ from django.contrib.auth.models import Group,Permission
 
 
 class Roles(models.Model):
+    """
+    Modelo que representa los roles en el sistema, cada uno de los cuales puede tener permisos asociados.
     
+    Atributos:
+    ----------
+    nombre_rol : CharField
+        Nombre representativo del rol. Ejemplo: Editor (str)
+    rol_por_defecto : BooleanField
+        Indica si el rol es un rol por defecto. Valor por defecto es False.
+    descripcion : TextField
+         Descripcion de lo que representa el rol. Ejemplo: Rol que se encargara de la edicion de contenidos dentro del sistema (str)
+    permisos : ManyToManyField
+        Permisos asociados al rol, opcionales.
+
+    """
     nombre_rol=models.CharField(max_length=25,unique=True,blank=False,verbose_name='Roles del Sistema')
     
     rol_por_defecto=models.BooleanField(default=False)
@@ -62,34 +76,48 @@ class Roles(models.Model):
         default_permissions = ()
 
     def __str__(self):
+        """
+        Retorna una representación en cadena del rol, que es su nombre.
+        
+        Returns:
+        --------
+        str
+            El nombre del rol.
+        """
         return self.nombre_rol
     
     def get_nombre_rol(self):
-      return self.nombre_rol
+        """
+        Retorna el nombre del rol.
+        
+        Returns:
+        --------
+        str
+            El nombre del rol.
+        """
+        return self.nombre_rol
   
   
     
     def asginar_permisos_rol(self,lista_permisos):
         """
-        funcion para crear un rol o actualizarlo segun se quiera
-        """
+        Funcion para crear un rol o actualizarlo segun se quiera. 
         
+        Parámetros:
+        -----------
+        lista_permisos : QuerySet
+            Lista de permisos a ser asignados al rol.
+        
+        Returns:
+        --------
+        None
         """
-        crear un grupo con el nombre del rol
-        """
-
         grupo,created=Group.objects.get_or_create(name=self.nombre_rol)
         
 
         """
         obtener los permisos y asignarlos al grupo
         """
-        """ if isinstance(lista_permisos[0], Permission):
-        
-            permisos = lista_permisos
-        else:
-        
-            permisos = Permission.objects.filter(codename__in=lista_permisos) """
         
         grupo.permissions.set(lista_permisos)
 
@@ -102,8 +130,11 @@ class Roles(models.Model):
     def obtener_permisos(self):
         """
         Funcion que retorna los permisos asignados a un grupo
-        params: el grupo
-        return: lista de permisos del grupo
+        
+        Returns:
+        --------
+        list
+            lista de permisos del grupo
         """
         permisos=list(self.permisos.all())
         

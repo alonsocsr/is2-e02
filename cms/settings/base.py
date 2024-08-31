@@ -15,7 +15,6 @@ INSTALLED_APPS = [
     'permissions',
     'categories',
     'profiles',
-    'django_extensions',
     
     'django.contrib.admin',
     'django.contrib.auth',

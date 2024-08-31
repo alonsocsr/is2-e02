@@ -4,13 +4,15 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from sorl.thumbnail import ImageField
 
-"""
-La clase Profile define el modelo para el perfil de cada usuario
-
-"""
-
 
 class Profile(models.Model):
+    """
+    La clase Profile define el modelo para el perfil de cada usuario.
+
+    El modelo `Profile` está vinculado uno a uno con el modelo `User` de Django, 
+    lo que permite almacenar información adicional sobre el usuario como una imagen de perfil
+
+    """
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -24,8 +26,18 @@ class Profile(models.Model):
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
+
     """
-    Crea un nuevo perfil cuando un usuario es creado
+    Señal que se ejecuta después de que se guarda un usuario.
+
+    Esta función se encarga de crear un perfil para cada nuevo usuario. Asigna automáticamente 
+    el grupo "Admin" al primer usuario y el grupo "Suscriptor" a todos los otros usuarios.
+
+    Args:
+        sender: El modelo que envía la señal (User).
+        instance: La instancia del usuario que se está guardando.
+        created (bool): Indica si se ha creado un nuevo usuario.
+        **kwargs: Argumentos adicionales.
     """
     if created:
         Profile.objects.create(user=instance)
