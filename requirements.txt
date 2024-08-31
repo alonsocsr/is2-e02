@@ -3,6 +3,7 @@ Django==5.1
 django-allauth==64.1.0
 django-haystack==3.3.0
 django-sphinxdoc==2.0.0
+exceptiongroup==1.2.2
 iniconfig==2.0.0
 packaging==24.1
 pillow==10.4.0
@@ -17,3 +18,5 @@ sqlparse==0.5.1
 whitenoise==6.7.0
 Sphinx==7.4.7
 sphinx-rtd-theme==2.0.0
+tomli==2.0.1
+typing_extensions==4.12.2

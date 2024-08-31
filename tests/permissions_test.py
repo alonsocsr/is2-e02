@@ -12,7 +12,7 @@ def test_crear_rol(client, setup):
     user, rol_creado = setup
 
     permiso = Permission.objects.create(
-        codename='permiso_test', content_type_id=7, name='test permiso')
+        codename='permiso_test', content_type_id=1, name='test permiso')
 
     data = {
         'nombre_rol': 'test',
@@ -24,7 +24,7 @@ def test_crear_rol(client, setup):
     response = client.post(reverse('crear_rol'), data)
     # print(Roles.objects.all())
 
-    assert Roles.objects.get(nombre_rol='test')
+    assert Roles.objects.get(nombre_rol='test'), 'No se ha creado el rol'
     assert response.status_code == 200
 
 
@@ -36,7 +36,7 @@ def test_asignar_rol_usuario(client, setup):
     user, rol_creado = setup
 
     data = {
-        'nombre_rol': Group.objects.get(name='test').id,
+        'nombre_rol': Group.objects.get(name='test_rol').id,
         'usuarios': user.id,
     }
 
@@ -44,7 +44,7 @@ def test_asignar_rol_usuario(client, setup):
 
     # print(user.groups.all())
 
-    assert user.groups.get(name='test')
+    assert user.groups.get(name='test_rol')
     assert response.status_code == 302
 
 
@@ -53,19 +53,19 @@ def test_modificar_rol(client, setup):
     user, rol_creado = setup
 
     Permission.objects.create(
-        codename='_modificar', content_type_id=3, name='permiso añadido')
+        codename='modificar', content_type_id=1, name='permiso añadido')
 
     data = {
         'nombre_rol': rol_creado.nombre_rol,
         'rol_por_defecto': False,
         'descripcion': 'Este es un rol de test',
-        'permisos': [Permission.objects.get(codename='_modificar').id]
+        'permisos': [Permission.objects.get(codename='modificar').id]
     }
 
-    print(rol_creado.permisos.all())
+    # print(rol_creado.permisos.all())
     response = client.post(
         reverse('modificar_rol', args=[rol_creado.id]), data)
-    print(rol_creado.permisos.all())
+    # print(rol_creado.permisos.all())
 
     assert response.status_code == 302
 
@@ -75,5 +75,5 @@ def test_eliminar_rol(client, setup):
     user, rol_creado = setup
     response = client.post(reverse('eliminar_rol', args=[rol_creado.id]), {})
 
-    assert not Roles.objects.filter(nombre_rol='test').exists()
+    assert not Roles.objects.filter(nombre_rol='test_rol').exists()
     assert response.status_code == 302

@@ -1,11 +1,24 @@
+from django.shortcuts import render
 from django.views.generic import FormView, ListView
 from django.contrib import messages
 from .forms import CategoriaForm
 from .models import Categorias
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.http import HttpResponseForbidden
 
-class CrearCategoriaView(FormView):
+
+class CrearCategoriaView(FormView, PermissionRequiredMixin):
     template_name = "categories/new_category.html"
     form_class = CategoriaForm
+
+    def test_func(self):
+        return (self.request.user.has_perm('permissions.crear_categoria') or
+                self.request.user.has_perm('permissions.modificar_categoria') or
+                self.request.user.has_perm('permissions.eliminar_categoria') or
+                self.request.user.has_perm('permissions.inactivar_categoria'))
+
+    def handle_no_permission(self):
+        return HttpResponseForbidden()
 
     def form_valid(self, form):
         tipo_categoria_cargar = form.cleaned_data['tipo_categoria']
@@ -19,7 +32,8 @@ class CrearCategoriaView(FormView):
             tipo_categoria=tipo_categoria_cargar,
             precio=precio_cargar
         )
-        messages.success(self.request, 'Categoría creada con éxito.', extra_tags='categoria')
+        messages.success(
+            self.request, 'Categoría creada con éxito.', extra_tags='categoria')
 
         # Redirige a la misma vista para mostrar el mensaje y limpiar el formulario
         return super().form_valid(form)
@@ -32,6 +46,7 @@ class CrearCategoriaView(FormView):
         context['categorias'] = Categorias.objects.all()
         return context
 
+
 class CategoriaListView(ListView):
     model = Categorias
     template_name = "categories/new_category.html"
@@ -42,8 +57,6 @@ class CategoriaListView(ListView):
         context['form'] = CategoriaForm()  # Incluir el formulario de creación
         return context
 
-
-from django.shortcuts import render
 
 """ def categoria_perms(request):
     permission_codenames = ['_crear_categoria', '_modificar_categoria', '_eliminar_categoria', '_inactivar_categoria']
