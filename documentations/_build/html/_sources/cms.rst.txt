@@ -12,14 +12,6 @@ cms.asgi module
    :undoc-members:
    :show-inheritance:
 
-cms.settings module
--------------------
-
-.. automodule:: cms.settings
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 cms.urls module
 ---------------
 

@@ -12,7 +12,7 @@ def test_crear_rol(client, setup):
     user, rol_creado = setup
 
     permiso = Permission.objects.create(
-        codename='_permiso_test', content_type_id=7, name='test permiso')
+        codename='permiso_test', content_type_id=7, name='test permiso')
 
     data = {
         'nombre_rol': 'test',

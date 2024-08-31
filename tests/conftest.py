@@ -13,7 +13,7 @@ def setup(client):
     client.login(username='testuser', password='12345')
 
     permiso = Permission.objects.create(
-        codename='_test', content_type_id=3, name='test permiso')
+        codename='test', content_type_id=3, name='test permiso')
 
     data = {
         'nombre_rol': 'test',

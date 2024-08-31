@@ -11,6 +11,8 @@ class Categorias(models.Model):
     Modelo para Categorias
 
     Este modelo se utiliza para representar las categorias del sistema
+
+    Attr
     """
     nombre_categoria = models.CharField(max_length=30, unique=True, blank=False)
     descripcion = models.TextField(max_length=100, blank=False)
