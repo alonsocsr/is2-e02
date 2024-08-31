@@ -1,7 +1,7 @@
 import pytest
 from django.urls import reverse
 from django.contrib.auth.models import User, Permission
-from permissions.models import Roles
+from permissions.models import Roles, Group
 
 
 @pytest.fixture
@@ -13,16 +13,21 @@ def setup(client):
     client.login(username='testuser', password='12345')
 
     permiso = Permission.objects.create(
-        codename='test', content_type_id=3, name='test permiso')
+        codename='test', content_type_id=1, name='test permiso')
 
     data = {
-        'nombre_rol': 'test',
+        'nombre_rol': 'test_rol',
         'rol_por_defecto': False,
         'descripcion': 'Este es un rol de test',
         'permisos': [permiso.id]
     }
+    print(Roles.objects.all())
+    print(Group.objects.all())
 
-    client.post(reverse('crear_rol'), data)
-    rol_creado = Roles.objects.get(nombre_rol='test')
+    response = client.post(reverse('crear_rol'), data)
+    rol_creado = Roles.objects.get(nombre_rol='test_rol')
+
+    print(Roles.objects.all())
+    print(Group.objects.all())
 
     return user, rol_creado

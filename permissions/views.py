@@ -5,11 +5,12 @@ from .forms import Rol_Form, Asignar_Rol_Form
 from django.contrib import messages
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 # Create your views here.
 
 
 @login_required
+@permission_required('permissions.crear_rol', raise_exception=True)
 def crear_rol(request):
     """
     Funcion que se encarga de crear un rol tomando los datos del formulario de Rol_Form
@@ -47,6 +48,7 @@ def crear_rol(request):
 
 
 @login_required
+@permission_required('permissions.asignar_rol', raise_exception=True)
 def asignar_rol_usuario(request):
     """
     Funcion que se encarga de asignar un rol tomando los datos del formulario de Asignar_Rol_Form
@@ -100,6 +102,7 @@ def asignar_rol_usuario(request):
 
 
 @login_required
+@permission_required('permissions.modificar_rol', raise_exception=True)
 def modificar_rol(request, rol_id=None):
     """
     Funcion que se encarga de modificar un rol que no sea por defecto tomando los datos del formulario de Rol_Form
@@ -130,6 +133,7 @@ def modificar_rol(request, rol_id=None):
 
 
 @login_required
+@permission_required('permissions.eliminar_rol', raise_exception=True)
 def eliminar_rol(request, rol_id):
     """
     Funcion que se encarga de eliminar un rol tomando los datos del formulario de Rol_Form
@@ -152,6 +156,7 @@ def eliminar_rol(request, rol_id):
 
 
 @login_required
+@permission_required('permissions.asignar_rol', raise_exception=True)
 def modificar_usuario(request, user_id=None):
     """
     Funcion que se encarga de modificar un usuario tomando los datos del formulario de Asignar_Rol_Form
