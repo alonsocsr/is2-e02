@@ -73,52 +73,39 @@
              
   <h1>Código fuente para categories.forms</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">django</span> <span class="kn">import</span> <span class="n">forms</span>
-<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">TIPO_CATEGORIA_OPCIONES</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Categorias</span><span class="p">,</span> <span class="n">TIPO_CATEGORIA_OPCIONES</span>
 
 <div class="viewcode-block" id="CategoriaForm">
 <a class="viewcode-back" href="../../categories.html#categories.forms.CategoriaForm">[documentos]</a>
-<span class="k">class</span> <span class="nc">CategoriaForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">Form</span><span class="p">):</span>
-    <span class="n">nombre_categoria</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span>
-        <span class="n">max_length</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
-        <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Nombre de la Categoría&#39;</span><span class="p">,</span>
-        <span class="n">widget</span><span class="o">=</span><span class="n">forms</span><span class="o">.</span><span class="n">TextInput</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
+<span class="k">class</span> <span class="nc">CategoriaForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+<div class="viewcode-block" id="CategoriaForm.Meta">
+<a class="viewcode-back" href="../../categories.html#categories.forms.CategoriaForm.Meta">[documentos]</a>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Categorias</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;nombre_categoria&#39;</span><span class="p">,</span> <span class="s1">&#39;descripcion&#39;</span><span class="p">,</span> <span class="s1">&#39;descripcion_corta&#39;</span><span class="p">,</span> <span class="s1">&#39;moderada&#39;</span><span class="p">,</span> <span class="s1">&#39;tipo_categoria&#39;</span><span class="p">]</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CategoriaForm</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="s1">&#39;nombre_categoria&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
             <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;form-input w-full p-2 text-gray-700 bg-gray-200 rounded-md&#39;</span>
         <span class="p">})</span>
-    <span class="p">)</span>
-
-    <span class="n">descripcion</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span>
-        <span class="n">widget</span><span class="o">=</span><span class="n">forms</span><span class="o">.</span><span class="n">Textarea</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="s1">&#39;descripcion&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
             <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;form-textarea w-full p-2 text-gray-700 bg-gray-200 rounded-md&#39;</span><span class="p">,</span>
             <span class="s1">&#39;style&#39;</span><span class="p">:</span> <span class="s1">&#39;height: 80px; overflow-y: auto; resize: none;&#39;</span>
-        <span class="p">}),</span>
-        <span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-        <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Descripción&#39;</span>
-    <span class="p">)</span>
-
-    <span class="n">descripcion_corta</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span>
-        <span class="n">max_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-        <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Descripción Corta&#39;</span><span class="p">,</span>
-        <span class="n">widget</span><span class="o">=</span><span class="n">forms</span><span class="o">.</span><span class="n">TextInput</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
+        <span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="s1">&#39;descripcion_corta&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
             <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;form-input w-full p-2 text-gray-700 bg-gray-200 rounded-md&#39;</span>
         <span class="p">})</span>
-    <span class="p">)</span>
-
-    <span class="n">moderada</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span>
-        <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">widget</span><span class="o">=</span><span class="n">forms</span><span class="o">.</span><span class="n">CheckboxInput</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="s1">&#39;moderada&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
             <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;form-checkbox text-gray-700 bg-gray-200 rounded&#39;</span><span class="p">,</span>
-        <span class="p">}),</span>
-        <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Moderada&#39;</span><span class="p">,</span>
-        <span class="n">initial</span><span class="o">=</span><span class="kc">True</span>
-    <span class="p">)</span>
-
-    <span class="n">tipo_categoria</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">ChoiceField</span><span class="p">(</span>
-        <span class="n">choices</span><span class="o">=</span><span class="n">TIPO_CATEGORIA_OPCIONES</span><span class="p">,</span>
-        <span class="n">widget</span><span class="o">=</span><span class="n">forms</span><span class="o">.</span><span class="n">Select</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
+        <span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="s1">&#39;tipo_categoria&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
             <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;form-select w-full p-2 text-gray-700 bg-gray-200 rounded-md&#39;</span><span class="p">,</span>
-        <span class="p">}),</span>
-        <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Tipo de Categoría&#39;</span>
-    <span class="p">)</span></div>
+        <span class="p">})</span>
+        <span class="c1"># Establecer valor inicial para &quot;moderada&quot; si no está definido</span>
+        <span class="k">if</span> <span class="s1">&#39;moderada&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">initial</span><span class="p">[</span><span class="s1">&#39;moderada&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 </pre></div>
 

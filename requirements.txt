@@ -17,3 +17,5 @@ sorl-thumbnail==12.10.0
 sqlparse==0.5.1
 tomli==2.0.1
 typing_extensions==4.12.2
+sphinx-rtd-theme==2.0.0
+Sphinx==7.4.7

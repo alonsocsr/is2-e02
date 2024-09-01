@@ -282,7 +282,7 @@ assigning the width/height to the width_field/height_field, if appropriate.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="profiles.views.UpdateProfile">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">profiles.views.</span></span><span class="sig-name descname"><span class="pre">UpdateProfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/profiles/views.html#UpdateProfile"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#profiles.views.UpdateProfile" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">LoginRequiredMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">FormView</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">LoginRequiredMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">FormView</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">PermissionRequiredMixin</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="profiles.views.UpdateProfile.form_class">
 <span class="sig-name descname"><span class="pre">form_class</span></span><a class="headerlink" href="#profiles.views.UpdateProfile.form_class" title="Link to this definition"></a></dt>
@@ -306,6 +306,11 @@ assigning the width/height to the width_field/height_field, if appropriate.</p>
 <span class="sig-name descname"><span class="pre">get_success_url</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/profiles/views.html#UpdateProfile.get_success_url"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#profiles.views.UpdateProfile.get_success_url" title="Link to this definition"></a></dt>
 <dd><p>Return the URL to redirect to after processing a valid form.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="profiles.views.UpdateProfile.permission_required">
+<span class="sig-name descname"><span class="pre">permission_required</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'permissions.editar_perfil'</span></em><a class="headerlink" href="#profiles.views.UpdateProfile.permission_required" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="profiles.views.UpdateProfile.template_name">
