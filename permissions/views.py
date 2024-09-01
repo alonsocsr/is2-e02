@@ -5,16 +5,27 @@ from .forms import Rol_Form, Asignar_Rol_Form
 from django.contrib import messages
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 # Create your views here.
 
 
 @login_required
+@permission_required('permissions.crear_rol', raise_exception=True)
 def crear_rol(request):
     """
-    Funcion que se encarga de crear un rol tomando los datos del formulario de Rol_Form
-    params: request
-    return:render(request,'path de retorno',contexto)
+    Función que se encarga de crear un nuevo rol utilizando los datos proporcionados en el formulario Rol_Form.
+
+    Renderiza la plantilla 'permissions/crear_rol.html' con el formulario y la lista de roles existentes.
+
+    Parámetros:
+    -----------
+    request : HttpRequest
+        La solicitud HTTP recibida por la vista.
+
+    Returns:
+    --------
+    HttpResponse
+        La respuesta HTTP que renderiza la plantilla 'permissions/crear_rol.html'.
     """
     form = Rol_Form(request.POST or None)
     roles = Roles.objects.all()
@@ -47,12 +58,23 @@ def crear_rol(request):
 
 
 @login_required
+@permission_required('permissions.asignar_rol', raise_exception=True)
 def asignar_rol_usuario(request):
     """
-    Funcion que se encarga de asignar un rol tomando los datos del formulario de Asignar_Rol_Form
-    params: request
-    return:render(request,'path de retorno',contexto)
-    """
+    Función que se encarga de asignar un rol a un usuario seleccionado utilizando el formulario Asignar_Rol_Form.
+
+    Renderiza la plantilla 'permissions/asignar_rol.html' con el formulario para asignar roles.
+
+    Parámetros:
+    -----------
+    request : HttpRequest
+        La solicitud HTTP recibida por la vista.
+
+    Returns:
+    --------
+    HttpResponse
+        La respuesta HTTP que renderiza la plantilla 'permissions/asignar_rol.html'.
+    """    
     form = Asignar_Rol_Form(request.POST or None)
 
     context = {
@@ -100,12 +122,25 @@ def asignar_rol_usuario(request):
 
 
 @login_required
+@permission_required('permissions.modificar_rol', raise_exception=True)
 def modificar_rol(request, rol_id=None):
     """
-    Funcion que se encarga de modificar un rol que no sea por defecto tomando los datos del formulario de Rol_Form
-    params: request, rol_id
-    return:render(request,'path de retorno',contexto)
+    Función que se encarga de modificar un rol.
+    
+    Renderiza la plantilla 'permissions/modificar_rol.html' y permite al usuario modificar un rol existente.
+    
+    Parámetros:
+    -----------
+    request : HttpRequest
+        La solicitud HTTP recibida por la vista.
+    rol_id : int, opcional
+    
+    Returns:
+    --------
+    HttpResponse
+        La respuesta HTTP que renderiza la plantilla 'permissions/modificar_rol.html'.
     """
+
     roles = Roles.objects.exclude(rol_por_defecto=True)
 
     if rol_id:
@@ -130,12 +165,27 @@ def modificar_rol(request, rol_id=None):
 
 
 @login_required
+@permission_required('permissions.eliminar_rol', raise_exception=True)
 def eliminar_rol(request, rol_id):
     """
-    Funcion que se encarga de eliminar un rol tomando los datos del formulario de Rol_Form
-    params: request, rol_id
-    return:render(request,'path de retorno',contexto)
+    Función que se encarga de eliminar un rol y su grupo asociado.
+
+    Renderiza el template 'permissions/eliminar_rol.html' y muestra un mensaje de exito si el rol se elimina correctamente.
+
+    Parámetros:
+    -----------
+    request : HttpRequest
+        La solicitud HTTP recibida.
+    rol_id : int
+        El ID del rol a eliminar.
+
+    Returns:
+    --------
+    HttpResponseRedirect
+        Redirecciona a la vista 'crear_rol' después de eliminar el rol.
+
     """
+
     rol = get_object_or_404(Roles, id=rol_id)
     group = Group.objects.get(name=rol)
     if request.method == 'POST':
@@ -151,12 +201,26 @@ def eliminar_rol(request, rol_id):
     return render(request, 'permissions/eliminar_rol.html', context)
 
 
+
 @login_required
+@permission_required('permissions.asignar_rol', raise_exception=True)
 def modificar_usuario(request, user_id=None):
     """
-    Funcion que se encarga de modificar un usuario tomando los datos del formulario de Asignar_Rol_Form
-    params: request, user_id
-    return:render(request,'path de retorno',contexto)
+    Función que se encarga de modificar los roles de un usuario.
+
+    Renderiza el template 'permissions/modificar_usuario.html' y actualiza los roles del usuario seleccionado.
+
+    Parámetros:
+    -----------
+    request : HttpRequest
+        La solicitud HTTP recibida.
+    user_id : int, opcional
+        El ID del usuario cuyos roles se desean modificar. Por defecto es None.
+
+    Returns:
+    --------
+    HttpResponse
+        La respuesta HTTP que renderiza el template 'permissions/modificar_usuario.html'.
     """
     usuarios = User.objects.all()
     roles = Group.objects.all()
