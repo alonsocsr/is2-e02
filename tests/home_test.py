@@ -12,8 +12,7 @@ def test_home(client, transactional_db):
 
 @pytest.mark.parametrize("correo, username, contraseña, valido", [
     ("test@test.com", "testuser", "Valido123!", True),          # Caso válido
-    # Contraseña demasiado corta
-    ("test@test.com", "testuser", "corto", False),
+    ("test@test.com", "testuser", "corto", False),              # Contraseña demasiado corta
     ("test@test.com", "testuser", "", False),                   # Contraseña vacía
     ("not-an-email", "testuser", "Valido123!", False),])        # Email inválido
 def test_signup(client, correo, username, contraseña, valido, transactional_db):
