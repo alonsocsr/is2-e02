@@ -41,6 +41,7 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
 
     'allauth.account.middleware.AccountMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = 'cms.urls'
@@ -114,8 +115,8 @@ STATICFILES_DIRS = [
    os.path.join(BASE_DIR, 'static'),
 ]
 
-MEDIA_ROOT = BASE_DIR / "uploads"
 MEDIA_URL = "/files/"
+MEDIA_ROOT = BASE_DIR / "uploads"
 
 SITE_ID = 1 
 LOGIN_URL = '/login/'

@@ -1,7 +1,7 @@
 from .base import *
 
 
-SECRET_KEY = 'django-insecure-x2ksh!%470i@wk1pl@va_(*0u0dhs$a2g+3!fd*%q5k9qpze-z'
+SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = True
 
