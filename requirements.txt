@@ -1,5 +1,5 @@
 asgiref==3.8.1
-Django==5.1
+Django==4.9.2
 django-allauth==64.1.0
 django-haystack==3.3.0
 django-sphinxdoc==2.0.0
