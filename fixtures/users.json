@@ -1,0 +1,62 @@
+[
+    {
+        "model": "auth.user",
+        "pk": 1,
+        "fields": {
+            "username": "admin",
+            "password": "pbkdf2_sha256$870000$chFfg12xkwqp1UEgKX4t64$phY1jEB5RfuXn04KcDrkWGZuf/ba34MGG1Sc8R5EOY0=",
+            "email": "admin@gmail.com",
+            "is_staff": false,
+            "is_superuser": false,
+            "is_active": true,
+            "date_joined": "2024-08-30T12:34:56.789Z",
+            "groups": [1],  
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 2,
+        "fields": {
+            "username": "autor",
+            "password": "pbkdf2_sha256$870000$krHKuNtYaWhmAXqYGxvVN2$uEPfNHfVdI/nnKYPlmV5UrVzAGZFhpbG8oaBeenhu64=",
+            "email": "autor@gmail.com",
+            "is_staff": false,
+            "is_superuser": false,
+            "is_active": true,
+            "date_joined": "2024-08-30T12:34:56.789Z",
+            "groups": [3], 
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 3,
+        "fields": {
+            "username": "editor",
+            "password": "pbkdf2_sha256$870000$aLQaJWR2hd9tlvqIOxZYCw$hzTFBJl22jxUUPhvaSsd7JAE3w8vKO7mDJ2I+xH7DBw=",
+            "email": "editor@gmail.com",
+            "is_staff": false,
+            "is_superuser": false,
+            "is_active": true,
+            "date_joined": "2024-08-30T12:34:56.789Z",
+            "groups": [2], 
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 4,
+        "fields": {
+            "username": "publicador",
+            "password": "pbkdf2_sha256$870000$2tALoHWXKkwGgT76BB7iMK$W7KGsN1KZUxlxNNNQUf+ubdCZ7Ktv8Z/z2RY9AlV5iQ=",
+            "email": "pub@gmail.com",
+            "is_staff": false,
+            "is_superuser": false,
+            "is_active": true,
+            "date_joined": "2024-08-30T12:34:56.789Z",
+            "groups": [4], 
+            "user_permissions": []
+        }
+    }
+]

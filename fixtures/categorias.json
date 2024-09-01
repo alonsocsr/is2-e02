@@ -1,0 +1,51 @@
+[
+    {
+        "model": "categories.Categorias",
+        "pk": 1,
+        "fields": {
+            "nombre_categoria": "Taylor",
+            "descripcion": "Informacion sobre Taylor",
+            "descripcion_corta": "Tayinfo",
+            "estado":true,
+            "moderada":false,
+            "tipo_categoria":"PU"
+		}
+    },
+	{
+        "model": "categories.Categorias",
+        "pk": 2,
+        "fields": {
+            "nombre_categoria": "Ciencias",
+            "descripcion": "Descubre sobre la ciencia",
+            "descripcion_corta": "Cmas",
+            "estado":true,
+            "moderada":false,
+            "tipo_categoria":"GR"
+		}
+    },
+
+    {
+        "model": "categories.Categorias",
+        "pk": 3,
+        "fields": {
+            "nombre_categoria": "Matematicas",
+            "descripcion": "Suma, resta y mas",
+            "descripcion_corta": "Mat",
+            "estado":true,
+            "moderada":false,
+            "tipo_categoria":"PU"
+		}
+    },
+    {
+        "model": "categories.Categorias",
+        "pk": 4,
+        "fields": {
+            "nombre_categoria": "Futbol Premium",
+            "descripcion": "Ve los partidos mas esperados",
+            "descripcion_corta": "FP",
+            "estado":true,
+            "moderada":true,
+            "tipo_categoria":"PA"
+		}
+    }
+]

@@ -38,8 +38,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 
     'allauth.account.middleware.AccountMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = 'cms.urls'
@@ -105,14 +107,16 @@ USE_I18N = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static"
+   os.path.join(BASE_DIR, 'static'),
 ]
 
-MEDIA_ROOT = BASE_DIR / "uploads"
 MEDIA_URL = "/files/"
+MEDIA_ROOT = BASE_DIR / "uploads"
 
 SITE_ID = 1 
 LOGIN_URL = '/login/'
@@ -156,3 +160,4 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 # Reemplaza con tu dirección de Gmail
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 # ACCOUNT_EMAIL_SUBJECT_PREFIX = 'Stark '
+#CSRF_TRUSTED_ORIGINS = ['http://localhost:1337']
