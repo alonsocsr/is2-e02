@@ -6,10 +6,13 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['example.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
-STATIC_ROOT = BASE_DIR / "uploads"
-STATICFILES_STORAGES = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
+
+# STATIC_ROOT = BASE_DIR / "uploads"
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 DATABASES = {
     'default': {
