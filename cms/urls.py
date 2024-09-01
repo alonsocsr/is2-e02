@@ -13,4 +13,5 @@ urlpatterns = [
     path("", include('allauth.urls')),
     path('categories/', include(categories_urls, namespace="categories")),
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.base.MEDIA_ROOT) \
+  + static(settings.STATIC_URL, document_root=settings.base.STATIC_ROOT)
