@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="es" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>categories.views &mdash; documentación de cms - 1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=4936afed"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/translations.js?v=d190bf04"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            cms
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">is2-e02</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">cms</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Código de módulo</a></li>
+      <li class="breadcrumb-item active">categories.views</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Código fuente para categories.views</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span>
+<span class="kn">from</span> <span class="nn">django.views.generic</span> <span class="kn">import</span> <span class="n">View</span>
+<span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">messages</span>
+<span class="kn">from</span> <span class="nn">.forms</span> <span class="kn">import</span> <span class="n">CategoriaForm</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Categorias</span>
+<span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">get_object_or_404</span><span class="p">,</span> <span class="n">redirect</span>
+
+<div class="viewcode-block" id="CrearCategoriaView">
+<a class="viewcode-back" href="../../categories.html#categories.views.CrearCategoriaView">[documentos]</a>
+<span class="k">class</span> <span class="nc">CrearCategoriaView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Vista para crear una nueva categoría.</span>
+
+<span class="sd">    Esta `View` maneja la creación de una nueva categoría. Se encarga de mostrar un formulario</span>
+<span class="sd">    vacío en el método `GET` y de procesar el formulario en el método `POST`.</span>
+
+<span class="sd">    Atributos:</span>
+<span class="sd">        form_class (forms.ModelForm): Clase del formulario utilizada para la creación.</span>
+<span class="sd">        template_name (str): Nombre de la plantilla utilizada para renderizar el formulario.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">CategoriaForm</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;categories/new_category.html&#39;</span>
+
+<div class="viewcode-block" id="CrearCategoriaView.get">
+<a class="viewcode-back" href="../../categories.html#categories.views.CrearCategoriaView.get">[documentos]</a>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Muestra el formulario para crear una nueva categoría.</span>
+
+<span class="sd">        Obtiene y renderiza un formulario vacío para crear una nueva categoría, junto con la lista</span>
+<span class="sd">        de todas las categorías existentes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            request (HttpRequest): La solicitud HTTP GET.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            HttpResponse: Respuesta renderizada con el formulario de creación.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">()</span>
+        <span class="n">categorias</span> <span class="o">=</span> <span class="n">Categorias</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;pk&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span><span class="p">,</span> <span class="p">{</span>
+            <span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">,</span>
+            <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;create&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;categorias&#39;</span><span class="p">:</span> <span class="n">categorias</span>
+        <span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="CrearCategoriaView.post">
+<a class="viewcode-back" href="../../categories.html#categories.views.CrearCategoriaView.post">[documentos]</a>
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Procesa el formulario de creación de una nueva categoría.</span>
+
+<span class="sd">        Valida y guarda el formulario enviado. En caso de éxito, muestra un mensaje de éxito y</span>
+<span class="sd">        redirige al usuario a la vista de gestión de categorías. Si el formulario no es válido,</span>
+<span class="sd">        vuelve a mostrar el formulario con los errores.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            request (HttpRequest): La solicitud HTTP POST con datos del formulario.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            HttpResponse: Respuesta renderizada con el formulario, si hay errores, o redirección</span>
+<span class="sd">            en caso de éxito.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;Categoría creada con éxito.&#39;</span><span class="p">,</span> <span class="n">extra_tags</span><span class="o">=</span><span class="s1">&#39;categoria&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;categories:manage&#39;</span><span class="p">)</span>
+
+        <span class="n">categorias</span> <span class="o">=</span> <span class="n">Categorias</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;pk&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span><span class="p">,</span> <span class="p">{</span>
+            <span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">,</span>
+            <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;create&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;categorias&#39;</span><span class="p">:</span> <span class="n">categorias</span>
+        <span class="p">})</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ModificarCategoriaView">
+<a class="viewcode-back" href="../../categories.html#categories.views.ModificarCategoriaView">[documentos]</a>
+<span class="k">class</span> <span class="nc">ModificarCategoriaView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Vista para actualizar una categoría existente.</span>
+
+<span class="sd">    Este `View` maneja la actualización de una categoría existente. Se encarga de mostrar el</span>
+<span class="sd">    formulario con los datos actuales en el método `GET` y de procesar el formulario en el método `POST`.</span>
+
+<span class="sd">    Atributos:</span>
+<span class="sd">        form_class (forms.ModelForm): Clase del formulario utilizada para la actualización.</span>
+<span class="sd">        template_name (str): Nombre de la plantilla utilizada para renderizar el formulario.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">CategoriaForm</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;categories/new_category.html&#39;</span>
+
+<div class="viewcode-block" id="ModificarCategoriaView.get">
+<a class="viewcode-back" href="../../categories.html#categories.views.ModificarCategoriaView.get">[documentos]</a>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Muestra el formulario para actualizar una categoría existente.</span>
+
+<span class="sd">        Obtiene la categoría especificada por `pk` y renderiza el formulario con los datos actuales</span>
+<span class="sd">        de la categoría. También se incluye la lista de todas las categorías existentes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            request (HttpRequest): La solicitud HTTP GET.</span>
+<span class="sd">            pk (int): El id de la categoría a actualizar.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            HttpResponse: Respuesta renderizada con el formulario de actualización.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">categoria</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Categorias</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">pk</span><span class="p">)</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="n">categoria</span><span class="p">)</span>
+        <span class="n">categorias</span> <span class="o">=</span> <span class="n">Categorias</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;pk&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span><span class="p">,</span> <span class="p">{</span>
+            <span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">,</span>
+            <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;edit&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;categorias&#39;</span><span class="p">:</span> <span class="n">categorias</span>
+        <span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="ModificarCategoriaView.post">
+<a class="viewcode-back" href="../../categories.html#categories.views.ModificarCategoriaView.post">[documentos]</a>
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Procesa el formulario para actualizar una categoría existente.</span>
+
+<span class="sd">        Valida y guarda el formulario enviado con los datos de la categoría existente. En caso de</span>
+<span class="sd">        éxito, muestra un mensaje de éxito y redirige al usuario a la vista de gestión de categorías.</span>
+<span class="sd">        Si el formulario no es válido, vuelve a mostrar el formulario con los errores.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            request (HttpRequest): La solicitud HTTP POST con datos del formulario.</span>
+<span class="sd">            pk (int): El identificador primario de la categoría a actualizar.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            HttpResponse: Respuesta renderizada con el formulario, si hay errores, o redirección</span>
+<span class="sd">            en caso de éxito.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">categoria</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Categorias</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">pk</span><span class="p">)</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="n">categoria</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;Categoría modificada con éxito.&#39;</span><span class="p">,</span> <span class="n">extra_tags</span><span class="o">=</span><span class="s1">&#39;categoria&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;categories:manage&#39;</span><span class="p">)</span>
+
+        <span class="n">categorias</span> <span class="o">=</span> <span class="n">Categorias</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;pk&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span><span class="p">,</span> <span class="p">{</span>
+            <span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">,</span>
+            <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;edit&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;categorias&#39;</span><span class="p">:</span> <span class="n">categorias</span>
+        <span class="p">})</span></div>
+</div>
+
+
+<div class="viewcode-block" id="EliminarCategoriaView">
+<a class="viewcode-back" href="../../categories.html#categories.views.EliminarCategoriaView">[documentos]</a>
+<span class="k">class</span> <span class="nc">EliminarCategoriaView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Vista para eliminar una categoría existente.</span>
+
+<span class="sd">    Este `View` maneja la eliminación de una categoría. Muestra una confirmación en el método `GET`</span>
+<span class="sd">    y procesa la eliminación en el método `POST`.</span>
+
+<span class="sd">    Atributos:</span>
+<span class="sd">        template_name (str): Nombre de la plantilla utilizada para confirmar la eliminación.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;categories/delete_category.html&#39;</span>
+
+<div class="viewcode-block" id="EliminarCategoriaView.get">
+<a class="viewcode-back" href="../../categories.html#categories.views.EliminarCategoriaView.get">[documentos]</a>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Muestra la confirmación para eliminar una categoría.</span>
+
+<span class="sd">        Obtiene la categoría especificada por `pk` y muestra una plantilla de confirmación de eliminación.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            request (HttpRequest): La solicitud HTTP GET.</span>
+<span class="sd">            pk (int): El identificador primario de la categoría a eliminar.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            HttpResponse: Respuesta renderizada con la plantilla de confirmación de eliminación.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">categoria</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Categorias</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">pk</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;categoria&#39;</span><span class="p">:</span> <span class="n">categoria</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="EliminarCategoriaView.post">
+<a class="viewcode-back" href="../../categories.html#categories.views.EliminarCategoriaView.post">[documentos]</a>
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Procesa la eliminación de una categoría existente.</span>
+
+<span class="sd">        Elimina la categoría especificada por `pk` y muestra un mensaje de éxito. Redirige al</span>
+<span class="sd">        usuario a la vista de gestión de categorías.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            request (HttpRequest): La solicitud HTTP POST para confirmar la eliminación.</span>
+<span class="sd">            pk (int): El identificador primario de la categoría a eliminar.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            HttpResponse: Redirección a la vista de gestión de categorías con un mensaje de éxito.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">categoria</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Categorias</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">pk</span><span class="p">)</span>
+        <span class="n">nombre_categoria</span> <span class="o">=</span> <span class="n">categoria</span><span class="o">.</span><span class="n">nombre_categoria</span>
+        <span class="n">categoria</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+        <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;Categoría eliminada con éxito&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;categories:manage&#39;</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2024, grupo_02.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -11,6 +11,6 @@ urlpatterns = [
     path('', include('permissions.urls')),
     
     path("", include('allauth.urls')),
-    path('categories/', include(categories_urls, namespace="categories")),
+    path('categorias/', include(categories_urls, namespace="categories")),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

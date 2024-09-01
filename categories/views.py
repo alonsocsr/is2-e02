@@ -1,74 +1,185 @@
 from django.shortcuts import render
-from django.views.generic import FormView, ListView
+from django.views.generic import View
 from django.contrib import messages
 from .forms import CategoriaForm
 from .models import Categorias
-from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.http import HttpResponseForbidden
+from django.shortcuts import get_object_or_404, redirect
 
+class CrearCategoriaView(View):
+    """
+    Vista para crear una nueva categoría.
 
-class CrearCategoriaView(FormView, PermissionRequiredMixin):
-    template_name = "categories/new_category.html"
+    Esta `View` maneja la creación de una nueva categoría. Se encarga de mostrar un formulario
+    vacío en el método `GET` y de procesar el formulario en el método `POST`.
+
+    Atributos:
+        form_class (forms.ModelForm): Clase del formulario utilizada para la creación.
+        template_name (str): Nombre de la plantilla utilizada para renderizar el formulario.
+    """
     form_class = CategoriaForm
+    template_name = 'categories/new_category.html'
 
-    def test_func(self):
-        return (self.request.user.has_perm('permissions.crear_categoria') or
-                self.request.user.has_perm('permissions.modificar_categoria') or
-                self.request.user.has_perm('permissions.eliminar_categoria') or
-                self.request.user.has_perm('permissions.inactivar_categoria'))
+    def get(self, request):
+        """
+        Muestra el formulario para crear una nueva categoría.
 
-    def handle_no_permission(self):
-        return HttpResponseForbidden()
+        Obtiene y renderiza un formulario vacío para crear una nueva categoría, junto con la lista
+        de todas las categorías existentes.
 
-    def form_valid(self, form):
-        tipo_categoria_cargar = form.cleaned_data['tipo_categoria']
-        precio_cargar = 20000 if tipo_categoria_cargar == 'PA' else None
+        Args:
+            request (HttpRequest): La solicitud HTTP GET.
 
-        Categorias.objects.create(
-            nombre_categoria=form.cleaned_data['nombre_categoria'],
-            descripcion=form.cleaned_data['descripcion'],
-            descripcion_corta=form.cleaned_data['descripcion_corta'],
-            moderada=form.cleaned_data['moderada'],
-            tipo_categoria=tipo_categoria_cargar,
-            precio=precio_cargar
-        )
-        messages.success(
-            self.request, 'Categoría creada con éxito.', extra_tags='categoria')
+        Returns:
+            HttpResponse: Respuesta renderizada con el formulario de creación.
+        """
+        form = self.form_class()
+        categorias = Categorias.objects.all().order_by('pk')
+        return render(request, self.template_name, {
+            'form': form,
+            'action': 'create',
+            'categorias': categorias
+        })
 
-        # Redirige a la misma vista para mostrar el mensaje y limpiar el formulario
-        return super().form_valid(form)
+    def post(self, request):
+        """
+        Procesa el formulario de creación de una nueva categoría.
 
-    def get_success_url(self):
-        return self.request.path  # Redirige a la misma página
+        Valida y guarda el formulario enviado. En caso de éxito, muestra un mensaje de éxito y
+        redirige al usuario a la vista de gestión de categorías. Si el formulario no es válido,
+        vuelve a mostrar el formulario con los errores.
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['categorias'] = Categorias.objects.all()
-        return context
+        Args:
+            request (HttpRequest): La solicitud HTTP POST con datos del formulario.
+
+        Returns:
+            HttpResponse: Respuesta renderizada con el formulario, si hay errores, o redirección
+            en caso de éxito.
+        """
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Categoría creada con éxito.', extra_tags='categoria')
+            return redirect('categories:manage')
+
+        categorias = Categorias.objects.all().order_by('pk')
+        return render(request, self.template_name, {
+            'form': form,
+            'action': 'create',
+            'categorias': categorias
+        })
 
 
-class CategoriaListView(ListView):
-    model = Categorias
-    template_name = "categories/new_category.html"
-    context_object_name = 'categorias'
+class ModificarCategoriaView(View):
+    """
+    Vista para actualizar una categoría existente.
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form'] = CategoriaForm()  # Incluir el formulario de creación
-        return context
+    Este `View` maneja la actualización de una categoría existente. Se encarga de mostrar el
+    formulario con los datos actuales en el método `GET` y de procesar el formulario en el método `POST`.
 
+    Atributos:
+        form_class (forms.ModelForm): Clase del formulario utilizada para la actualización.
+        template_name (str): Nombre de la plantilla utilizada para renderizar el formulario.
+    """
+    form_class = CategoriaForm
+    template_name = 'categories/new_category.html'
 
-""" def categoria_perms(request):
-    permission_codenames = ['_crear_categoria', '_modificar_categoria', '_eliminar_categoria', '_inactivar_categoria']
+    def get(self, request, pk):
+        """
+        Muestra el formulario para actualizar una categoría existente.
 
-    user_has_permission_cat = any(
-        perm.codename in permission_codenames
-        for group in request.user.groups.all()
-        for perm in group.permissions.all()
-    )
+        Obtiene la categoría especificada por `pk` y renderiza el formulario con los datos actuales
+        de la categoría. También se incluye la lista de todas las categorías existentes.
 
-    context = {
-        'user_has_permission_cat': user_has_permission_cat,
-    }
+        Args:
+            request (HttpRequest): La solicitud HTTP GET.
+            pk (int): El id de la categoría a actualizar.
 
-    return render(request, 'templates/includes/sidebar.html', context) """
+        Returns:
+            HttpResponse: Respuesta renderizada con el formulario de actualización.
+        """
+        categoria = get_object_or_404(Categorias, pk=pk)
+        form = self.form_class(instance=categoria)
+        categorias = Categorias.objects.all().order_by('pk')
+        return render(request, self.template_name, {
+            'form': form,
+            'action': 'edit',
+            'categorias': categorias
+        })
+
+    def post(self, request, pk):
+        """
+        Procesa el formulario para actualizar una categoría existente.
+
+        Valida y guarda el formulario enviado con los datos de la categoría existente. En caso de
+        éxito, muestra un mensaje de éxito y redirige al usuario a la vista de gestión de categorías.
+        Si el formulario no es válido, vuelve a mostrar el formulario con los errores.
+
+        Args:
+            request (HttpRequest): La solicitud HTTP POST con datos del formulario.
+            pk (int): El identificador primario de la categoría a actualizar.
+
+        Returns:
+            HttpResponse: Respuesta renderizada con el formulario, si hay errores, o redirección
+            en caso de éxito.
+        """
+        categoria = get_object_or_404(Categorias, pk=pk)
+        form = self.form_class(request.POST, instance=categoria)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Categoría modificada con éxito.', extra_tags='categoria')
+            return redirect('categories:manage')
+
+        categorias = Categorias.objects.all().order_by('pk')
+        return render(request, self.template_name, {
+            'form': form,
+            'action': 'edit',
+            'categorias': categorias
+        })
+
+class EliminarCategoriaView(View):
+    """
+    Vista para eliminar una categoría existente.
+
+    Este `View` maneja la eliminación de una categoría. Muestra una confirmación en el método `GET`
+    y procesa la eliminación en el método `POST`.
+
+    Atributos:
+        template_name (str): Nombre de la plantilla utilizada para confirmar la eliminación.
+    """
+    template_name = 'categories/delete_category.html'
+
+    def get(self, request, pk):
+        """
+        Muestra la confirmación para eliminar una categoría.
+
+        Obtiene la categoría especificada por `pk` y muestra una plantilla de confirmación de eliminación.
+
+        Args:
+            request (HttpRequest): La solicitud HTTP GET.
+            pk (int): El identificador primario de la categoría a eliminar.
+
+        Returns:
+            HttpResponse: Respuesta renderizada con la plantilla de confirmación de eliminación.
+        """
+        categoria = get_object_or_404(Categorias, pk=pk)
+        return render(request, self.template_name, {'categoria': categoria})
+
+    def post(self, request, pk):
+        """
+        Procesa la eliminación de una categoría existente.
+
+        Elimina la categoría especificada por `pk` y muestra un mensaje de éxito. Redirige al
+        usuario a la vista de gestión de categorías.
+
+        Args:
+            request (HttpRequest): La solicitud HTTP POST para confirmar la eliminación.
+            pk (int): El identificador primario de la categoría a eliminar.
+
+        Returns:
+            HttpResponse: Redirección a la vista de gestión de categorías con un mensaje de éxito.
+        """
+        categoria = get_object_or_404(Categorias, pk=pk)
+        nombre_categoria = categoria.nombre_categoria
+        categoria.delete()
+        messages.success(request, 'Categoría eliminada con éxito')
+        return redirect('categories:manage')

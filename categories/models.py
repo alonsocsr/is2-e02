@@ -8,35 +8,57 @@ TIPO_CATEGORIA_OPCIONES = [
 
 class Categorias(models.Model):
     """
-    Modelo para Categorias
+    Modelo que representa una categoría en el sistema.
 
-    Este modelo se utiliza para representar las categorias del sistema
+    Atributos:
+        :nombre_categoria (CharField): El nombre de la categoría, debe ser único y no puede estar en blanco.  
+        :descripcion (TextField): Una descripción detallada de la categoría.  
+        :descripcion_corta (CharField): Una descripción corta de la categoría.  
+        :estado (BooleanField): Estado de la categoría, por defecto es True.  
+        :moderada (BooleanField): Indica si la categoría está moderada, por defecto es True.  
+        :tipo_categoria (CharField): Tipo de la categoría, elige entre las opciones definidas en `TIPO_CATEGORIA_OPCIONES`, por defecto es 'PU'.  
+        :precio (IntegerField): Precio asociado a la categoría, puede ser None.  
 
-    Attr
     """
     nombre_categoria = models.CharField(max_length=30, unique=True, blank=False)
     descripcion = models.TextField(max_length=100, blank=False)
     descripcion_corta = models.CharField(max_length=10, blank=False)
     estado = models.BooleanField(default=True)
-    moderada = models.BooleanField(default=False)
+    moderada = models.BooleanField(default=True)  # Valor por defecto
     tipo_categoria = models.CharField(
         max_length=3,
         choices=TIPO_CATEGORIA_OPCIONES,
         default='PU')
-    precio = models.IntegerField(
-        null=True
-    )
-    
+    precio = models.IntegerField(null=True)
+
     class Meta:
         default_permissions = ()
 
-
     def __str__(self):
+        """
+        Retorna una representación en cadena de la categoría.
+
+        :return: str: El nombre de la categoría.
+        """
         return self.nombre_categoria
 
     def save(self, *args, **kwargs):
         """
-        Sobreescribe el método save para convertir descripcion_corta a mayúsculas antes de guardar.
+        Sobrescribe el método de guardado para ajustar el precio y convertir la descripción corta a mayúsculas.
+
+        Asigna un precio fijo de 20000 si el tipo de categoría es 'PA', es decir, de Pago. De lo contrario, el precio se establece en `None`.
+        La descripción corta se convierte a mayúsculas antes de guardar.
+
+        :param args: Argumentos adicionales pasados al método `save` del modelo.
+        :param kwargs: Palabras clave adicionales pasadas al método `save` del modelo.
         """
-        self.descripcion_corta = self.descripcion_corta.upper()  # Ejemplo: convertir a mayúsculas
+        # Asignar el precio si la categoría es "Paga"
+        if self.tipo_categoria == 'PA':
+            self.precio = 20000
+        else:
+            self.precio = None  # Puedes definir un valor por defecto aquí si lo deseas
+
+        # Convertir la descripción corta a mayúsculas
+        self.descripcion_corta = self.descripcion_corta.upper()
+        
         super().save(*args, **kwargs)
