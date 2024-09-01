@@ -1,15 +1,17 @@
 import pytest
 from django.urls import reverse
 from django.contrib.auth.models import User, Permission
-from permissions.models import Roles, Group
+from permissions.models import Roles
 
 
-@pytest.fixture
+@pytest.fixture(scope='function')
 def setup(client, monkeypatch):
     """
     Fixture que crea un usuario y un rol para usar en los tests
     """
-    monkeypatch.setattr('django.contrib.auth.decorators.permission_required', lambda perm, *args, **kwargs: lambda view: view)
+
+    monkeypatch.setattr('django.contrib.auth.decorators.permission_required',
+                        lambda perm, *args, **kwargs: lambda view: view)
 
     user = User.objects.create_user(username='testuser', password='12345')
     client.login(username='testuser', password='12345')
