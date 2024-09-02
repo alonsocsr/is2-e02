@@ -1,4 +1,7 @@
 #!/bin/sh
+
+sudo systemctl stop gunicorn
+
 DJANGO_SETTINGS_MODULE="cms.settings.dev"  # Cambia según sea necesario
 PROJECT_NAME="is2-e02"  # Nombre de la carpeta raíz de tu proyecto
 
@@ -26,6 +29,9 @@ python manage.py migrate --settings=$DJANGO_SETTINGS_MODULE
 python3 manage.py loaddata fixtures/users.json --settings=$DJANGO_SETTINGS_MODULE
 python3 manage.py loaddata fixtures/profiles.json --settings=$DJANGO_SETTINGS_MODULE
 python3 manage.py loaddata fixtures/categorias.json --settings=$DJANGO_SETTINGS_MODULE
+
+chmod +x documentation.sh
+chmod +x tests.sh
 
 # Corremos el proyecto
 echo 'Iniciando Servidor'
