@@ -9,6 +9,7 @@ urlpatterns = [
     path("", include('home.urls')),
     path("", include('profiles.urls')),
     path('', include('permissions.urls')),
+    path('', include('content.urls')),
     
     path("", include('allauth.urls')),
     path('categorias/', include(categories_urls, namespace="categories")),

@@ -15,6 +15,7 @@ INSTALLED_APPS = [
     'permissions',
     'categories',
     'profiles',
+    'content',
     
     'django.contrib.admin',
     'django.contrib.auth',
@@ -23,6 +24,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'ckeditor',
     'sorl.thumbnail',
     'django.contrib.sites', 
     'allauth', 
