@@ -3,7 +3,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from categories.models import Categorias
 from django.utils import timezone
-from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.contrib.auth.models import User
 
 from django.db.models.signals import pre_save
@@ -33,7 +33,7 @@ class Contenido(models.Model):
     """
     titulo = models.CharField(max_length=200, default="titulo")
     imagen = models.ImageField(upload_to="posts", null=True)
-    cuerpo = RichTextField(default="cuerpo", blank=True, null=True)
+    cuerpo = RichTextUploadingField(default="cuerpo", blank=True, null=True)
     autor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     categoria = models.ForeignKey(Categorias, on_delete=models.SET_DEFAULT, default=1)
     fecha_creacion = models.DateTimeField(default=timezone.now)
