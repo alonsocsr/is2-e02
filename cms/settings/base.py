@@ -15,7 +15,8 @@ INSTALLED_APPS = [
     'permissions',
     'categories',
     'profiles',
-    
+    'content',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -23,12 +24,26 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'ckeditor',
+    'ckeditor_uploader',
     'sorl.thumbnail',
-    'django.contrib.sites', 
-    'allauth', 
-    'allauth.account', 
-    #'allauth.socialaccount', 
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    # 'allauth.socialaccount',
+
+    # requeridos para subir media files a cloudinary
+    'cloudinary_storage',
+    'cloudinary',
 ]
+
+# configuracion de ckeditor
+CKEDITOR_UPLOAD_PATH = 'content/ckeditor'
+CKEDITOR_CONFIGS = {
+    'default': {
+        'removePlugins': 'exportpdf',
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -59,7 +74,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                
+
                 'home.context_processors.categorias_context',
             ],
         },
@@ -111,13 +126,13 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = [
-   os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 MEDIA_URL = "/files/"
 MEDIA_ROOT = BASE_DIR / "uploads"
 
-SITE_ID = 1 
+SITE_ID = 1
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
@@ -159,4 +174,4 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 # Reemplaza con tu dirección de Gmail
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 # ACCOUNT_EMAIL_SUBJECT_PREFIX = 'Stark '
-#CSRF_TRUSTED_ORIGINS = ['http://localhost:1337']
+# CSRF_TRUSTED_ORIGINS = ['http://localhost:1337']

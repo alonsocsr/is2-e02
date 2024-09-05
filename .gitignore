@@ -151,9 +151,7 @@ node_modules
 #cosadeivan
 desktop.ini
 
-uploads/profiles
-uploads/media
-uploads/cache
+uploads/
 
 #static/css/output.css
 staticfiles/
