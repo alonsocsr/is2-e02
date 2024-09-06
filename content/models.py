@@ -1,3 +1,4 @@
+from distutils.version import Version
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
@@ -79,13 +80,6 @@ class Contenido(models.Model):
         db_table = "contenido"
 
 
-#signal para cargar el slug
-# @receiver(pre_save, sender=Contenido)
-# def update_slug(sender, instance, **kwargs):
-#     if instance.titulo:
-#         instance.slug = slugify(instance.titulo)
-
-
 #clase para almacerar las versiones del contenido borrador y edicion
 class Version(models.Model):
     contenido = models.ForeignKey(Contenido, on_delete=models.CASCADE, related_name='versiones')
@@ -98,7 +92,7 @@ class Version(models.Model):
 
     class Meta:
         ordering = ['-fecha_version']
-
+        
 
 
 class Valoracion(models.Model):
@@ -132,3 +126,5 @@ class Valoracion(models.Model):
         :return: Cadena con el formato "Valoración de [nombre de usuario] para [título del contenido]".
         """
         return f"Valoración de {self.usuario.username} para {self.contenido.titulo}"
+    
+    

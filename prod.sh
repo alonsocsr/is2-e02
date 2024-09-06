@@ -21,10 +21,8 @@ pip install -r $PROJECT_DIR/requirements.txt
 # Aplicar migraciones y colectar archivos estáticos
 echo "Aplicando migraciones y colectando archivos estáticos..."
 python manage.py migrate --settings=$DJANGO_SETTINGS_MODULE
-python manage.py collectstatic --noinput --ignore=admin --settings=$DJANGO_SETTINGS_MODULE
 
 #Copiamos los archivos estaticos generado en el paso anterior a la carpeta static para que nginx pueda servirlos
-cp -r staticfiles/. static
 
 # Cargamos los datos iniciales 
 python3 manage.py loaddata fixtures/users.json --settings=$DJANGO_SETTINGS_MODULE

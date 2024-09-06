@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<!-- Mensajes de avisos/exitos -->
+<div class="mx-1 mb-4">
+    {% if messages %}
+        <div class="space-y-3">
+            {% for message in messages %}
+                <div class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+  </div>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-9">
+            <h1>Contenidos sujetos a Edicion</h1>
+        </div>
+    </div>
+</div>
+<div class="container mt-4">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Titulo del Contenido</th>
+                <th scope="col">Autor</th>
+                <th scope="col">Categoria</th>
+                <th scope="col">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for contenido in contenidos %}
+                <tr>
+                    <td>{{ contenido.titulo }}</td>
+                    <td>{{ contenido.autor.username }}</td>
+                    <td>{{ contenido.categoria.nombre_categoria }}</td>
+                    <td>
+                        <form action="{% url 'content:cambiar_estado' contenido.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit">Enviar a Publicador</button>
+                        </form>
+                        <!-- aca va a ir lo de la view de rechazar y mandar a edicion -->
+                        <a href="{% url 'content:a_edicion' contenido.id %}" class="btn btn-warning btn-sm">Rechazar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{%endblock%}
