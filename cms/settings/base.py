@@ -41,7 +41,13 @@ INSTALLED_APPS = [
 CKEDITOR_UPLOAD_PATH = 'content/ckeditor'
 CKEDITOR_CONFIGS = {
     'default': {
+        'toolbar': 'full',
+        'height': 450,
+        'width': 800,
         'removePlugins': 'exportpdf',
+        'extraPlugins': ','.join([
+          'youtube'
+        ])
     }
 }
 

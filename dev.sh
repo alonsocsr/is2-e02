@@ -23,6 +23,7 @@ pip install -r $PROJECT_DIR/requirements.txt
 
 # Aplicar migraciones y colectar archivos estáticos
 echo "Aplicando migraciones y colectando archivos estáticos..."
+python manage.py makemigrations --settings=$DJANGO_SETTINGS_MODULE
 python manage.py migrate --settings=$DJANGO_SETTINGS_MODULE
 
 # Cargamos los datos iniciales 
