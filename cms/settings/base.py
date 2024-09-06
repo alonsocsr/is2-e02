@@ -39,6 +39,7 @@ INSTALLED_APPS = [
 
 # configuracion de ckeditor
 CKEDITOR_UPLOAD_PATH = 'content/ckeditor'
+CKEDITOR_ALLPW_NONIMAGE_FILES=True
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'full',

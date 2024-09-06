@@ -1,6 +1,6 @@
 #!/bin/sh
 
-sudo systemctl stop gunicorn
+
 
 DJANGO_SETTINGS_MODULE="cms.settings.dev"  # Cambia según sea necesario
 PROJECT_NAME="is2-e02"  # Nombre de la carpeta raíz de tu proyecto
@@ -10,12 +10,6 @@ SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
 # Directorio del proyecto
 PROJECT_DIR="$SCRIPT_DIR"
-VENV_DIR="venv"
-
-# Crear y activar el entorno virtual
-echo "Creando entorno virtual..."
-python3 -m venv $VENV_DIR
-. $VENV_DIR/bin/activate
 
 # Instalar dependencias
 echo "Instalando dependencias..."

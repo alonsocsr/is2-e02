@@ -155,3 +155,4 @@ uploads/
 
 #static/css/output.css
 staticfiles/
+.history/

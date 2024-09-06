@@ -1,4 +1,5 @@
 from django import forms
+from django.shortcuts import render
 from .models import Contenido
 from categories.models import Categorias
 from django.utils.text import slugify
@@ -48,3 +49,45 @@ class ContenidoForm(forms.ModelForm):
             contenido.save()
             contenido.save_version()
         return contenido
+    
+    
+class EditarContenidoForm(forms.ModelForm):
+    class Meta:
+        model = Contenido
+        fields = ['titulo', 'cuerpo']
+        labels = {
+            'titulo': 'Titulo',
+            'cuerpo': 'Cuerpo del Contenido',
+        }
+        widgets = {
+            'autor': forms.HiddenInput()
+        }
+
+    def __init__(self, *args, **kwargs):
+        autor = kwargs.pop('autor', None)
+
+        super(EditarContenidoForm, self).__init__(*args, **kwargs)
+        if autor is not None:
+            self.initial['autor'] = autor
+
+    def save(self, commit=True, new_estado=None):
+        """
+        
+        """
+        contenido = super(EditarContenidoForm, self).save(commit=False)
+        
+        if 'autor' in self.initial:
+            contenido.autor = self.initial['autor']
+        
+
+        if commit:
+            contenido.save()
+
+        return contenido
+    
+    
+
+
+
+    
+    

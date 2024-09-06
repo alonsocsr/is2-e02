@@ -1,58 +1,59 @@
 {% extends "base.html" %}
-
+{%load static%}
 {% block title %}
-  Crear Contenido | Stark
-{% endblock  %}
+Crear Contenido | Stark
+{% endblock %}
 
 {% block content %}
-    <!-- Mensajes de avisos/exitos -->
-    <div class="mx-1 mb-4">
-    {% if messages %}
-        <div class="space-y-3">
-            {% for message in messages %}
-                <div class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
-  </div>
-
-    {% if user.is_authenticated %}
-    <div class="flex flex-col lg:flex-row mt-10">
-        
-      <!-- POST form for saving content -->
-      <form enctype="multipart/form-data" method="POST" id="version-form">
-          {% csrf_token %}
-          <div class="w-full">
-              {{ form.media }}
-              {{ form.as_p }}
-          </div>
-          <button type="submit">Guardar Borrador</button>
-      </form>
-
-      <!-- GET form for selecting a version -->
-      <form method="GET" id="version-select-form">
-          <label for="version-select">Seleccionar versión anterior:</label>
-          <select name="version_id" id="version-select" onchange="this.form.submit()">
-              <option value="">-- Crear nueva versión --</option>
-              {% for version in versiones %}
-                  <option value="{{ version.id }}" {% if request.GET.version_id == version.id|stringformat:"s" %}selected{% endif %}>
-                      Versión de {{ version.fecha_version|date:"d M Y H:i" }}
-                  </option>
-              {% endfor %}
-          </select>
-      </form>
-
+<!-- Mensajes de avisos/exitos -->
+<div class="mx-1 mb-4">
+  {% if messages %}
+  <div class="space-y-3">
+    {% for message in messages %}
+    <div
+      class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
+      {{ message }}
     </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
 
-    <!-- This script should only submit the GET form (version-select-form) -->
-    <script>
-        document.getElementById('version-select').addEventListener('change', function() {
-            document.getElementById('version-select-form').submit();  // Correctly submit the GET form
-        });
-    </script>
-        
-    {% endif %}
+{% if user.is_authenticated %}
+<div class="flex flex-col lg:flex-row mt-10">
+
+  <!-- POST form for saving content -->
+  <form enctype="multipart/form-data" method="POST" id="version-form">
+      {% csrf_token %}
+      <div class="w-full">
+          {{ form.media }}
+          {{ form.as_p }}
+      </div>
+      <button type="submit">Guardar Borrador</button>
+  </form>
+
+  <!-- GET form for selecting a version -->
+  <form method="GET" id="version-select-form">
+      <label for="version-select">Seleccionar versión anterior:</label>
+      <select name="version_id" id="version-select" onchange="this.form.submit()">
+          <option value="">-- Crear nueva versión --</option>
+          {% for version in versiones %}
+              <option value="{{ version.id }}" {% if request.GET.version_id == version.id|stringformat:"s" %}selected{% endif %}>
+                  Versión de {{ version.fecha_version|date:"d M Y H:i" }}
+              </option>
+          {% endfor %}
+      </select>
+  </form>
+
+</div>
+
+<!-- This script should only submit the GET form (version-select-form) -->
+<script>
+    document.getElementById('version-select').addEventListener('change', function() {
+        document.getElementById('version-select-form').submit();  // Correctly submit the GET form
+    });
+</script>
+
+{% endif %}
 
 {% endblock content %}
