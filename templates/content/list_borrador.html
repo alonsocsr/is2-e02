@@ -8,23 +8,25 @@
   <div class="p-2 mt-6">
     <h2>Mis Contenidos en Borrador</h2>
 
-    {% if borradores %}
-      <ul>
-          {% for contenido in borradores %}
-              <li>
-                  <a href="{% url 'crear_contenido' contenido.id %}">
-                      {{ contenido.titulo }} - {{ contenido.fecha_creacion|date:"d M Y" }}
-                  </a>
-                  <form action="{% url 'cambiar_estado' contenido.id %}" method="POST">
-                    {% csrf_token %}
-                    <button type="submit">Enviar a Edición</button>
-                  </form>
-              </li>
-          {% empty %}
-          <p>No tienes contenido en Borradores</p>
-          {% endfor %}
-      </ul>
-    {% endif %}
-    <a href="{% url 'crear_contenido_nuevo' %}" class="">Crear Nuevo Contenido</a>
+    <ul>
+        {% for contenido in borradores %}
+            <li>
+                <a href="{% url 'crear_contenido' contenido.id %}">
+                    {{ contenido.titulo }} - {{ contenido.fecha_creacion|date:"d M Y" }}
+                </a>
+                <form action="{% url 'cambiar_estado' contenido.id %}" method="POST">
+                  {% csrf_token %}
+                  <button type="submit">Enviar a Edición</button>
+                </form>
+            </li>
+        {% empty %}
+        <p>No tienes contenido en Borradores</p>
+        {% endfor %}
+    </ul>
+    
+    
+    <a href="{% url 'crear_contenido_nuevo' %}">
+      Nuevo Contenido
+    </a>
   </div>
 {% endblock content %}

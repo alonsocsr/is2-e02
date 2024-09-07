@@ -10,13 +10,19 @@ SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
 # Directorio del proyecto
 PROJECT_DIR="$SCRIPT_DIR"
+VENV_DIR="venv"
+
+# Crear y activar el entorno virtual
+echo "Creando entorno virtual..."
+python3 -m venv $VENV_DIR
+. $VENV_DIR/bin/activate
 
 # Instalar dependencias
 echo "Instalando dependencias..."
 pip install -r $PROJECT_DIR/requirements.txt
 
-# Aplicar migraciones y colectar archivos estáticos
-echo "Aplicando migraciones y colectando archivos estáticos..."
+# Aplicar migraciones
+echo "Aplicando migraciones"
 python manage.py makemigrations --settings=$DJANGO_SETTINGS_MODULE
 python manage.py migrate --settings=$DJANGO_SETTINGS_MODULE
 
