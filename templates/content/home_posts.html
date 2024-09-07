@@ -1,0 +1,21 @@
+{% block content %}
+
+<section id="welcome">
+    <header>
+        <img src="{% static images/logo.png %}" alt="stark-blog">
+        <h2>House Stark's Blog</h2>
+    </header>
+    <p>Bienvenido a la seccion de contenidos del STARK CMS MANAGER</p>
+</section>
+
+<section id="latest-posts">
+    <h2>Contenidos recientes</h2>
+
+    <ul>
+        {% for post in posts %}
+        {% include "templates/includes/contenido.html"%}
+        {% endfor %}
+    </ul>
+</section>
+
+{% endblock %}

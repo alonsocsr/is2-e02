@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% load static  %}
+
+{% block title %}
+   {{contenido.titulo}}
+{% endblock %}
+
+
+{% block content %}
+    <section id="summary">
+        <h2>{{ contenido.titulo }}</h2>
+        <!-- <div>
+            {% for tag in post_tags %}
+                <span class="tag">{{ tag.caption }}</span>
+            {% endfor %}
+        </div> -->
+        <article>
+            <img src="{{ contenido.imagem.url }}" alt="{{ contenido.titulo }}">
+            <address>By <a href="{{ contenido.autor.email_address }}">{{ contenido.autor }}</a></address>
+            <div>
+                Actualizado por ultima vez el <time datetime="">{{ contenido.fecha_modificacion|date:"d M Y" }}</time>
+            </div>
+        </article>
+    </section>
+
+    <main>
+        {{ contenido.cuerpo|linebreaks }}
+    </main>
+
+
+{% endblock %}

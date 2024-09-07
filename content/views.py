@@ -1,5 +1,7 @@
 from distutils.version import Version
+from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views import View
 from django.views.generic import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
@@ -8,7 +10,7 @@ from content.models import Contenido
 from .forms import ContenidoForm, EditarContenidoForm
 
 from django.views.generic import FormView
-from django.views.generic import FormView, ListView
+from django.views.generic import FormView, ListView,DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
 from django.urls import reverse
@@ -19,7 +21,36 @@ from django.shortcuts import redirect
 from .forms import ContenidoForm
 from .models import Version
 from .models import Contenido
+class HomePagePosts(ListView):
+    template_name="content/home_posts.html"
+    model=Contenido
+    ordering=["-fecha_publicacion"]
+    context_object_name="contenidos"
+    
+    def get_queryset(self):
+        
+        queryset= super().get_queryset()
+        contenido=queryset[:5]
+        return contenido
+    
 
+class VistaAllContenidos(ListView):
+    template_name="content/contenidos_completo.html"
+    model=Contenido
+    ordering=["-fecha_publicacion"]
+    context_object_name="all_contenidos"
+    
+    def get_queryset(self):
+        return Contenido.objects.filter(estado="Publicado", activo=True).order_by("-fecha_publicacion")
+    
+class VistaContenido(DetailView):
+    http_method_names=["get"]
+    template_name="content/detalle_contenido.html"
+    model=Contenido
+    context_object_name="detalle_contenido"
+    
+
+     
 class ContenidoBorradorList(LoginRequiredMixin, ListView):
     model = Contenido
     template_name = 'content/list_borrador.html'

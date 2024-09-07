@@ -1,6 +1,6 @@
 from django import views
 from django.urls import path
-from .views import CambiarEstadoView, ContenidoBorradorList, CrearContenido
+from .views import CambiarEstadoView, ContenidoBorradorList, CrearContenido, VistaContenido
 from . import views
 app_name = 'content'
 
@@ -13,4 +13,7 @@ urlpatterns = [
     path("mis-borradores/", ContenidoBorradorList.as_view(), name='lista_borradores'),
     path("editar/<int:contenido_id>/", CrearContenido.as_view(), name='crear_contenido'),
     path('cambiar-estado/<int:pk>/', CambiarEstadoView.as_view(), name='cambiar_estado'),
+    path('detalle/<int:pk>/', VistaContenido.as_view(), name='detalle_contenido'),
+    path("", views.HomePagePosts.as_view(), name="home_contenidos"),
+    path("contenidos/", views.VistaAllContenidos.as_view(), name="contenidos"),
 ]
