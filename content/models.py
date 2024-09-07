@@ -8,10 +8,6 @@ from datetime import date
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.contrib.auth.models import User
 
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
-from django.utils.text import slugify
-
 class Contenido(models.Model):
     
     """
@@ -22,7 +18,6 @@ class Contenido(models.Model):
         - cuerpo (RichTextField): Cuerpo del contenido en formato rico.
         - autor (User): Usuario que crea el contenido.
         - categoria (Categoria): Categoría a la que pertenece el contenido.
-        - tipo_contenido (TipoContenido): Tipo de contenido.
         - fecha_creacion (datetime): Fecha y hora de creación del contenido.
         - puntuacion (Decimal): Puntuación promedio del contenido.
         - numero_valoraciones (int): Número total de valoraciones del contenido.
@@ -107,12 +102,6 @@ class Valoracion(models.Model):
 
     Métodos:
         __str__(): Devuelve una representación legible de la valoración.
-
-    Atributos:
-        contenido (Contenido): El contenido que se valora.
-        usuario (User): El usuario que realiza la valoración.
-        puntuacion (int): La puntuación otorgada, generalmente en un rango de 1 a 5.
-        fecha (datetime): La fecha y hora en que se creó la valoración.
     """
 
     contenido = models.ForeignKey(Contenido, on_delete=models.CASCADE)

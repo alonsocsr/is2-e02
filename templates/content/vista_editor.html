@@ -16,7 +16,7 @@
     </div>
     {% endif %}
 </div>
-<div class="container mt-4">
+<div class="container mt-6">
     <div class="row">
         <div class="col-9">
             <h1>Contenidos sujetos a Edicion</h1>
@@ -41,14 +41,14 @@
                 <td>{{ contenido.categoria.nombre_categoria }}</td>
                 <td>
 
-                    <form action="{% url 'content:cambiar_estado' contenido.id %}" method="POST">
+                    <form action="{% url 'cambiar_estado' contenido.id %}" method="POST">
                         {% csrf_token %}
                         <button type="submit">Enviar a Publicador</button>
                     </form>
-                    <a href="{% url 'content:editar_contenido' contenido.id %}"
+                    <a href="{% url 'editar_contenido' contenido.id %}"
                         class="btn btn-warning btn-sm">Editar</a>
                         <!-- aca va a ir la view que rechaza los contenidos -->
-                    <a href="{% url 'content:a_borrador' contenido.id %}" class="btn btn-warning btn-sm">Rechazar</a>
+                    {% comment %} <a href="{% url 'a_borrador' contenido.id %}" class="btn btn-warning btn-sm">Rechazar</a> {% endcomment %}
                 </td>
             </tr>
             {% endfor %}
