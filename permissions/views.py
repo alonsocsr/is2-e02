@@ -27,28 +27,23 @@ def crear_rol(request):
     HttpResponse
         La respuesta HTTP que renderiza la plantilla 'permissions/crear_rol.html'.
     """
-    form = Rol_Form(request.POST or None)
-    roles = Roles.objects.all()
-
-    if request.POST:
+    if request.method == 'POST':
+        form = Rol_Form(request.POST)
         if form.is_valid():
             rol = form.save()
-
-            rol.save()
-
             permisos = rol.obtener_permisos()
             rol.asginar_permisos_rol(permisos)
-
-            messages.success(
-                request, f'Ha sido creado el rol {rol.nombre_rol}')
-
-        else:
-            form = Rol_Form()
+            messages.success(request, f'El rol {rol.nombre_rol} ha sido creado exitosamente.')
+            return redirect('crear_rol')
+    else:
+        form = Rol_Form()
+    
+    roles = Roles.objects.all().order_by('id')
 
     context = {
-        'user': request.user,
         'form': form,
-        'roles': roles
+        'roles': roles,
+        'action': 'crear'
     }
 
     if request.user.is_authenticated:
@@ -141,27 +136,27 @@ def modificar_rol(request, rol_id=None):
         La respuesta HTTP que renderiza la plantilla 'permissions/modificar_rol.html'.
     """
 
-    roles = Roles.objects.exclude(rol_por_defecto=True)
-
-    if rol_id:
-        rol_seleccionado = get_object_or_404(Roles, id=rol_id)
-        form = Rol_Form(request.POST or None, instance=rol_seleccionado)
-
-        if request.method == "POST" and form.is_valid():
+    rol_seleccionado = get_object_or_404(Roles, id=rol_id)
+    
+    if request.method == 'POST':
+        form = Rol_Form(request.POST, instance=rol_seleccionado)
+        if form.is_valid():
             form.save()
-            messages.success(
-                request, f'El rol {rol_seleccionado.nombre_rol} ha sido actualizado.')
-            return redirect('modificar_rol', rol_id=rol_id)
+            messages.success(request, f'El rol {rol_seleccionado.nombre_rol} ha sido actualizado.')
+            return redirect('crear_rol')
     else:
-        rol_seleccionado = None
-        form = Rol_Form()
+        form = Rol_Form(instance=rol_seleccionado)
+    
+    # Mantener todos los roles para mostrar en la tabla
+    roles = Roles.objects.all().order_by('id')
 
     context = {
-        'roles': roles,
         'form': form,
+        'roles': roles,  # Asegura que todos los roles siguen estando en el contexto
         'rol_seleccionado': rol_seleccionado,
+        'action': 'modificar'
     }
-    return render(request, 'permissions/modificar_rol.html', context)
+    return render(request, 'permissions/crear_rol.html', context)
 
 
 @login_required
