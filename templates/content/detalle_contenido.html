@@ -8,19 +8,40 @@
 
 
 {% block content %}
-    <section id="summary">
+
+    <div class="mx-1 mb-4">
+        {% if messages %}
+            <div class="space-y-3">
+                {% for message in messages %}
+                    <div class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+
+    <section id="summary" class="mt-10">
         <h2>{{ contenido.titulo }}</h2>
         <article>
-            <img src="{{ contenido.imagen.url }}" alt="{{ contenido.titulo }}">
             <address>By <a href="{{ contenido.autor.email_address }}">{{ contenido.autor }}</a></address>
             <div>
-                Actualizado por ultima vez el <time datetime="">{{ contenido.fecha_modificacion|date:"d M Y" }}</time>
+                Publicado el: <time datetime="">{{ contenido.fecha_publicacion|date:"d M Y" }}</time>
             </div>
+
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Reportar</button>
+            </form>
+
         </article>
     </section>
 
     <main>
-        {{ contenido.cuerpo|linebreaks }}
+        <img src="{{ contenido.imagen.url }}" alt="{{ contenido.titulo }}">
+        {{ contenido.cuerpo|safe }}
     </main>
 
 
