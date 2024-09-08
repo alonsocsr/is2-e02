@@ -43,9 +43,8 @@ class VistaContenido(FormMixin, DetailView):
             return self.form_invalid(form)
 
     def form_valid(self, form):
-        user = self.request.user
-        if user:
-            form.instance.usuario = user
+        if self.request.user.is_authenticated:
+            form.instance.usuario = self.request.user
         form.instance.contenido = self.get_object()
         messages.success(self.request, "Se reportado el contenido con éxito")
         form.save()
