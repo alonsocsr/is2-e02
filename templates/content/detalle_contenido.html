@@ -8,19 +8,26 @@
 
 
 {% block content %}
-    <section id="summary">
+    <section id="summary" class="mt-6">
         <h2>{{ contenido.titulo }}</h2>
         <article>
-            <img src="{{ contenido.imagen.url }}" alt="{{ contenido.titulo }}">
             <address>By <a href="{{ contenido.autor.email_address }}">{{ contenido.autor }}</a></address>
             <div>
-                Actualizado por ultima vez el <time datetime="">{{ contenido.fecha_modificacion|date:"d M Y" }}</time>
+                Publicado el: <time datetime="">{{ contenido.fecha_publicacion|date:"d M Y" }}</time>
             </div>
+
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Reportar</button>
+            </form>
+
         </article>
     </section>
 
     <main>
-        {{ contenido.cuerpo|linebreaks }}
+        <img src="{{ contenido.imagen.url }}" alt="{{ contenido.titulo }}">
+        {{ contenido.cuerpo|safe }}
     </main>
 
 

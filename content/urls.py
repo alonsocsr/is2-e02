@@ -12,17 +12,14 @@ urlpatterns = [
     path("editar-contenido/<int:contenido_id>/", EditarContenido.as_view(), name='editar_contenido'),
 
     #publicador
-    path('vista_publicador/', ContenidoPublicarList.as_view(), name='vista_publicador'),
+    path('publicar/', ContenidoPublicarList.as_view(), name='vista_publicador'),
     
-
     #cambiar estado
     path('cambiar-estado/<int:pk>/', CambiarEstadoView.as_view(), name='cambiar_estado'),
-    path('listcontenidos/', CambiarEstadoView.as_view(), name='cambiar_estado'),
     
     #vista de contenidos
-    path('list_all_contenidos/', VistaAllContenidos.as_view(), name='vista_all_contenidos'),
-    path('detalle_contenido/<int:pk>/', VistaContenido.as_view(), name='detalle_contenido'),
-    
+    path('contenidos/', VistaAllContenidos.as_view(), name='vista_all_contenidos'),
+    path('detalle-contenido/<int:pk>/', VistaContenido.as_view(), name='detalle_contenido'),
     
     path('rechazar-contenido/<int:pk>', RechazarContenido.as_view(), name='rechazar_contenido'),
 ]
