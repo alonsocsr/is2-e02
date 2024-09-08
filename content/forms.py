@@ -54,40 +54,38 @@ class ContenidoForm(forms.ModelForm):
 class EditarContenidoForm(forms.ModelForm):
     class Meta:
         model = Contenido
-        fields = ['titulo', 'cuerpo']
+        fields = ['resumen', 'cuerpo']
         labels = {
-            'titulo': 'Titulo',
+            'resumen': 'Resumen',
             'cuerpo': 'Cuerpo del Contenido',
         }
         widgets = {
-            'autor': forms.HiddenInput()
+            'usuario_editor': forms.HiddenInput()
         }
 
     def __init__(self, *args, **kwargs):
-        autor = kwargs.pop('autor', None)
+        editor = kwargs.pop('usuario_editor', None)
 
         super(EditarContenidoForm, self).__init__(*args, **kwargs)
-        if autor is not None:
-            self.initial['autor'] = autor
+        if editor is not None:
+            self.initial['usuario_editor'] = editor
 
-    def save(self, commit=True, new_estado=None):
+    def save(self, commit=True):
         """
-        
         """
         contenido = super(EditarContenidoForm, self).save(commit=False)
-        
-        if 'autor' in self.initial:
-            contenido.autor = self.initial['autor']
-        
-
+        if 'usuario_editor' in self.initial:
+            contenido.usuario_editor = self.initial['usuario_editor']
         if commit:
             contenido.save()
-
         return contenido
     
     
-
-
-
-    
+class RechazarContenidoForm(forms.ModelForm):
+    class Meta:
+        model = Contenido
+        fields = ['mensaje_rechazo']
+        widgets = {
+            'mensaje_rechazo': forms.Textarea(attrs={'rows': 4})
+        }
     

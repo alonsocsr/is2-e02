@@ -26,8 +26,8 @@ class Contenido(models.Model):
     Métodos:
         - save_version(self): Crea una versión del contenido cuando cambios son hechos
     """
-    titulo = models.CharField(max_length=200, default="titulo")
-    resumen = models.TextField(default="resumen")
+    titulo = models.CharField(max_length=200, default="")
+    resumen = models.TextField(default="")
     imagen = models.ImageField(upload_to="content", default=None, null=True)
     cuerpo = RichTextUploadingField(default="cuerpo", blank=True, null=True)
     autor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -37,6 +37,7 @@ class Contenido(models.Model):
     vigencia = models.DateField(default=date.today)
     estado = models.CharField(max_length=30, default="Borrador")
     activo = models.BooleanField(default=False)
+    mensaje_rechazo = models.TextField(blank=True,default="")
     slug = models.SlugField(unique=True, db_index=True)
     # Campos para interaccion
     cantidad_likes = models.PositiveIntegerField(default=0)
@@ -54,7 +55,7 @@ class Contenido(models.Model):
     )
     cambios = GenericRelation(LogEntry)
 
-    def save_version(self):
+    def save_version(self, user):
         Version.objects.create(
             contenido=self,
             titulo=self.titulo,
@@ -62,7 +63,8 @@ class Contenido(models.Model):
             cuerpo=self.cuerpo,
             fecha_publicacion= self.fecha_publicacion,
             vigencia=self.vigencia,
-            fecha_version=timezone.now()
+            fecha_version=timezone.now(),
+            editor=user,
         )
 
 
@@ -84,6 +86,10 @@ class Version(models.Model):
     fecha_publicacion = models.DateField(default=date.today)
     vigencia = models.DateField(default=date.today)
     fecha_version = models.DateTimeField(default=timezone.now)
+    editor = models.ForeignKey(
+        User,on_delete=models.SET_NULL,
+        null=True,
+        blank=True,)
 
     class Meta:
         ordering = ['-fecha_version']
