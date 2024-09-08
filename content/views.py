@@ -1,24 +1,12 @@
-from distutils.version import Version
-from django.shortcuts import get_object_or_404, redirect, render
-from django.views.generic import FormView
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required, permission_required
-from content.models import Contenido
-from .forms import ContenidoForm, EditarContenidoForm
-
-from django.views.generic import FormView
-from django.views.generic import FormView, ListView
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.contrib import messages
-from django.urls import reverse
-from django.urls import reverse_lazy
-from django.views.generic import UpdateView
 from django.shortcuts import redirect
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.urls import reverse
+from django.db.models import Q
 
-from .forms import ContenidoForm
-from .models import Version
-from .models import Contenido
+from django.views.generic import FormView, ListView, UpdateView
+from .forms import ContenidoForm, EditarContenidoForm, RechazarContenidoForm
+from .models import Version, Contenido
 
 class ContenidoBorradorList(LoginRequiredMixin, ListView):
     model = Contenido
@@ -81,7 +69,7 @@ class CrearContenido(LoginRequiredMixin, FormView, PermissionRequiredMixin):
         contenido = form.save(commit=False)
         try:
             contenido.save()
-            contenido.save_version()
+            contenido.save_version(None)
             messages.success(self.request, "Contenido guardado y versión creada con éxito.")
         except ValueError:
             messages.error('El título ya existe')    
@@ -105,21 +93,21 @@ class CambiarEstadoView(UpdateView):
         contenido = form.instance
         if contenido.estado == 'Borrador':
             contenido.estado = 'Edicion'
-            contenido.save()
+            contenido.mensaje_rechazo = ''
             messages.success(self.request, "El contenido ha sido enviado a Edición.")
         elif contenido.estado == 'Edicion':
             contenido.estado = 'Publicar'
-            contenido.save()
+            contenido.mensaje_rechazo = ''
             messages.success(self.request, "El contenido ha sido enviado a publicacion")
         elif contenido.estado == 'Publicar':
             contenido.estado = 'Publicado'
             """ chequear la fecha de publicacion del contenido """
             contenido.activo=True
-            contenido.save()
             messages.success(self.request, "El contenido ha sido publicado.")
         else:
             messages.error(self.request, "Se produjo un error.")
 
+        contenido.save()
         referer = self.request.META.get('HTTP_REFERER')
         if referer:
             return redirect(referer)
@@ -127,86 +115,127 @@ class CambiarEstadoView(UpdateView):
             return redirect('/')
 
 
-
-@login_required
-@permission_required('permissions.editar_contenido', raise_exception=True)
-def editar_contenido(request, id):
-    """
-    Vista que permite a un editor, editar un contenido en particular
-    :param request: Objeto de solicitud HTTP
-    :id: id del contenido a editar
-    
-    return: Respuesta HTTP que confirma la edicion del contenido
-    """
-    contenido = get_object_or_404(Contenido, id=id)
-    
-    if request.method == 'POST':
-        form = EditarContenidoForm(request.POST, instance=contenido)
-        
-        if form.is_valid():
-            form.save()
-            return redirect('content:vista_editor')  
-    else:
-        form = EditarContenidoForm(instance=contenido)  
-    
-    return render(request, 'content/editar_contenido.html', {'form': form})
-    
-    
-@permission_required('permissions.editar_contenido',raise_exception=True)
-def vista_Editor(request):
+class ContenidoEdicionList(LoginRequiredMixin, ListView, PermissionRequiredMixin):
     """
     Vista que lista los contenidos de un editor
     :param request: Objeto de solicitud HTTP
     
     returns: Respuesta HTTP que muestra la lista de contenidos
     """
+    model = Contenido
+    template_name = 'content/vista_editor.html'
+    context_object_name = 'contenidos'
+    permission_required = 'permissions.editar_contenido'
+
+    def get_queryset(self):
+        return Contenido.objects.filter(
+                Q(estado='Edicion') &
+                (Q(usuario_editor=self.request.user) | Q(usuario_editor=None))
+            )
+
+
+class EditarContenido(LoginRequiredMixin, FormView, PermissionRequiredMixin):
+    template_name = "content/editar_contenido.html"
+    form_class = EditarContenidoForm
+    permission_required = 'permissions.editar_contenido'
+
+    def get_form_kwargs(self):
+        kwargs = super(EditarContenido, self).get_form_kwargs()
+        kwargs['usuario_editor'] = self.request.user
+
+        #abre el contenido original
+        contenido_id = self.kwargs.get('contenido_id', None)
+        if contenido_id:
+            contenido = Contenido.objects.get(id=contenido_id)
+            kwargs['instance'] = contenido
+            kwargs['initial'] = {
+                'titulo': contenido.titulo,
+                'resumen': contenido.resumen,
+                'cuerpo': contenido.cuerpo,
+            }
+
+        #si estamos editando una version
+        version_id = self.request.GET.get('version_id')
+        if version_id:
+            try:
+                version = Version.objects.get(id=version_id)
+                kwargs['initial'] = {
+                    'titulo': version.titulo,
+                    'resumen': version.resumen,
+                    'cuerpo': version.cuerpo,
+                }
+                messages.success(self.request, "Se ha seleccionado la version")
+            except Version.DoesNotExist:
+                pass
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(EditarContenido, self).get_context_data(**kwargs)
+        contenido_id = self.kwargs.get('contenido_id')
+        editor = self.request.user
+        if contenido_id:
+            try:
+                contenido = Contenido.objects.get(id=contenido_id, usuario_editor=editor)
+                context['versiones'] = contenido.versiones.filter(editor=editor)
+            except Contenido.DoesNotExist:
+                context['versiones'] = None
+        return context
+
+    def form_valid(self, form):
+        contenido = form.save(commit=False)
+        try:
+            contenido.save()
+            contenido.save_version(self.request.user)
+            messages.success(self.request, "Contenido guardado y versión creada con éxito.")
+        except ValueError:
+            messages.error('El título ya existe')    
+
+        self.object = contenido
+        return super().form_valid(form)
     
-    contenidos=Contenido.objects.filter(estado='Edicion')
-    
-    return render(request,'content/vista_editor.html',{'contenidos':contenidos})
+    def get_success_url(self):
+        """
+        Returns:
+            str: La URL a la que se redirige al usuario.
+        """
+        return reverse('editar_contenido', kwargs={'contenido_id': self.object.id})
 
 
-
-@login_required
-@permission_required('permissions.publicar_contenido', raise_exception=True)
-def vista_Publicador(request):
+class ContenidoPublicarList(LoginRequiredMixin, ListView, PermissionRequiredMixin):
     """
-    Vista que lista los contenidos disponibles para un publicador
+    Vista que lista los contenidos de un editor
     :param request: Objeto de solicitud HTTP
     
-    return: Respuesta HTTP que muestra la lista de contenidos
+    returns: Respuesta HTTP que muestra la lista de contenidos
     """
-    
-    contenidos=Contenido.objects.filter(estado='A Publicar')
-    
-    return render(request,'content/vista_publicador.html',{'contenidos':contenidos})
+    model = Contenido
+    template_name = 'content/vista_publicador.html'
+    context_object_name = 'contenidos'
+    permission_required = 'permissions.publicar_contenido'
+
+    def get_queryset(self):
+        return Contenido.objects.filter(estado='Publicar')
 
 
-
-def a_Publicar(request,id):
-    """
-    Funcion que permite cambiar el estado de un contenido a "a Publicar"
-    paraam request: objeto http de solicitud
-    :id: id del contenido a cambiar de estado
-    """
+class RechazarContenido(LoginRequiredMixin, UpdateView, PermissionRequiredMixin):
+    model = Contenido
+    form_class = RechazarContenidoForm
+    permission_required = 'permissions.rechazar_contenido'
     
-    contenido=Contenido.objects.get(id=id)
-    contenido.estado="A Publicar"
-    contenido.save()
-    
-    return render(request, 'content/vista_publicador.html', {'contenidos': contenido})
-
-
-def inactivar_contenido(request, id):
-    
-    """
-    Vista que permite a un publicaor, inactivar un contenido
-    :param request: Objeto de solicitud HTTP
-    :id: id del contenido a inactivar
-    
-    return: Respuesta HTTP que confirma la publicacion del contenido
-    """
-    
-    contenido = Contenido.objects.get(id=id)
-    contenido.estado="Inactivado"
-    contenido.save() 
+    def form_valid(self, form):
+        contenido = form.save(commit=False)
+        if contenido.estado == 'Publicar':
+            contenido.estado = 'Edicion'
+            messages.success(self.request, "El contenido ha sido enviado a Edicion.")
+        elif contenido.estado == 'Edicion':
+            contenido.estado = 'Borrador'
+            messages.success(self.request, "El contenido ha sido enviado a Borrador.")
+        else:
+            messages.error(self.request, "Se produjo un error")
+        
+        contenido.save()
+        referer = self.request.META.get('HTTP_REFERER')
+        if referer:
+            return redirect(referer)
+        else:
+            return redirect('/')

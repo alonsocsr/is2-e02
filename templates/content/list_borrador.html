@@ -14,6 +14,13 @@
                 <a href="{% url 'crear_contenido' contenido.id %}">
                     {{ contenido.titulo }} - {{ contenido.fecha_creacion|date:"d M Y" }}
                 </a>
+                {% if contenido.mensaje_rechazo %}
+                    <p>
+                        {{ contenido.mensaje_rechazo }}
+                    </p>
+                {% else %}
+                    <p></p>
+                {% endif %}
                 <form action="{% url 'cambiar_estado' contenido.id %}" method="POST">
                   {% csrf_token %}
                   <button type="submit">Enviar a Edición</button>

@@ -30,6 +30,7 @@
                 <th scope="col">Titulo del Contenido</th>
                 <th scope="col">Autor</th>
                 <th scope="col">Categoria</th>
+                <th scope="col">Mensaje de Rechazo </th>
                 <th scope="col">Opciones</th>
             </tr>
         </thead>
@@ -39,16 +40,26 @@
                 <td>{{ contenido.titulo }}</td>
                 <td>{{ contenido.autor.username }}</td>
                 <td>{{ contenido.categoria.nombre_categoria }}</td>
-                <td>
+                {% if contenido.mensaje_rechazo %}
+                    <td>
+                        {{ contenido.mensaje_rechazo }}
+                    </td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+                <td/>
 
                     <form action="{% url 'cambiar_estado' contenido.id %}" method="POST">
                         {% csrf_token %}
                         <button type="submit">Enviar a Publicador</button>
                     </form>
-                    <a href="{% url 'editar_contenido' contenido.id %}"
-                        class="btn btn-warning btn-sm">Editar</a>
-                        <!-- aca va a ir la view que rechaza los contenidos -->
-                    {% comment %} <a href="{% url 'a_borrador' contenido.id %}" class="btn btn-warning btn-sm">Rechazar</a> {% endcomment %}
+                    <a href="{% url 'editar_contenido' contenido.id %}" class="btn btn-warning btn-sm">Editar</a>
+
+                    <form action="{% url 'rechazar_contenido' contenido.id %}" method="post">
+                        {% csrf_token %}
+                        <textarea name="mensaje_rechazo" placeholder="Ingresa el motivo del rechazo"></textarea>
+                        <button type="submit">Rechazar</button>
+                    </form>
                 </td>
             </tr>
             {% endfor %}
