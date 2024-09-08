@@ -2,17 +2,17 @@
 {% load static %}
 
 {% block title %}
-    Crear Rol del Sistema
+    Gestión de Roles
 {% endblock %}
 
 {% block content %}
-<div class="flex justify-center self-center z-10">
-    <div class="p-6 bg-gray-200 mx-auto w-full lg:w-full min-h-screen flex flex-col">
+<div class="flex justify-center self-center z-10 min-h-screen bg-gray-200">
+    <div class="p-6 max-w-full lg:w-full w-full flex flex-col max-h-screen overflow-y-auto">
         <div class="header my-3 h-7 px-2 lg:px-6 flex items-center justify-between">
-            <h2 class="font-semibold text-2xl text-gray-800">Crear Rol del Sistema</h2>
+            <h2 class="font-semibold text-2xl text-gray-800">Gestión de Roles</h2>
         </div>
 
-        <!-- mensajes de avisos/exitos -->
+        <!-- Mensajes de avisos/exitos -->
         <div class="mx-1 mb-4">
             {% if messages %}
                 <div class="space-y-3">
@@ -25,14 +25,14 @@
             {% endif %}
         </div>
 
-        <div class="flex flex-col lg:flex-row space-y-6 lg:space-y-0 lg:space-x-4 h-[calc(100vh-6rem)]">
-            <!-- crear roles -->
-            <div class="w-full lg:w-1/3 bg-gray-100 shadow-md p-5 rounded-md">
+        <div class="flex flex-col lg:flex-row space-y-6 lg:space-y-0 lg:space-x-4 flex-1">
+            <!-- Crear roles -->
+            <div class="w-full lg:w-1/4 bg-gray-100 shadow-md p-5 rounded-md flex flex-col max-h-[calc(100vh-6rem)] overflow-y-auto">
                 <form method="post" class="flex flex-col h-full w-full">
                     {% csrf_token %}
                     <div class="space-y-3 flex-1">
                         <div>
-                            <h3 class="font-medium">Ingrese el nombre del rol</h3>
+                            <h3 class="font-medium">Nombre del rol</h3>
                             <input id="id_nombre_rol" name="nombre_rol" type="text" placeholder="Nombre del Rol" class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-pink-400" value="{{ form.nombre_rol.value |default_if_none:''}}" required>
                         </div>
 
@@ -44,14 +44,15 @@
                         </div>
 
                         <div>
-                            <h3 class="font-medium">Ingrese la descripción del Rol</h3>
-                            <textarea id="id_descripcion" name="descripcion" placeholder="Descripción del Rol" class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-pink-400">{{ form.descripcion.value |default_if_none:'' }}</textarea>
+                            <h3 class="font-medium">Descripción</h3>
+                            <textarea id="id_descripcion" name="descripcion" placeholder="Descripción del Rol" class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-pink-400" style="height: 80px; resize: none;"
+                            >{{ form.descripcion.value | default_if_none:'' }}</textarea>
                         </div>
 
-                        <h3 class="font-medium">Seleccione los permisos: </h3>
-                        <div style="max-height: 300px; overflow-y: scroll;">
-                            <label for="id_permisos" class="sr-only">Permisos a ser asignados</label>
-                            <div class="space-y-4">
+                        <h3 class="font-medium">Permisos: </h3>
+                        <div style="max-height: 150px; overflow-y: auto;">
+                            <label for="id_permisos" class="sr-only">Permisos del rol</label>
+                            <div class="space-y-4 w-full text-sm px-4 py-3 rounded-lg">
                                 {% for permission in form.permisos.field.queryset %}
                                     <div class="flex items-center">
                                         <input id="id_permisos_{{ permission.id }}" name="permisos" type="checkbox" value="{{ permission.id }}" {% if permission.id in form.permisos.value %}checked{% endif %} class="text-pink-600 focus:ring-pink-500 border-gray-300 rounded">
@@ -65,20 +66,20 @@
 
                     <div class="mt-auto">
                         <button type="submit" class="w-full flex justify-center bg-pink-800 hover:bg-pink-700 text-pink-100 p-2 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500">
-                            Crear Rol
+                            Guardar
                         </button>
                     </div>
                     
                 </form>
             </div>
 
-            <!-- roles existentes -->
-            <div class="w-full lg:w-2/3 bg-gray-100 shadow-lg rounded-md border border-gray-200">
-                <div class="overflow-y-auto h-full">
+            <!-- Roles existentes -->
+            <div class="w-full lg:w-3/4 bg-gray-100 shadow-lg rounded-md border border-gray-200 flex flex-col max-h-[calc(100vh-6rem)] overflow-y-auto">
+                <div class="overflow-y-auto flex-1">
                     <table class="table-auto w-full">
                         <thead class="bg-pink-700 rounded-lg sticky top-0 z-10">
                             <tr class="text-sm font-semibold text-pink-100">
-                                <th class="p-2 text-center">Nombre del Rol</th>
+                                <th class="p-2 text-center">Nombre</th>
                                 <th class="p-2 text-center">Acciones</th>
                             </tr>
                         </thead>

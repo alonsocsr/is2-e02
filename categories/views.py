@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import View
+from django.views.generic import View, TemplateView
 from django.contrib import messages
 from .forms import CategoriaForm
 from .models import Categorias
@@ -183,3 +183,14 @@ class EliminarCategoriaView(View):
         categoria.delete()
         messages.success(request, 'Categoría eliminada con éxito')
         return redirect('categories:manage')
+
+from django.views.generic import TemplateView
+
+class ListarCategoriasView(TemplateView):
+    """
+    Vista para mostrar una lista de categorías.
+
+    Esta vista renderiza una plantilla que muestra todas las categorías disponibles
+    en la base de datos.
+    """
+    template_name = 'categories/listar_categorias.html'

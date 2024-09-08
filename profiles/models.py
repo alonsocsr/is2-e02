@@ -3,6 +3,7 @@ from django.contrib.auth.models import Group, User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from sorl.thumbnail import ImageField
+from categories.models import Categorias
 
 
 class Profile(models.Model):
@@ -19,6 +20,7 @@ class Profile(models.Model):
         related_name="profile"
     )
     image = ImageField(upload_to='profiles')
+    categorias_interes = models.ManyToManyField(Categorias, blank=True, related_name='categorias_interes')
 
     class Meta:
         default_permissions = ()

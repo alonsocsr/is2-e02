@@ -9,20 +9,23 @@ class CategoriaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CategoriaForm, self).__init__(*args, **kwargs)
         self.fields['nombre_categoria'].widget.attrs.update({
-            'class': 'form-input w-full p-2 text-gray-700 bg-gray-200 rounded-md'
+            'class': 'w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-pink-400',
+            'placeholder': 'Nombre de la categoría'
         })
         self.fields['descripcion'].widget.attrs.update({
-            'class': 'form-textarea w-full p-2 text-gray-700 bg-gray-200 rounded-md',
-            'style': 'height: 80px; overflow-y: auto; resize: none;'
+            'class': 'w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-pink-400',
+            'style': 'resize: none; height: 80px;',
+            'placeholder': 'Descripcion larga'
         })
         self.fields['descripcion_corta'].widget.attrs.update({
-            'class': 'form-input w-full p-2 text-gray-700 bg-gray-200 rounded-md'
+            'class': 'w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-pink-400',
+            'placeholder': 'Descripción corta'
         })
         self.fields['moderada'].widget.attrs.update({
             'class': 'form-checkbox text-gray-700 bg-gray-200 rounded',
         })
         self.fields['tipo_categoria'].widget.attrs.update({
-            'class': 'form-select w-full p-2 text-gray-700 bg-gray-200 rounded-md',
+            'class': 'form-select w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-pink-400',
         })
         # Establecer valor inicial para "moderada" si no está definido
         if 'moderada' not in self.initial:
