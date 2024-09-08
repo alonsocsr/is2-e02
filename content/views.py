@@ -21,27 +21,17 @@ from django.shortcuts import redirect
 from .forms import ContenidoForm
 from .models import Version
 from .models import Contenido
-class HomePagePosts(ListView):
-    template_name="content/home_posts.html"
-    model=Contenido
-    ordering=["-fecha_publicacion"]
-    context_object_name="contenidos"
-    
-    def get_queryset(self):
-        
-        queryset= super().get_queryset()
-        contenido=queryset[:5]
-        return contenido
+
     
 
 class VistaAllContenidos(ListView):
-    template_name="content/contenidos_completo.html"
+    template_name="content/ver_contenidos.html"
     model=Contenido
     ordering=["-fecha_publicacion"]
     context_object_name="all_contenidos"
     
     def get_queryset(self):
-        return Contenido.objects.filter(estado="Publicado", activo=True).order_by("-fecha_publicacion")
+        return Contenido.objects.filter(estado="Publicado").order_by("-fecha_publicacion")
     
 class VistaContenido(DetailView):
     http_method_names=["get"]
@@ -61,6 +51,9 @@ class ContenidoBorradorList(LoginRequiredMixin, ListView):
 
 class CrearContenido(LoginRequiredMixin, FormView, PermissionRequiredMixin):
     template_name = "content/crear_contenido.html"
+    form_class = ContenidoForm
+    permission_required = 'permissions.crear_contenido'
+
     def get_form_kwargs(self):
         kwargs = super(CrearContenido, self).get_form_kwargs()
         kwargs['autor'] = self.request.user
@@ -99,10 +92,10 @@ class CrearContenido(LoginRequiredMixin, FormView, PermissionRequiredMixin):
 
     def get_context_data(self, **kwargs):
         context = super(CrearContenido, self).get_context_data(**kwargs)
-        contenido_id = self.kwargs.get('contenido_id')  # Assuming content ID is passed as a URL parameter
+        contenido_id = self.kwargs.get('contenido_id')
         if contenido_id:
             contenido = Contenido.objects.get(id=contenido_id)
-            context['versiones'] = contenido.versiones.all()  # Pass the versions to the template
+            context['versiones'] = contenido.versiones.all()
         return context
 
     def form_valid(self, form):
@@ -146,7 +139,7 @@ class CambiarEstadoView(UpdateView):
             contenido.save()
             messages.success(self.request, "El contenido ha sido publicado.")
         else:
-            messages.error(self.request, "El contenido no está en Borrador.")
+            messages.error(self.request, "Se produjo un error.")
 
         referer = self.request.META.get('HTTP_REFERER')
         if referer:
@@ -154,13 +147,7 @@ class CambiarEstadoView(UpdateView):
         else:
             return redirect('/')
 
-""" @permission_required('cambiar_estado_contenido',raise_exception=True)
-def a_Borrador(request,id):
-    
-    
-    contenido=Contenido.objects.get(id=id)
-    contenido.estado="Borrador"
-    contenido.save() """
+
 
 @login_required
 @permission_required('permissions.editar_contenido', raise_exception=True)
@@ -186,7 +173,7 @@ def editar_contenido(request, id):
     return render(request, 'content/editar_contenido.html', {'form': form})
     
     
-@permission_required('editar_contenido',raise_exception=True)
+@permission_required('permissions.editar_contenido',raise_exception=True)
 def vista_Editor(request):
     """
     Vista que lista los contenidos de un editor
@@ -200,23 +187,9 @@ def vista_Editor(request):
     return render(request,'content/vista_editor.html',{'contenidos':contenidos})
 
 
-""" @permission_required('crear_contenido',raise_exception=True)
-@permission_required('cambiar_estado_contenido',raise_exception=True)
-def a_Edicion(request,id):
-    
-    
-    contenido=Contenido.objects.get(id=id)
-    contenido.estado="Edicion"
-    contenido.save() """
-
 
 @login_required
 @permission_required('permissions.publicar_contenido', raise_exception=True)
-
-    
-
-
-@permission_required('publicador_contenido',raise_exception=True)
 def vista_Publicador(request):
     """
     Vista que lista los contenidos disponibles para un publicador
@@ -230,8 +203,7 @@ def vista_Publicador(request):
     return render(request,'content/vista_publicador.html',{'contenidos':contenidos})
 
 
-@permission_required('editar_contenido',raise_exception=True)
-@permission_required('cambiar_estado_contenido',raise_exception=True)
+
 def a_Publicar(request,id):
     """
     Funcion que permite cambiar el estado de un contenido a "a Publicar"

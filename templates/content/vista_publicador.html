@@ -39,12 +39,12 @@
                     <td>{{ contenido.autor.username }}</td>
                     <td>{{ contenido.categoria.nombre_categoria }}</td>
                     <td>
-                        <form action="{% url 'content:cambiar_estado' contenido.id %}" method="POST">
+                        <form action="{% url 'cambiar_estado' contenido.id %}" method="POST">
                             {% csrf_token %}
                             <button type="submit">Enviar a Publicador</button>
                         </form>
                         <!-- aca va a ir lo de la view de rechazar y mandar a edicion -->
-                        <a href="{% url 'content:a_edicion' contenido.id %}" class="btn btn-warning btn-sm">Rechazar</a>
+                        <a href="{% url 'a_edicion' contenido.id %}" class="btn btn-warning btn-sm">Rechazar</a>
                     </td>
                 </tr>
             {% endfor %}
