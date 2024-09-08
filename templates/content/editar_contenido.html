@@ -19,14 +19,39 @@
   </div>
 
     {% if user.is_authenticated %}
-        <div class="flex items-center justify-center mt-10">
+      <div class="flex flex-col lg:flex-row mt-10">
           <form enctype="multipart/form-data" method="POST">
             {% csrf_token %}
             {{ form.media }}
             {{ form.as_p}}
             <button type="submit">Guardar Cambios</button>
           </form>
-        </div>
+
+          <!-- GET form para seleccionar la version -->
+        <form method="GET" id="version-select-form">
+          <label for="version-select">Seleccionar versión anterior:</label>
+          <select name="version_id" id="version-select" onchange="this.form.submit()">
+            {% if versiones %}
+                <option value="{{ versiones.last.id }}">Última versión: {{ versiones.last.fecha_version|date:"d M Y H:i" }}</option>
+            {% else %}
+                <option value="">-- Crear nueva versión --</option>
+            {% endif %}
+              {% for version in versiones %}
+                <option value="{{ version.id }}" {% if request.GET.version_id == version.id|stringformat:"s" %}selected{% endif %}>
+                    Versión de {{ version.fecha_version|date:"d M Y H:i" }}
+                </option>
+            {% endfor %}
+          </select>
+        </form> 
+
+      </div>
+
+      <!-- This script should only submit the GET form (version-select-form) -->
+      <script>
+        document.getElementById('version-select').addEventListener('change', function() {
+            document.getElementById('version-select-form').submit();  // Correctly submit the GET form
+        });
+      </script>
     {% endif %}
 
 {% endblock content %}

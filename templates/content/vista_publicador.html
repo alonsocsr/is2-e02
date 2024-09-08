@@ -18,7 +18,7 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-9">
-            <h1>Contenidos sujetos a Edicion</h1>
+            <h1>Contenidos sujetos a Publicacion</h1>
         </div>
     </div>
 </div>
@@ -41,10 +41,14 @@
                     <td>
                         <form action="{% url 'cambiar_estado' contenido.id %}" method="POST">
                             {% csrf_token %}
-                            <button type="submit">Enviar a Publicador</button>
+                            <button type="submit">Publicar</button>
                         </form>
-                        <!-- aca va a ir lo de la view de rechazar y mandar a edicion -->
-                        <a href="{% url 'a_edicion' contenido.id %}" class="btn btn-warning btn-sm">Rechazar</a>
+                        <form action="{% url 'rechazar_contenido' contenido.id %}" method="post">
+                            {% csrf_token %}
+                            <textarea name="mensaje_rechazo" placeholder="Ingresa el motivo del rechazo"></textarea>
+                            <button type="submit">Rechazar</button>
+                        </form>
+                        
                     </td>
                 </tr>
             {% endfor %}
