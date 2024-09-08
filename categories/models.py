@@ -28,7 +28,8 @@ class Categorias(models.Model):
     tipo_categoria = models.CharField(
         max_length=3,
         choices=TIPO_CATEGORIA_OPCIONES,
-        default='PU')
+        default='PU',
+        )
     precio = models.IntegerField(null=True)
 
     class Meta:

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static  %}
+
+{% block title %}
+    Todos los Contenidos
+{% endblock %}
+
+
+{% block content %}
+<div class="pt-20 p-5 m-5">
+    <section id="all_contenidos">
+        <h2>Todos los contenidos</h2>
+        <ul>
+            {% for contenido in all_contenidos %}
+                <!-- aca hay que hacer el despliegue del carrusel o cards de los contenido como con su abstract-->
+                 <!-- enlace para ver el detalle del contenido -->
+                  {% include "includes/contenido.html" %} <!-- este por ahora sustitue al carusel, podes eliminar incluso el template si no te sirve o usar este para hacer la view o preview de los contenidos (su abstract), en el detalle contenido se va a ver cada contenido con todos sus atributos. -->
+                <li><a href="{% url 'detalle_contenido' contenido.id %}">{{ contenido.title }}</a></li>
+            {% endfor %}
+        </ul>
+
+
+    </section> 
+</div>
+{% endblock %}

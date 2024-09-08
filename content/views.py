@@ -1,13 +1,39 @@
-from django.shortcuts import redirect
-from django.contrib import messages
+from datetime import timezone
+from distutils.version import Version
+from django.db.models.query import QuerySet
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views import View
+from django.views.generic import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.urls import reverse
-from django.db.models import Q
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required, permission_required
+from content.models import Contenido
+from .forms import ContenidoForm, EditarContenidoForm,RechazarContenidoForm
+from django.views.generic import FormView, ListView,DetailView
+from django.urls import reverse,reverse_lazy
+from django.views.generic import UpdateView
+from .models import Version,Contenido
 
-from django.views.generic import FormView, ListView, UpdateView
-from .forms import ContenidoForm, EditarContenidoForm, RechazarContenidoForm
-from .models import Version, Contenido
 
+    
+
+class VistaAllContenidos(ListView):
+    template_name="content/ver_contenidos.html"
+    model=Contenido
+    ordering=["-fecha_publicacion"]
+    context_object_name="all_contenidos"
+    
+    def get_queryset(self):
+        return Contenido.objects.filter(estado="Publicado").order_by("-fecha_publicacion")
+    
+class VistaContenido(DetailView):
+    http_method_names=["get"]
+    template_name="content/detalle_contenido.html"
+    model=Contenido
+    context_object_name="detalle_contenido"
+    
+
+     
 class ContenidoBorradorList(LoginRequiredMixin, ListView):
     model = Contenido
     template_name = 'content/list_borrador.html'
@@ -91,6 +117,7 @@ class CambiarEstadoView(UpdateView):
 
     def form_valid(self, form):
         contenido = form.instance
+        fecha_hoy = timezone.now().date()
         if contenido.estado == 'Borrador':
             contenido.estado = 'Edicion'
             contenido.mensaje_rechazo = ''
@@ -102,10 +129,24 @@ class CambiarEstadoView(UpdateView):
         elif contenido.estado == 'Publicar':
             contenido.estado = 'Publicado'
             """ chequear la fecha de publicacion del contenido """
-            contenido.activo=True
-            messages.success(self.request, "El contenido ha sido publicado.")
+            if contenido.fecha_publicacion==fecha_hoy:
+                contenido.activo=True
+                messages.success(self.request, "El contenido ha sido publicado.")
+            else:
+                contenido.activo=False
+                messages.success(self.request, f'El contenido ha sido publicado pero sera visible recien el {contenido.fecha_publicacion}')
+        elif contenido.estado=='Publicado':
+            
+            contenido.estado='Inactivo'
+            contenido.activo=False
+            messages.success(self.request, f'El contenido ha sido inactivado')
+            """ #chequear si se inactiva, ya sea por peticion o por request del usuario
+            if contenido.fecha_vigencia<fecha_hoy:
+                contenido.estado='Inactivo'
+                contenido.activo=False
+                messages.success(self.request, f'El contenido ha sido inactivado') """
         else:
-            messages.error(self.request, "Se produjo un error.")
+            messages.error(self.request, "No se pudo cambiar el estado del contenido")
 
         contenido.save()
         referer = self.request.META.get('HTTP_REFERER')
@@ -221,6 +262,29 @@ class RechazarContenido(LoginRequiredMixin, UpdateView, PermissionRequiredMixin)
     model = Contenido
     form_class = RechazarContenidoForm
     permission_required = 'permissions.rechazar_contenido'
+    
+    def form_valid(self, form):
+        contenido = form.save(commit=False)
+        if contenido.estado == 'Publicar':
+            contenido.estado = 'Edicion'
+            messages.success(self.request, "El contenido ha sido enviado a Edicion.")
+        elif contenido.estado == 'Edicion':
+            contenido.estado = 'Borrador'
+            messages.success(self.request, "El contenido ha sido enviado a Borrador.")
+        else:
+            messages.error(self.request, "Se produjo un error")
+        
+        contenido.save()
+        referer = self.request.META.get('HTTP_REFERER')
+        if referer:
+            return redirect(referer)
+        else:
+            return redirect('/')
+        
+class InactivarContenido(LoginRequiredMixin, UpdateView, PermissionRequiredMixin):
+    model = Contenido
+    fields=[]
+    permission_required = 'permissions.inactivar_contenido'
     
     def form_valid(self, form):
         contenido = form.save(commit=False)
