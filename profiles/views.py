@@ -4,6 +4,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from .forms import ProfileForm
 from .models import Profile
 from django.contrib import messages
+from categories.models import Categorias
+from django.shortcuts import reverse, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 
 class UpdateProfile(LoginRequiredMixin, FormView, PermissionRequiredMixin):
@@ -71,3 +75,18 @@ class UpdateProfile(LoginRequiredMixin, FormView, PermissionRequiredMixin):
             str: La URL a la que se redirige al usuario.
         """
         return self.request.path
+    
+@login_required
+def categoria_interes(request, categoria_id):
+    if request.method == "POST" and request.user.is_authenticated:
+        categoria = get_object_or_404(Categorias, id=categoria_id)
+        user_profile = request.user.profile  # Asumiendo que hay un perfil de usuario relacionado
+        if categoria in user_profile.categorias_interes.all():
+            user_profile.categorias_interes.remove(categoria)
+            is_interes = False
+        else:
+            user_profile.categorias_interes.add(categoria)
+            is_interes = True
+
+        return JsonResponse({'is_interes': is_interes})
+    return JsonResponse({'error': 'Invalid request'}, status=400)

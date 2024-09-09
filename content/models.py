@@ -111,7 +111,7 @@ class Valoracion(models.Model):
     """
 
     contenido = models.ForeignKey(Contenido, on_delete=models.CASCADE)
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     puntuacion = models.PositiveIntegerField() 
     fecha = models.DateTimeField(auto_now_add=True)
 
@@ -122,4 +122,28 @@ class Valoracion(models.Model):
         """
         return f"Valoración de {self.usuario.username} para {self.contenido.titulo}"
     
+
+class ContenidoSeleccionado(models.Model):
+    contenido = models.ForeignKey(Contenido, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    fecha = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        ordering = ['-fecha']
+
+REPORTE_OPCIONES = [
+    ('odio', 'Mensaje de Odio'),
+    ('acoso', 'Acoso'),
+    ('privacidad', 'Privacidad'),
+    ('difamacion', 'Difamación'),
+    ('spam', 'Spam'),
+]
+class ContenidoReportado(models.Model):
+    contenido = models.ForeignKey(Contenido, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    motivo = models.CharField(
+        max_length=50,
+        choices=REPORTE_OPCIONES,
+        default='spam',
+        )
+    fecha = models.DateTimeField(auto_now_add=True)
     

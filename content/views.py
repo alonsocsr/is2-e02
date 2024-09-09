@@ -1,22 +1,14 @@
-from datetime import timezone
-from distutils.version import Version
-from django.db.models.query import QuerySet
-from django.shortcuts import get_object_or_404, redirect, render
-from django.views import View
-from django.views.generic import FormView
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
-from content.models import Contenido
-from .forms import ContenidoForm, EditarContenidoForm,RechazarContenidoForm
-from django.views.generic import FormView, ListView,DetailView
-from django.urls import reverse,reverse_lazy
-from django.views.generic import UpdateView
-from .models import Version,Contenido
+from django.urls import reverse, reverse_lazy
 from django.db.models import Q
+from django.views.generic import ListView, DetailView
+from django.views.generic.edit import FormView, FormMixin, UpdateView
+from .forms import ContenidoForm, EditarContenidoForm, RechazarContenidoForm, ContenidoReportadoForm
+from .models import Version, Contenido, ContenidoReportado   
 
-
-    
 
 class VistaAllContenidos(ListView):
     template_name="content/ver_contenidos.html"
@@ -27,8 +19,7 @@ class VistaAllContenidos(ListView):
     def get_queryset(self):
         return Contenido.objects.filter(estado="Publicado").order_by("-fecha_publicacion")
     
-class VistaContenido(DetailView):
-    http_method_names=["get"]
+class VistaContenido(FormMixin, DetailView):
     template_name="content/detalle_contenido.html"
     model=Contenido
     context_object_name="detalle_contenido"
@@ -38,6 +29,34 @@ class VistaContenido(DetailView):
     def get_object(self, queryset=None):
         slug = self.kwargs.get(self.slug_url_kwarg)
         return get_object_or_404(Contenido, slug=slug)
+    
+    form_class = ContenidoReportadoForm
+    context_object_name="contenido"
+
+    def get_success_url(self):
+        return reverse_lazy('detalle_contenido', kwargs={'pk': self.object.pk})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        if self.request.method == 'POST':
+            context['form'] = self.get_form()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        if self.request.user.is_authenticated:
+            form.instance.usuario = self.request.user
+        form.instance.contenido = self.get_object()
+        messages.success(self.request, "Se reportado el contenido con éxito")
+        form.save()
+        return super().form_valid(form)
     
 
      
@@ -127,7 +146,6 @@ class CambiarEstadoView(UpdateView):
 
     def form_valid(self, form):
         contenido = form.instance
-        #fecha_hoy = timezone.now().date()
         if contenido.estado == 'Borrador':
             contenido.estado = 'Edicion'
             contenido.mensaje_rechazo = ''
@@ -143,15 +161,9 @@ class CambiarEstadoView(UpdateView):
             messages.success(self.request, "El contenido ha sido publicado.")
 
         elif contenido.estado=='Publicado':
-            
             contenido.estado='Inactivo'
             contenido.activo=False
-            messages.success(self.request, f'El contenido ha sido inactivado')
-            """ #chequear si se inactiva, ya sea por peticion o por request del usuario
-            if contenido.fecha_vigencia<fecha_hoy:
-                contenido.estado='Inactivo'
-                contenido.activo=False
-                messages.success(self.request, f'El contenido ha sido inactivado') """
+            messages.success(self.request, "El contenido ha sido inactivado")
         else:
             messages.error(self.request, "No se pudo cambiar el estado del contenido")
 
@@ -295,16 +307,11 @@ class InactivarContenido(LoginRequiredMixin, UpdateView, PermissionRequiredMixin
     
     def form_valid(self, form):
         contenido = form.save(commit=False)
-        if contenido.estado == 'Publicar':
-            contenido.estado = 'Edicion'
-            messages.success(self.request, "El contenido ha sido enviado a Edicion.")
-        elif contenido.estado == 'Edicion':
-            contenido.estado = 'Borrador'
-            messages.success(self.request, "El contenido ha sido enviado a Borrador.")
-        else:
-            messages.error(self.request, "Se produjo un error")
-        
+        contenido.estado = 'Inactivo'
+        contenido.activo = False
+        messages.success(self.request, "El contenido ha sido enviado a Edicion.")
         contenido.save()
+
         referer = self.request.META.get('HTTP_REFERER')
         if referer:
             return redirect(referer)

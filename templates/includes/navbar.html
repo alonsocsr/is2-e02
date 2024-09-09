@@ -16,10 +16,9 @@
                 <div class="hidden sm:block sm:ml-6">
                     <div class="flex space-x-4">
                         <a href="{% url 'home' %}" class="text-gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300 focus:outline-none focus:ring-2 focus:ring-pink-500">Home</a>
-                        <a href="#" class="text-gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300 focus:outline-none focus:ring-2 focus:ring-pink-500">Categorías</a>
+                        <a href="{% url 'categories:listar' %}"  class="text-gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300 focus:outline-none focus:ring-2 focus:ring-pink-500">Categorías</a>
                         {%if user.is_authenticated%}
-                            <a href="{% url 'vista_all_contenidos' %}" class="text-gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300 focus:outline-none focus:ring-2 focus:ring-pink-500"><button>Ver todos los contenidos</button></a>
-                                
+                            <a href="{% url 'vista_all_contenidos' %}" class="text-gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300 focus:outline-none focus:ring-2 focus:ring-pink-500"><button>Ver todos los contenidos</button></a>                                           
                             </a>
                         {%endif%}                
                     </div>

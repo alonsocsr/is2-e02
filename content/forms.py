@@ -1,6 +1,6 @@
 from django import forms
 from django.shortcuts import render
-from .models import Contenido
+from .models import Contenido, ContenidoReportado
 from categories.models import Categorias
 from django.utils.text import slugify
 
@@ -99,4 +99,11 @@ class RechazarContenidoForm(forms.ModelForm):
         widgets = {
             'mensaje_rechazo': forms.Textarea(attrs={'rows': 4})
         }
-    
+
+class ContenidoReportadoForm(forms.ModelForm):
+    class Meta:
+        model = ContenidoReportado
+        fields = ['motivo']
+        widgets = {
+            'motivo': forms.Select(attrs={'class': 'form-control'}),
+        }
