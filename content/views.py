@@ -1,9 +1,9 @@
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, permission_required
 from django.urls import reverse, reverse_lazy
 from django.db.models import Q
-
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormView, FormMixin, UpdateView
 from .forms import ContenidoForm, EditarContenidoForm, RechazarContenidoForm, ContenidoReportadoForm
@@ -22,6 +22,14 @@ class VistaAllContenidos(ListView):
 class VistaContenido(FormMixin, DetailView):
     template_name="content/detalle_contenido.html"
     model=Contenido
+    context_object_name="detalle_contenido"
+    slug_field = 'slug'  
+    slug_url_kwarg = 'slug' 
+
+    def get_object(self, queryset=None):
+        slug = self.kwargs.get(self.slug_url_kwarg)
+        return get_object_or_404(Contenido, slug=slug)
+    
     form_class = ContenidoReportadoForm
     context_object_name="contenido"
 
@@ -107,6 +115,9 @@ class CrearContenido(LoginRequiredMixin, FormView, PermissionRequiredMixin):
         if contenido_id:
             contenido = Contenido.objects.get(id=contenido_id)
             context['versiones'] = contenido.versiones.all()
+            context['modo'] = 'editar' 
+        else:
+            context['modo'] = 'crear'
         return context
 
     def form_valid(self, form):
@@ -146,7 +157,9 @@ class CambiarEstadoView(UpdateView):
         elif contenido.estado == 'Publicar':
             contenido.estado = 'Publicado'
             contenido.activo=True
+            """ chequear la fecha de publicacion del contenido """
             messages.success(self.request, "El contenido ha sido publicado.")
+
         elif contenido.estado=='Publicado':
             contenido.estado='Inactivo'
             contenido.activo=False
