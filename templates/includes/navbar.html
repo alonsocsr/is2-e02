@@ -7,15 +7,9 @@
         <div class="relative flex items-center justify-between h-16">
             <!-- ver logo -->
             <div class="flex-shrink-0">
-                {%if user.is_authenticated%}
-                    <a href="{% url 'home' %}">
-                        <img src="{% static 'logo.png' %}" alt="Logo" class="h-8 w-auto">
-                    </a>
-                {%else%}
-                    <a href="{% url 'landing' %}">
-                        <img src="{% static 'logo.png' %}" alt="Logo" class="h-8 w-auto">
-                    </a>
-                {%endif%}
+                <a href="{% url 'home' %}">
+                    <img src="{% static 'logo.png' %}" alt="Logo" class="h-8 w-auto">
+                </a>
             </div>
             <!-- links -->
             <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">

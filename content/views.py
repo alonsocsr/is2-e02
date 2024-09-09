@@ -13,6 +13,7 @@ from django.views.generic import FormView, ListView,DetailView
 from django.urls import reverse,reverse_lazy
 from django.views.generic import UpdateView
 from .models import Version,Contenido
+from django.db.models import Q
 
 
     
@@ -31,6 +32,12 @@ class VistaContenido(DetailView):
     template_name="content/detalle_contenido.html"
     model=Contenido
     context_object_name="detalle_contenido"
+    slug_field = 'slug'  
+    slug_url_kwarg = 'slug' 
+
+    def get_object(self, queryset=None):
+        slug = self.kwargs.get(self.slug_url_kwarg)
+        return get_object_or_404(Contenido, slug=slug)
     
 
      
@@ -89,6 +96,9 @@ class CrearContenido(LoginRequiredMixin, FormView, PermissionRequiredMixin):
         if contenido_id:
             contenido = Contenido.objects.get(id=contenido_id)
             context['versiones'] = contenido.versiones.all()
+            context['modo'] = 'editar' 
+        else:
+            context['modo'] = 'crear'
         return context
 
     def form_valid(self, form):
@@ -117,7 +127,7 @@ class CambiarEstadoView(UpdateView):
 
     def form_valid(self, form):
         contenido = form.instance
-        fecha_hoy = timezone.now().date()
+        #fecha_hoy = timezone.now().date()
         if contenido.estado == 'Borrador':
             contenido.estado = 'Edicion'
             contenido.mensaje_rechazo = ''
@@ -128,13 +138,10 @@ class CambiarEstadoView(UpdateView):
             messages.success(self.request, "El contenido ha sido enviado a publicacion")
         elif contenido.estado == 'Publicar':
             contenido.estado = 'Publicado'
+            contenido.activo=True
             """ chequear la fecha de publicacion del contenido """
-            if contenido.fecha_publicacion==fecha_hoy:
-                contenido.activo=True
-                messages.success(self.request, "El contenido ha sido publicado.")
-            else:
-                contenido.activo=False
-                messages.success(self.request, f'El contenido ha sido publicado pero sera visible recien el {contenido.fecha_publicacion}')
+            messages.success(self.request, "El contenido ha sido publicado.")
+
         elif contenido.estado=='Publicado':
             
             contenido.estado='Inactivo'

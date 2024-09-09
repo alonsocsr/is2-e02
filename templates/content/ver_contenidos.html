@@ -1,25 +1,48 @@
 {% extends "base.html" %}
-{% load static  %}
+{% load static %}
 
 {% block title %}
-    Todos los Contenidos
+Todos los Contenidos
 {% endblock %}
-
 
 {% block content %}
-<div class="pt-20 p-5 m-5">
-    <section id="all_contenidos">
-        <h2>Todos los contenidos</h2>
-        <ul>
-            {% for contenido in all_contenidos %}
-                <!-- aca hay que hacer el despliegue del carrusel o cards de los contenido como con su abstract-->
-                 <!-- enlace para ver el detalle del contenido -->
-                  {% include "includes/contenido.html" %} <!-- este por ahora sustitue al carusel, podes eliminar incluso el template si no te sirve o usar este para hacer la view o preview de los contenidos (su abstract), en el detalle contenido se va a ver cada contenido con todos sus atributos. -->
-                <li><a href="{% url 'detalle_contenido' contenido.id %}">{{ contenido.title }}</a></li>
-            {% endfor %}
-        </ul>
+<div class="pt-10 p-10 m-5">
 
-
-    </section> 
+    <!-- Sección de contenidos en tres columnas -->
+    <section id="content-grid" class="flex flex-col items-center py-10 space-y-6">
+        {% for contenido in all_contenidos %}
+        <div class="w-full max-w-3xl bg-white shadow-lg rounded-lg overflow-hidden">
+            <a href="{% url 'detalle_contenido' contenido.slug %}" class="block w-full h-full">
+                <img class="w-full h-auto object-cover" 
+                     src="{% if contenido.imagen %}{{ contenido.imagen.url }}{% else %}/static/default.jpg{% endif %}" 
+                     alt="{{ contenido.titulo }}">
+                <div class="p-6">
+                    <!-- Autor y categoría -->
+                    <div class="text-sm mb-4 flex items-center space-x-3">
+                        <img class="w-10 h-10 rounded-full"
+                             src="{% if contenido.autor.profile.image %}{{ contenido.autor.profile.image.url }}{% else %}/static/default.png{% endif %}"
+                             alt="{{ contenido.autor.username }}">
+                        <div>
+                            <span class="font-semibold">{{ contenido.autor.username }}</span><br>
+                            <span class="text-gray-600">{{ contenido.categoria.nombre_categoria }}</span>
+                            <span class="text-gray-600"> - {{ contenido.fecha_creacion|date:"d M Y" }}</span>
+                        </div>
+                    </div>
+                    <!-- Título -->
+                    <h3 class="text-2xl font-bold mb-2">{{ contenido.titulo }}</h3>
+                    <!-- Resumen -->
+                    <p class="text-gray-700 text-base">{{ contenido.resumen|truncatewords:20 }}</p>
+                    <!-- Fecha -->
+                    <!-- <p class="text-sm text-gray-600 mt-4">{{ contenido.fecha_creacion|date:"d M Y" }}</p> -->
+                    <p class="text-gray-700 text-base">{{ contenido.cuerpo|safe|linebreaks  }}</p>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+            <p class="text-gray-600 col-span-full text-center">No hay posts disponibles.</p>
+        {% endfor %}
+    </section>
+    
+    
 </div>
-{% endblock %}
+{% endblock content %}

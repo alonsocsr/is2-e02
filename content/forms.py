@@ -29,9 +29,20 @@ class ContenidoForm(forms.ModelForm):
         super(ContenidoForm, self).__init__(*args, **kwargs)
         self.fields['slug'].required = False
         self.fields['categoria'].queryset = Categorias.objects.all()
+        
+        # clases para el front
+        self.fields['fecha_publicacion'].widget.attrs.update({
+            'class': 'form-input w-full p-2 text-gray-700 bg-gray-200 rounded-md',
+        })
+        self.fields['vigencia'].widget.attrs.update({
+            'class': 'form-input w-full p-2 text-gray-700 bg-gray-200 rounded-md',
+        })
+        self.fields['categoria'].widget.attrs.update({
+            'class': 'form-select w-full p-2 text-gray-700 bg-gray-200 rounded-md',
+        })
         if autor is not None:
             self.initial['autor'] = autor
-        
+    
     def clean_slug(self):
         instance = self.instance
         slug = slugify(self.cleaned_data['titulo'])
