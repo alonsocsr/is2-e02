@@ -25,12 +25,14 @@ class Categorias(models.Model):
     descripcion_corta = models.CharField(max_length=10, blank=False)
     estado = models.BooleanField(default=True)
     moderada = models.BooleanField(default=True)  # Valor por defecto
+    prioridad = models.BooleanField(default=False)
     tipo_categoria = models.CharField(
         max_length=3,
         choices=TIPO_CATEGORIA_OPCIONES,
         default='PU',
         )
     precio = models.IntegerField(null=True)
+
 
     class Meta:
         default_permissions = ()

@@ -1,10 +1,11 @@
 from django import forms
 from .models import Categorias, TIPO_CATEGORIA_OPCIONES
+from django.core.exceptions import ValidationError
 
 class CategoriaForm(forms.ModelForm):
     class Meta:
         model = Categorias
-        fields = ['nombre_categoria', 'descripcion', 'descripcion_corta', 'moderada', 'tipo_categoria']
+        fields = ['nombre_categoria', 'descripcion', 'descripcion_corta', 'moderada', 'prioridad', 'tipo_categoria']
 
     def __init__(self, *args, **kwargs):
         super(CategoriaForm, self).__init__(*args, **kwargs)
@@ -22,6 +23,9 @@ class CategoriaForm(forms.ModelForm):
             'placeholder': 'Descripción corta'
         })
         self.fields['moderada'].widget.attrs.update({
+            'class': 'form-checkbox text-gray-700 bg-gray-200 rounded',
+        })
+        self.fields['prioridad'].widget.attrs.update({
             'class': 'form-checkbox text-gray-700 bg-gray-200 rounded',
         })
         self.fields['tipo_categoria'].widget.attrs.update({
