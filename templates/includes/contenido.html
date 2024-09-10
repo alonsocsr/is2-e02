@@ -8,7 +8,9 @@
 
     <!-- Categoría -->
     <div class="absolute top-2 right-2 bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full">
-        {{ contenido.categoria.nombre_categoria }}
+        <a href="{% url 'categories:detalle' contenido.categoria.id %}" class="hover:underline hover:text-pink-700">
+            {{ contenido.categoria.nombre_categoria }}
+        </a>
     </div>
 
     <!-- Información -->

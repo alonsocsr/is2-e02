@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ categoria.nombre_categoria }} | Detalles
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-8 max-w-screen-lg">
+    
+    <section class="bg-white shadow-md rounded-xl p-6 mb-8">
+        <h1 class="text-4xl font-bold text-gray-800">{{ categoria.nombre_categoria }}</h1>
+        <p class="text-gray-600 mt-4">{{ categoria.descripcion }}</p>
+
+        <div class="flex mt-4">
+            <span class="text-sm text-gray-500 mr-4">Tipo: {{ categoria.get_tipo_categoria_display }}</span>
+            {% if categoria.tipo_categoria == 'PA' %}
+            <span class="text-sm text-gray-500">Precio: {{ categoria.precio }}</span>
+            {% endif %}
+        </div>
+    </section>
+
+    <section id="category-posts" class="mt-12">
+        <h2 class="text-3xl font-bold text-gray-800 mb-8">Contenidos en la categoría: {{ categoria.nombre_categoria }}</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for contenido in contenidos %}
+                {% include "includes/contenido.html" %}
+            {% empty %}
+                <p class="text-gray-600">No hay contenidos en esta categoría.</p>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}
