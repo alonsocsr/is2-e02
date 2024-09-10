@@ -14,7 +14,9 @@
         
         <div class="p-6 ">
             <!-- Información de la categoría -->
-            <p class="leading-none font-semibold mb-2 text-pink-700">{{ contenido.categoria.nombre_categoria }}</p>
+            <a href="{% url 'categories:detalle' contenido.categoria.id %}"  class="leading-none font-semibold mb-2 text-pink-700 hover:underline hover:text-pink-700">
+                {{ contenido.categoria.nombre_categoria }}
+            </a>
             
             <!-- Título del contenido -->
             <h1 class="text-3xl font-bold text-gray-900 mb-4 text-left break-words">{{ contenido.titulo }}</h1>
