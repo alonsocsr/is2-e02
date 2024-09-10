@@ -3,59 +3,68 @@
 
 {% block content %}
 <div class="flex justify-center z-10 py-6">
-    <div class="p-6 bg-gray-200 mx-auto w-full max-w-4xl flex flex-col">
+    <div class="p-6 bg-gray-200 mx-auto w-full max-w-6xl">
         <div class="header my-3 h-7 px-2 lg:px-6 flex items-center justify-between mb-6">
             <h2 class="font-semibold text-2xl text-gray-800">Categorías</h2>
         </div>
 
         <!-- Contenedor para las categorías -->
-        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8">
             {% for categoria in categorias %}
-            <div class="w-full max-w-lg bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl overflow-hidden flex flex-col md:flex-row relative">
-                    <div class="p-8 flex flex-col justify-between h-full">
-                        <!-- Título y botón de favorito en la misma línea -->
-                        <div class="absolute top-2 right-2 bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full">
-                            {% if categoria.tipo_categoria == 'PU' %}Pública {% elif  categoria.tipo_categoria == 'GR'%}Gratis {% else %}Paga{% endif %}
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <h5 class="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-800">{{ categoria.nombre_categoria }}</h5>
-                            
-                            <!-- Botón para marcar/desmarcar categoría como favorita -->
-                            <form method="POST" action="{% url 'categoria_interes' categoria.id %}" class="ml-4">
-                                {% csrf_token %}
-                                <button type="submit" class="star-button" aria-label="Marcar como favorito">
-                                    {% if categoria.id in categorias_interes_ids %}
-                                    <!-- Estrella rellena -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="star-icon">
-                                        <path fill="#FF1493" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                                    </svg>
-                                    {% else %}
-                                    <!-- Estrella vacía -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="star-icon">
-                                        <path fill="#b3b3b3" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                                    </svg>
-                                    {% endif %}
-                                </button>
-                            </form>
-                        </div>
+            <div class="bg-white shadow-md rounded-xl flex flex-col duration-500 hover:scale-105 hover:shadow-xl overflow-hidden">
+                <div class="relative flex-1 p-8 flex flex-col justify-between">
+                    <!-- Título y botón de favorito en la misma línea -->
+                    <div class="absolute top-2 right-2 bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full">
+                        {% if categoria.tipo_categoria == 'PU' %}Pública {% elif  categoria.tipo_categoria == 'GR'%}Gratis {% else %}Paga{% endif %}
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <h5 class="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-800">{{ categoria.nombre_categoria }}</h5>
+                        
+                        <!-- Botón para marcar/desmarcar categoría como favorita -->
+                        <form method="POST" action="{% url 'categoria_interes' categoria.id %}" class="ml-4">
+                            {% csrf_token %}
+                            <button type="submit" class="star-button" aria-label="Marcar como favorito">
+                                {% if categoria.id in categorias_interes_ids %}
+                                <!-- Estrella rellena -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="star-icon">
+                                    <path fill="#FF1493" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                </svg>
+                                {% else %}
+                                <!-- Estrella vacía -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="star-icon">
+                                    <path fill="#b3b3b3" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                </svg>
+                                {% endif %}
+                            </button>
+                        </form>
+                    </div>
 
-                        <!-- Descripción -->
-                        <p class="font-normal text-gray-700 dark:text-gray-600 mb-9">{{ categoria.descripcion|default:"No description available" }}</p>
+                    <!-- Descripción -->
+                    <p class="font-normal text-gray-700 dark:text-gray-600 mb-9">{{ categoria.descripcion|default:"No description available" }}</p>
 
-                        <!-- Enlace de lectura más -->
-                        <div class="justify-center mt-auto">
-                            <a href="{% url 'categories:detalle' categoria.id %}" class="bg-pink-800 hover:bg-pink-700 text-pink-100 p-2 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500 mt-4">
-                                Ver Contenidos
-                            </a>
-                        </div>
+                    <!-- Enlace de lectura más -->
+                    <div class="mt-auto">
+                        {% if categoria.tipo_categoria == 'PA' and categoria.id not in categorias_suscritas_ids%}
+                        <a href="?modal=true&categoria_id={{ categoria.id }}" class="bg-pink-800 hover:bg-pink-700 text-pink-100 p-2 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500 mt-4">
+                            Ver Contenidos
+                        </a>
+                        {% else %}
+                        <a href="{% url "categories:detalle" categoria.id %}" class="bg-pink-800 hover:bg-pink-700 text-pink-100 p-2 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500 mt-4">
+                            Ver Contenidos
+                        </a>
+                        {% endif %}
                     </div>
                 </div>
+            </div>
             {% empty %}
-                <p class="text-gray-600 text-center p-4">No existen categorías.</p>
+            <p class="text-gray-600 text-center p-4">No existen categorías.</p>
             {% endfor %}
         </div>
     </div>
 </div>
+
+<!-- Incluir el modal -->
+{% include 'includes/pago_categoria.html' %}
 {% endblock content %}
 
 <style>

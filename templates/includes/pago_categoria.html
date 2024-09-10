@@ -1,0 +1,38 @@
+{% if mostrar_modal %}
+<div id="modal" class="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+    <div class="relative max-w-7xl mx-auto">
+        <div class="max-w-lg mx-auto rounded-lg shadow-lg overflow-hidden lg:max-w-none lg:flex bg-pink-800">
+            <!-- Contenido del Modal -->
+            <div class="flex-1 px-6 py-8 lg:p-12">
+                <h3 class="text-2xl font-extrabold text-white sm:text-3xl">{{ categoria.nombre_categoria }}</h3>
+                <p class="mt-6 text-base text-white sm:text-lg">{{ categoria.descripcion }}</p>
+                <div class="mt-8">
+                    <div class="flex items-center">
+                        <div class="flex-1 border-t-2 border-pink-400"></div>
+                    </div>
+                    <ul role="list" class="mt-8 space-y-5 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-5">
+                        <!-- Aquí puedes agregar características específicas si tienes más detalles -->
+                    </ul>
+                </div>
+            </div>
+            <!-- Precio y Acciones del Modal -->
+            <div class="py-8 px-6 text-center lg:flex-shrink-0 lg:flex lg:flex-col lg:justify-center lg:p-12 bg-pink-600">
+                <p class="text-lg leading-6 font-medium text-white">Pago único de</p>
+                <div class="mt-4 flex items-center justify-center text-5xl font-extrabold text-white ">
+                    <span>{{ categoria.precio }}</span><span class="ml-3 text-xl font-medium text-white">GS</span>
+                </div>
+                <div class="mt-6">
+                    <div class="rounded-md shadow">
+                        <a href="{% url 'registrar_suscripcion' categoria.id%}" class="flex items-center justify-center px-5 py-3 bg-pink-100 hover:bg-pink-900 hover:text-pink-200 text-pink-800 p-2 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500 mt-4">Suscribirse</a>
+                    </div>
+                    <p class="text-gray-800 text-sm mt-3">100% real no fake</p>
+                </div>
+            </div>
+            <!-- Botón de cierre del modal -->
+            <button onclick="window.location.href='{% url 'categories:listar' %}'" class="absolute top-0 right-0 mt-4 mr-4 text-gray-800 text-2xl">
+                &times;
+            </button>
+        </div>
+    </div>
+</div>
+{% endif %}
