@@ -1,9 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import View, TemplateView
 from django.contrib import messages
 from .forms import CategoriaForm
 from .models import Categorias
-from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import View, TemplateView, DetailView
 from content.models import Contenido
 
@@ -133,14 +132,31 @@ class EliminarCategoriaView(View):
 
 class ListarCategoriasView(TemplateView):
     """
-    Vista para mostrar una lista de categorías.
-
-    Esta vista renderiza una plantilla que muestra todas las categorías disponibles
-    en la base de datos.
+    Vista para mostrar una lista de categorías y un modal si es necesario.
     """
-    model = Categorias
     template_name = 'categories/listar_categorias.html'
-    context_object_name = 'categorias'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        categorias = Categorias.objects.all().order_by('id')
+        categorias_list = list(categorias.values('id', 'descripcion', 'nombre_categoria', 'tipo_categoria', 'precio'))
+
+        # Verificar si se debe mostrar el modal
+        mostrar_modal = self.request.GET.get('modal') == 'true'
+        categoria_id = self.request.GET.get('categoria_id')
+        categoria = None
+        if categoria_id:
+            try:
+                categoria = Categorias.objects.get(id=categoria_id)
+            except Categorias.DoesNotExist:
+                categoria = None
+
+        context.update({
+            'categorias': categorias_list,
+            'mostrar_modal': mostrar_modal,
+            'categoria': categoria
+        })
+        return context
 
 class DetalleCategoriaView(DetailView):
     """

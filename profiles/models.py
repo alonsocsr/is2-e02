@@ -21,6 +21,7 @@ class Profile(models.Model):
     )
     image = ImageField(upload_to='profiles')
     categorias_interes = models.ManyToManyField(Categorias, blank=True, related_name='categorias_interes')
+    suscripciones = models.ManyToManyField(Categorias, blank=True, related_name='suscripciones')
 
     class Meta:
         default_permissions = ()

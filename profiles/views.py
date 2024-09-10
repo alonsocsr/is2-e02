@@ -104,3 +104,21 @@ def categoria_interes(request, categoria_id):
 
         return JsonResponse({'is_interes': is_interes})
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@login_required
+def registrar_suscripcion(request, categoria_id):
+    """
+    Registra una suscripción de un usuario a una categoría paga.
+
+    Args:
+        request: El objeto request de Django.
+        categoria_id (int): El ID de la categoría a la que se quiere suscribir.
+    
+    Returns:
+        HttpResponseRedirect: Redirige al usuario a la página de detalle de la categoría.
+    """
+    categoria = get_object_or_404(Categorias, id=categoria_id)
+    
+    perfil = request.user.profile
+    perfil.suscripciones.add(categoria)
+    return redirect('categories:detalle', pk=categoria_id)
