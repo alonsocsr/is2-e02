@@ -7,9 +7,10 @@
 
 {% block content %}
 <div class="pt-10 p-10 m-5 flex flex-col lg:flex-row items-center justify-between gap-12">
-    
-    {%if user.is_authenticated%}
-        <section id="static-text" class="lg:w-1/2 w-full flex items-center justify-center">
+
+    <!-- Sección para usuarios autenticados -->
+    {% if user.is_authenticated %}
+        <section id="static-text" class="lg:w-3/5 w-full flex items-center justify-center">
             <div class="text-center space-y-6">
                 <!-- Título con la nueva font-family y gradiente de colores -->
                 <h1 class="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-gray-800 via-pink-800 to-gray-800" 
@@ -19,13 +20,13 @@
                 <!-- Subtítulo con la nueva font-family -->
                 <p class="text-gray-700 text-lg leading-relaxed" 
                     style="font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';">
-                    Explora los nuevos artículos, comparte tus opiniones y participa en los debates más apasionantes. ¡Gracias por ser parte de Stark!
+                    Explora los nuevos artículos, comparte tus opiniones y participa en los debates más apasionantes. ¡Gracias por ser parte de <span style="font-family: 'Merriweather', serif;">Stark</span>!
                 </p>
             </div>
         </section>
 
+    <!-- Sección para visitantes -->
     {% else %}
-
         <section id="dynamic-text" class="lg:w-1/2 w-full flex items-center justify-center">
             <div class="text-center space-y-12">
                 <div class="text-center text-5xl font-bold ">
@@ -39,15 +40,14 @@
                     </div>
                 </div>
                 <p class="text-gray-600 text-sm">
-                    Stark es el lugar donde las ideas se encuentran. Lee los mejores contenidos, participa en los debates y comparte tus pensamientos.            </p>
+                    Stark es el lugar donde las ideas se encuentran. Lee los mejores contenidos, participa en los debates y comparte tus pensamientos.
+                </p>
             </div>
         </section>
-
-    {%endif%} 
-
+    {% endif %}
 
     <!-- Carrusel  -->
-    <section id="carousel-posts" class="lg:w-1/2 w-full mt-10 lg:mt-0">
+    <section id="carousel-posts" class="lg:w-3/5 w-full mt-10 lg:mt-0">
         <div class="gallery border-2 rounded-xl mx-auto m-5 bg-white shadow-lg" style="width:750px;">
             <!-- Título del contenido -->
             <div class="top flex p-2 border-b select-none rounded-t-xl bg-gray-100">
@@ -70,7 +70,6 @@
             <!-- Contenido -->
             <div class="content-area w-full h-96 overflow-hidden rounded-b-xl">
                 <div class="platform shadow-xl h-full flex">
-                    
                     {% for contenido in contenidos %}
                     <div class="each-frame border-box flex-none h-full" title="{{ contenido.titulo }}">
                         <a href="{% url 'detalle_contenido' contenido.slug %}" class="block w-full h-full hover:bg-gray-100 rounded-xl duration-300">
@@ -91,7 +90,8 @@
                                         </div>
                                     </div>
                                     <!-- Título -->
-                                    <div class="head text-3xl font-bold mb-2">{{ contenido.titulo }}</div>
+                                    <!-- <div class="head text-3xl font-bold mb-2">{{ contenido.titulo }}</div> -->
+                                    <div class="head text-3xl text-gray-900 font-bold text-lg mb-1 truncate break-words">{{ contenido.titulo }}</div>
                                     <!-- Resumen -->
                                     <div class="long-text text-lg text-gray-700">{{ contenido.resumen|truncatewords:20 }}</div>
                                     <!-- Fecha -->
@@ -133,6 +133,7 @@
   .platform .each-frame {
     border-radius: 1rem;
   }
+
   .body {
     background-color: white !important;
   }
@@ -203,11 +204,6 @@
         var val = t.target.getAttribute("action");
         if (val == "next" && G.index != G.limit.end) { G.next(); }
         if (val == "prev" && G.index != G.limit.start) { G.prev(); }
-        if (val == "goto") {
-            let rv = t.target.getAttribute("goto");
-            rv = rv == "end" ? G.limit.end : rv;
-            G.goto(parseInt(rv));
-        }
     });
     document.addEventListener("keyup", function (t) {
         var val = t.keyCode;
@@ -217,3 +213,4 @@
 </script>
 
 {% endblock content %}
+
