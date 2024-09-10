@@ -4,6 +4,8 @@ from django.contrib import messages
 from .forms import CategoriaForm
 from .models import Categorias
 from django.shortcuts import get_object_or_404, redirect
+from django.views.generic import View, TemplateView, DetailView
+from content.models import Contenido
 
 class CrearCategoriaView(View):
     form_class = CategoriaForm
@@ -128,7 +130,6 @@ class EliminarCategoriaView(View):
         messages.success(request, 'Categoría eliminada con éxito', extra_tags='categoria')
         return redirect('categories:manage')
 
-from django.views.generic import TemplateView
 
 class ListarCategoriasView(TemplateView):
     """
@@ -137,4 +138,24 @@ class ListarCategoriasView(TemplateView):
     Esta vista renderiza una plantilla que muestra todas las categorías disponibles
     en la base de datos.
     """
+    model = Categorias
     template_name = 'categories/listar_categorias.html'
+    context_object_name = 'categorias'
+
+class DetalleCategoriaView(DetailView):
+    """
+    Vista para mostrar los detalles de una categoría.
+
+    Esta vista renderiza una plantilla que muestra los detalles de una categoría
+    específica, incluyendo todos los contenidos asociados a ella.
+    """
+    model = Categorias
+    template_name = 'categories/detalle_categoria.html'
+    context_object_name = 'categoria'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Obtener todos los contenidos asociados a esta categoría
+        contenidos = Contenido.objects.filter(categoria=self.object, estado='Publicado')
+        context['contenidos'] = contenidos
+        return context

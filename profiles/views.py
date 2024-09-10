@@ -76,6 +76,20 @@ class UpdateProfile(LoginRequiredMixin, FormView, PermissionRequiredMixin):
         """
         return self.request.path
     
+    def get_context_data(self, **kwargs):
+        """
+        Añade los roles del usuario al contexto para ser utilizados en el template.
+
+        Returns:
+            dict: Contexto actualizado con la información de los roles del usuario.
+        """
+        context = super().get_context_data(**kwargs)
+        # Suponiendo que tienes una relación entre el usuario y los roles
+        user = self.request.user
+        context['user_roles'] = user.groups.all()  # Asumiendo que estás utilizando grupos para roles
+        return context
+
+
 @login_required
 def categoria_interes(request, categoria_id):
     if request.method == "POST" and request.user.is_authenticated:

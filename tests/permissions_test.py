@@ -13,7 +13,7 @@ def test_crear_rol(client, monkeypatch):
     client.login(username='testuser', password='12345')
 
     monkeypatch.setattr('django.contrib.auth.decorators.permission_required',
-                        lambda perm, *args, **kwargs: lambda view: view)
+                         lambda perm, *args, **kwargs: lambda view: view) 
 
     permiso = Permission.objects.create(
         codename='permiso_test', content_type_id=1, name='test permiso')
@@ -25,14 +25,15 @@ def test_crear_rol(client, monkeypatch):
         'permisos': [permiso.id]
     }
 
-    print(f"\nProbando la creación del rol test.")
+    print(f"\n\nProbando la creación del rol test.")
     print(f"Roles inicialmente:             {Roles.objects.all()}")
     response = client.post(reverse('crear_rol'), data)
     print(f"Roles después de la creación:   {Roles.objects.all()}")
+    print(f"Redirección correcta. Http response {response.status_code}")
+
 
     assert Roles.objects.get(nombre_rol='test'), 'No se ha creado el rol'
-    assert response.status_code == 200
-
+    assert response.status_code == 302, 'No se ha redirigido correctamente tras crear la categoría.'
 
 @pytest.mark.django_db
 def test_asignar_rol_usuario(client, setup):
@@ -46,17 +47,14 @@ def test_asignar_rol_usuario(client, setup):
         'usuarios': user.id,
     }
 
-    print(
-        f"\n\nProbando la asignación del rol test_rol al usuario {user.username}.")
-    print(
-        f"Roles del usuario inicialmente:                 {user.groups.all()}")
+    print(f"\n\nProbando la asignación del rol test_rol al usuario {user.username}.")
+    print(f"Roles del usuario inicialmente:                 {user.groups.all()}")
     response = client.post(reverse('asignar_rol'), data)
-    print(
-        f"Roles del usuario después de la asignación:     {user.groups.all()}")
+    print(f"Roles del usuario después de la asignación:     {user.groups.all()}")
     print(f"Redirección correcta. Http response {response.status_code}")
 
-    assert user.groups.get(name='test_rol')
-    assert response.status_code == 302
+    assert user.groups.get(name='test_rol'), 'No se ha asignado el rol'
+    assert response.status_code == 302, 'La redirección no es correcta'
 
 
 @pytest.mark.django_db
@@ -74,15 +72,12 @@ def test_modificar_rol(client, setup):
     }
 
     print(f"\n\nProbando la modificación del rol test_rol.")
-    print(
-        f"Permisos del rol inicialmente:                 {rol_creado.permisos.all()}")
-    response = client.post(
-        reverse('modificar_rol', args=[rol_creado.id]), data)
-    print(
-        f"Permisos del rol después de la modificación:   {rol_creado.permisos.all()}")
+    print(f"Permisos del rol inicialmente:                 {rol_creado.permisos.all()}")
+    response = client.post(reverse('modificar_rol', args=[rol_creado.id]), data)
+    print(f"Permisos del rol después de la modificación:   {rol_creado.permisos.all()}")
     print(f"Redirección correcta. Http response {response.status_code}")
 
-    assert response.status_code == 302
+    assert response.status_code == 302, 'La redirección no es correcta'
 
 
 @pytest.mark.django_db
@@ -95,5 +90,5 @@ def test_eliminar_rol(client, setup):
     print(f"Roles después de la eliminación:    {Roles.objects.all()}")
     print(f"Redirección correcta. Http response {response.status_code}")
 
-    assert not Roles.objects.filter(nombre_rol='test_rol').exists()
-    assert response.status_code == 302
+    assert not Roles.objects.filter(nombre_rol='test_rol').exists(), 'El rol no se ha eliminado'
+    assert response.status_code == 302, 'La redirección no es correcta'

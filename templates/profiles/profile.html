@@ -3,134 +3,159 @@
 {% load static %}
 
 {% block title %}
-  Perfil de Usuario
+    Perfil de Usuario | Stark
 {% endblock title %}
 
 {% block content %}
-            <!-- Mensajes de avisos/exitos -->
-<div class="mx-1 mb-4">
-    {% if messages %}
-        <div class="space-y-3">
-            {% for message in messages %}
-                <div class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
-</div>
 <div class="flex justify-center mt-10">
-    <div class="flex w-full max-w-5xl bg-gray-200 p-8 rounded-lg shadow-md">
+    <div class="w-full max-w-5xl bg-gray-200 p-8 rounded-lg shadow-md relative">
+        
+        <!-- Foto de portada -->
+        <div class="relative h-32 bg-pink-800 rounded-t-lg"></div>
 
-        <!-- Sección de perfil -->
-        <div class="w-full">
-            <div class="flex items-center justify-center mt-6">
-                {% if user.profile.image %}
-                    {% thumbnail user.profile.image "80x80" crop="center" as im %}
-                    <img class="rounded-full shadow-md" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
-                    {% endthumbnail %}
-                {% else %}
-                    <img src="{% static 'default.png' %}" alt="Default Profile Picture" class="w-10 h-10 rounded-full border border-gray-300">
-                {% endif %}
+        <!-- Botón de editar perfil -->
+        <div class="absolute top-2 right-2">
+            <button onclick="openEditModal()" class="px-4 py-2 bg-gray-800 text-white rounded-lg shadow-md hover:bg-gray-700 focus:outline-none">
+                Editar Perfil
+            </button>
+        </div>
+
+        <!-- Sección de información del usuario -->
+        <div class="relative flex flex-col items-center -mt-16">
+            <!-- Imagen de perfil -->
+            {% if user.profile.image %}
+                {% thumbnail user.profile.image "100x100" crop="center" as im %}
+                <img class="rounded-full border-4 border-white shadow-md" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                {% endthumbnail %}
+            {% else %}
+                <img src="{% static 'default.png' %}" alt="Default Profile Picture" class="w-24 h-24 rounded-full border-4 border-white shadow-md">
+            {% endif %}
+
+            <!-- Nombre de usuario -->
+            <div class="text-center mt-4">
+                <h1 class="font-semibold text-2xl text-gray-900">{{ user.get_full_name }}</h1>
+                <p class="text-gray-600">{{ user.username }}</p>
             </div>
 
-            <div class="header my-3 h-7 px-2 lg:px-6 flex items-center justify-between">
-                <h1 class="font-semibold text-2xl text-gray-800">Actualiza tu información</h1>
+            <!-- Información adicional -->
+            <div class="w-full mt-6 p-4 bg-gray-100 shadow-md rounded-md">
+                <h2 class="font-semibold text-lg text-gray-800 mb-2">Roles Asignados</h2>
+                <div class="bg-gray-200 p-4 rounded-md">
+                    <ul class="list-inside text-gray-700">
+                        {% if user_roles %}
+                            {% for role in user_roles %}
+                                <li class="text-sm text-gray-700">{{ role.name }}</li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="text-sm text-gray-700">No se han asignado roles.</li>
+                        {% endif %}
+                    </ul>
+                </div>
             </div>
+        </div>
 
+    </div>
+</div>
 
-
-            <!-- form de perfil -->
-            <div class="w-full bg-gray-100 shadow-md p-4 rounded-md">
-                <form enctype="multipart/form-data" method="post" class="flex flex-col space-y-6">
-                    {% csrf_token %}
-                    <div class="space-y-3">
-                        <!-- Nombre -->
-                        <div>
-                            <label for="id_first_name" class="block text-sm font-medium text-gray-700">Nombres</label>
-                            <input 
-                                id="id_first_name"
-                                name="first_name"
-                                type="text"
-                                class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-400"
-                                value="{{ form.first_name.value|default_if_none:'' }}"
-                                {% if form.first_name.field.required %}required{% endif %}>
-                            <div class="text-red-600 text-sm mt-1">
-                                {{ form.first_name.errors }}
+<!-- Modal de edición del perfil -->
+<div id="editProfileModal" class="fixed inset-0 hidden bg-gray-800 bg-opacity-75 z-50 overflow-auto">
+    <div class="flex justify-center items-center min-h-screen">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Editar Perfil</h2>
+            
+            <form enctype="multipart/form-data" method="post" class="space-y-6">
+                {% csrf_token %}
+                <!-- Aquí se colocan los campos del formulario tal como estaban en tu código original -->
+                <div class="w-full bg-gray-100 shadow-md p-4 rounded-md">
+                    <form enctype="multipart/form-data" method="post" class="flex flex-col space-y-6">
+                        {% csrf_token %}
+                        <div class="space-y-3">
+                            <!-- Nombre -->
+                            <div>
+                                <label for="id_first_name" class="block text-sm font-medium text-gray-700">Nombres</label>
+                                <input 
+                                    id="id_first_name"
+                                    name="first_name"
+                                    type="text"
+                                    class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-400"
+                                    value="{{ form.first_name.value|default_if_none:'' }}"
+                                    {% if form.first_name.field.required %}required{% endif %}>
+                                <div class="text-red-600 text-sm mt-1">
+                                    {{ form.first_name.errors }}
+                                </div>
                             </div>
+    
+                            <!-- Apellido -->
+                            <div>
+                                <label for="id_last_name" class="block text-sm font-medium text-gray-700">Apellidos</label>
+                                <input 
+                                    id="id_last_name"
+                                    name="last_name"
+                                    type="text"
+                                    class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-400"
+                                    value="{{ form.last_name.value|default_if_none:'' }}"
+                                    {% if form.last_name.field.required %}required{% endif %}>
+                                <div class="text-red-600 text-sm mt-1">
+                                    {{ form.last_name.errors }}
+                                </div>
+                            </div>
+    
+                            <!-- Nombre de usuario -->
+                            <div>
+                                <label for="id_username" class="block text-sm font-medium text-gray-700">Nombre de usuario</label>
+                                <input 
+                                    id="id_username"
+                                    name="username"
+                                    type="text"
+                                    class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-400"
+                                    value="{{ form.username.value|default_if_none:'' }}">
+                                <div class="text-red-600 text-sm mt-1">
+                                    {{ form.username.errors }}
+                                </div>
+                            </div>
+    
+                            <!-- Imagen -->
+                            <div>
+                                <label for="customFile" class="block text-sm font-medium text-gray-700">Foto de Perfil</label>
+                                <div class="flex items-center">
+                                    <button type="button" class="px-4 py-2 bg-pink-800 text-white rounded-lg shadow-md hover:bg-pink-700 focus:outline-none"
+                                            onclick="document.getElementById('id_image').click();">
+                                        Seleccionar Archivo
+                                    </button>
+                                    <span id="fileName" class="ml-3 text-sm text-gray-600">No se ha seleccionado ningún archivo</span>
+                                </div>
+                                <input id="id_image" name="image" type="file" class="hidden"
+                                       onchange="document.getElementById('fileName').textContent = this.files[0].name;">
+                                <div class="text-red-600 text-sm mt-1">
+                                    {{ form.image.errors }}
+                                </div>
+                            </div>
+                            
                         </div>
-
-                        <!-- Apellido -->
-                        <div>
-                            <label for="id_last_name" class="block text-sm font-medium text-gray-700">Apellidos</label>
-                            <input 
-                                id="id_last_name"
-                                name="last_name"
-                                type="text"
-                                class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-400"
-                                value="{{ form.last_name.value|default_if_none:'' }}"
-                                {% if form.last_name.field.required %}required{% endif %}>
-                            <div class="text-red-600 text-sm mt-1">
-                                {{ form.last_name.errors }}
-                            </div>
+    
+                        <div class="text-center mt-6">
+                            <button type="submit" class="w-full flex justify-center bg-pink-800 hover:bg-pink-700 text-pink-100 p-2 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500">
+                                Guardar Cambios
+                            </button>
                         </div>
+                    </form>
+                </div>
 
-                        <!-- Nombre de usuario -->
-                        <div>
-                            <label for="id_username" class="block text-sm font-medium text-gray-700">Nombre de usuario</label>
-                            <input 
-                                id="id_username"
-                                name="username"
-                                type="text"
-                                class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-400"
-                                value="{{ form.username.value|default_if_none:'' }}">
-                            <div class="text-red-600 text-sm mt-1">
-                                {{ form.username.errors }}
-                            </div>
-                        </div>
-
-                        <!-- Imagen -->
-                        <div>
-                            <label for="customFile" class="block text-sm font-medium text-gray-700">Foto de Perfil</label>
-                            <div class="flex items-center">
-                                <button type="button" class="px-4 py-2 bg-pink-800 text-white rounded-lg shadow-md hover:bg-pink-700 focus:outline-none"
-                                        onclick="document.getElementById('id_image').click();">
-                                    Seleccionar Archivo
-                                </button>
-                                <span id="fileName" class="ml-3 text-sm text-gray-600">No se ha seleccionado ningún archivo</span>
-                            </div>
-                            <input id="id_image" name="image" type="file" class="hidden"
-                                   onchange="document.getElementById('fileName').textContent = this.files[0].name;">
-                            <div class="text-red-600 text-sm mt-1">
-                                {{ form.image.errors }}
-                            </div>
-                        </div>
-                        
-                    </div>
-
-                    <div class="text-center mt-6">
-                        <button type="submit" class="w-full flex justify-center bg-pink-800 hover:bg-pink-700 text-pink-100 p-2 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500">
-                            Guardar Cambios
-                        </button>
-                    </div>
-                </form>
+            <!-- Botón de cerrar modal -->
+            <div class="text-right mt-4">
+                <button onclick="closeEditModal()" class="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500">Cerrar</button>
             </div>
-
-            <!-- roles 
-            <h2 class="font-semibold text-lg text-gray-800  mt-4 mb-2">Roles Asignados</h2>
-            <div class="bg-gray-100 shadow-md p-4 rounded-md mt-4 mb-4 max-h-20 overflow-y-auto">
-                <ul class="list-inside text-gray-700">
-                    {% if user_roles %}
-                        {% for role in user_roles %}
-                            <li>{{ role.name }}</li>
-                        {% endfor %}
-                    {% else %}
-                        <li>No se han asignado roles.</li>
-                    {% endif %}
-                </ul>
-            </div> -->
-
         </div>
     </div>
 </div>
+
+<script>
+    function openEditModal() {
+        document.getElementById('editProfileModal').classList.remove('hidden');
+    }
+
+    function closeEditModal() {
+        document.getElementById('editProfileModal').classList.add('hidden');
+    }
+</script>
 {% endblock content %}
