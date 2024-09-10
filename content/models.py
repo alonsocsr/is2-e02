@@ -29,12 +29,24 @@ class Contenido(models.Model):
     titulo = models.CharField(max_length=200, default="")
     resumen = models.TextField(default="")
     imagen = models.ImageField(upload_to="content", default=None, null=True)
-    cuerpo = RichTextUploadingField(default="cuerpo", blank=True, null=True)
+    cuerpo = RichTextUploadingField(
+        default="""
+        <p><span style="font-family:Times New Roman,Times,serif"><span style="font-size:20px">Cuerpo del contenido</span></span></p>
+
+        <p><span style="font-family:Times New Roman,Times,serif"><span style="font-size:20px">opcional:image</span></span></p>
+
+        <p><span style="font-family:Times New Roman,Times,serif"><span style="font-size:20px">opcional:embedido youtube</span></span></p>
+
+        <p><span style="font-family:Times New Roman,Times,serif"><span style="font-size:18px"><strong>Tags: <span style="color:#3498db">#Tag1 #Tag2 #Tag3</span></strong></span></span></p>
+        """, 
+        blank=True, 
+        null=True
+    )
     autor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     categoria = models.ForeignKey(Categorias, on_delete=models.SET_DEFAULT, default=1)
     fecha_creacion = models.DateTimeField(default=timezone.now)
-    fecha_publicacion = models.DateField(default=date.today)
-    vigencia = models.DateField(default=date.today)
+    fecha_publicacion = models.DateField(default=date.today, null=True)
+    vigencia = models.DateField(default=None,  null=True)
     estado = models.CharField(max_length=30, default="Borrador")
     activo = models.BooleanField(default=False)
     mensaje_rechazo = models.TextField(blank=True,default="")
@@ -83,8 +95,8 @@ class Version(models.Model):
     titulo = models.CharField(max_length=200)
     resumen = models.TextField()
     cuerpo = RichTextUploadingField()
-    fecha_publicacion = models.DateField(default=date.today)
-    vigencia = models.DateField(default=date.today)
+    fecha_publicacion = models.DateField(default=date.today, null=True)
+    vigencia = models.DateField(default=None, null=True)
     fecha_version = models.DateTimeField(default=timezone.now)
     editor = models.ForeignKey(
         User,on_delete=models.SET_NULL,
