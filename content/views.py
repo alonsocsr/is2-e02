@@ -22,7 +22,6 @@ class VistaAllContenidos(ListView):
 class VistaContenido(FormMixin, DetailView):
     template_name="content/detalle_contenido.html"
     model=Contenido
-    context_object_name="detalle_contenido"
     slug_field = 'slug'  
     slug_url_kwarg = 'slug' 
 
@@ -33,8 +32,8 @@ class VistaContenido(FormMixin, DetailView):
     form_class = ContenidoReportadoForm
     context_object_name="contenido"
 
-    def get_success_url(self):
-        return reverse_lazy('detalle_contenido', kwargs={'pk': self.object.pk})
+    # def get_success_url(self):
+    #     return reverse_lazy('detalle_contenido', kwargs={'pk': self.object.pk})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()

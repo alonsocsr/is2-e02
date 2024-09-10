@@ -19,7 +19,7 @@ urlpatterns = [
     
     #vista de contenidos
     path('contenidos/', VistaAllContenidos.as_view(), name='vista_all_contenidos'),
-    path('detalle-contenido/<int:pk>/', VistaContenido.as_view(), name='detalle_contenido'),
+    path('detalle-contenido/<slug:slug>/', VistaContenido.as_view(), name='detalle_contenido'),
     
     path('rechazar-contenido/<int:pk>', RechazarContenido.as_view(), name='rechazar_contenido'),
 ]

@@ -3,48 +3,60 @@
 {% load static %}
 
 {% block title %}
-   {{ detalle_contenido.titulo }} | Stark Blog
+   {{ contenido.titulo }} | Stark Blog
 {% endblock %}
 
 {% block content %}
-<div class="container mx-auto p-8">
-
+<div class="container mx-auto p-8 max-w-screen-md">
+    
     <!-- Imagen con categoría -->
-    <section id="summary" class="bg-white rounded-xl overflow-hidden mb-8 mx-auto" style="max-width: 80%;">
-        <div class="relative aspect-[3/2]">  
-            <img src="{{ detalle_contenido.imagen.url }}" alt="{{ detalle_contenido.titulo }}" class="w-full h-full object-cover rounded-t-xl">
-        </div>
+    <section id="summary" class="bg-white rounded-xl overflow-hidden mb-4 mx-auto" style="max-width: 90%; height: auto;">
         
-        <!-- Información del contenido -->
-        <div class="p-6">
-            <p class="leading-none font-semibold mb-6">{{ detalle_contenido.categoria.nombre_categoria }}</p>
-            <!-- Título -->
-            <h1 class="text-4xl font-bold text-gray-900 mb-4 text-left">{{ detalle_contenido.titulo }}</h1>
+        <div class="p-6 ">
+            <!-- Información de la categoría -->
+            <p class="leading-none font-semibold mb-2 text-pink-700">{{ contenido.categoria.nombre_categoria }}</p>
+            
+            <!-- Título del contenido -->
+            <h1 class="text-3xl font-bold text-gray-900 mb-4 text-left break-words">{{ contenido.titulo }}</h1>
 
             <!-- Resumen -->
-            {% if detalle_contenido.resumen %}
-            <div class="text-gray-700 mb-6 text-left">
-                <p>{{ detalle_contenido.resumen }}</p>
+            {% if contenido.resumen %}
+            <div class="text-gray-700 mb-4 text-left">
+                <p>{{ contenido.resumen }}</p>
             </div>
             {% endif %}
-            
-            <!-- Autor y Fecha -->
-            <div class="flex items-center justify-left text-sm text-gray-500 mb-4">
-                <img class="w-10 h-10 rounded-full mr-4" src="{% if detalle_contenido.autor.profile.image %}{{ detalle_contenido.autor.profile.image.url }}{% else %}{% static 'default.png' %}{% endif %}" alt="{{ detalle_contenido.autor.username }}">
-                <div>
-                    <p class="leading-none font-semibold">{{ detalle_contenido.autor.username }}</p>
-                    <p>Publicado el <time datetime="{{ detalle_contenido.fecha_modificacion }}">{{ detalle_contenido.fecha_modificacion|date:"d M Y" }}</time></p>
-                </div>
+        </div>
+
+        <!-- Autor y Fecha -->
+        <div class="ml-6 mt-4 mr-6 mb-6 flex items-center text-sm text-gray-500 ">
+            <img class="w-10 h-10 rounded-full mr-4" src="{% if contenido.autor.profile.image %}{{ contenido.autor.profile.image.url }}{% else %}{% static 'default.png' %}{% endif %}" alt="{{ contenido.autor.username }}">
+            <div>
+                <p class="leading-none font-semibold">{{ contenido.autor.username }}</p>
+                <p>Publicado el <time datetime="{{ contenido.fecha_modificacion }}">{{ contenido.fecha_modificacion|date:"d M Y" }}</time></p>
             </div>
+        </div>
+        <div class="relative aspect-[4/3]">
+            <img src="{{ contenido.imagen.url }}" alt="{{ contenido.titulo }}" class="w-full h-full object-cover">
+        </div>
+
+        <!-- Botones de inactivar y estadísticas alineados a la derecha -->
+        <div class="flex justify-end space-x-4 p-6">
+            {% if perms.permissions.inactivar_contenido %}
+            <a href="#" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">Inactivar contenido</a>
+            {% endif %}
+            {% if perms.permissions.ver_estadisticas_contenido %}
+            <a href="#" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">Ver estadísticas</a>
+            {% endif %}
         </div>
     </section>
 
     <!-- Cuerpo del Contenido -->
-    <main class="bg-white shadow-md rounded-xl p-6 text-gray-800 leading-relaxed mx-auto" style="max-width: 80%;">
-        <div class="prose max-w-none">
-            {{ detalle_contenido.cuerpo|safe|linebreaks }}
+    <main class="bg-white shadow-md rounded-xl p-6 text-gray-800 leading-relaxed mx-auto" style="max-width: 90%; height: auto;">
+        <div class="prose max-w-none" style="word-break: break-word; overflow-wrap: break-word;">
+            {{ contenido.cuerpo|safe|linebreaks }}
         </div>
     </main>
-
 </div>
+
+
 {% endblock %}

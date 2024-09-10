@@ -73,7 +73,7 @@
             <!-- Imagen Principal y Categoría -->
             <div class="flex flex-col md:flex-row gap-4 mb-6">
                 <!-- Imagen -->
-                <div class="flex-1">
+                <!-- <div class="flex-1">
                     <label for="imagen" class="block text-sm font-medium text-gray-700">Imagen Principal</label>
                     <div class="relative px-4 py-3 bg-gray-200 flex items-center justify-between rounded-md">
                         <input type="file" id="imagen" name="imagen" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
@@ -81,12 +81,32 @@
                             <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                             </svg>
-                            <span class="ml-2 text-sm text-gray-600">Choose a file</span>
+                            <span class="ml-2 text-sm text-gray-600">Selecciona un archivo</span>
                         </div>
-                        <span class="text-sm text-gray-500">Max file size: ???</span>
+                        <span class="text-sm text-gray-500">Max file size: ...</span>
                     </div>
                     {{ form.imagen.errors }}
+                </div> -->
+                <div class="flex-1">
+                    <label for="imagen" class="block text-sm font-medium text-gray-700">Imagen Principal</label>
+                    <div class="flex items-center bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 focus:outline-none">
+                        <button type="button" class="px-4 py-2 flex items-center ml-2 text-sm text-gray-600 "
+                                onclick="document.getElementById('imagen').click();">
+                            <!-- SVG icon -->
+                            <svg class="w-6 h-6 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Seleccionar Archivo
+                        </button>
+                        <span id="fileName" class="ml-3 text-sm text-gray-600">No se ha seleccionado ningún archivo</span>
+                    </div>
+                    <input id="imagen" name="imagen" type="file" class="hidden"
+                           onchange="document.getElementById('fileName').textContent = this.files[0].name;">
+                    <div class="text-red-600 text-sm mt-1">
+                        {{ form.imagen.errors }}
+                    </div>
                 </div>
+                
                 
                 <!-- Categoría -->
                 <div class="flex-1">
@@ -119,7 +139,7 @@
             <div class="flex justify-end space-x-4 mt-6">
                 <a href="{% url 'home' %}" class="bg-gray-400 hover:bg-gray-500 text-white py-2 px-4 rounded-lg transition ease-in-out duration-300">Cancelar</a>
                 <button type="submit" class="bg-pink-800 hover:bg-pink-700 text-white py-2 px-4 rounded-lg transition ease-in-out duration-300">Guardar Cambios</button>
-                <a href="#" class="bg-pink-800 hover:bg-pink-700 text-white py-2 px-4 rounded-lg transition ease-in-out duration-300">Mandar a edición</a>
+                <!-- <a href="#" class="bg-pink-800 hover:bg-pink-700 text-white py-2 px-4 rounded-lg transition ease-in-out duration-300">Mandar a edición</a> -->
             </div>
         </form>
     </div>
