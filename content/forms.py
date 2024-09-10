@@ -14,8 +14,8 @@ class ContenidoForm(forms.ModelForm):
             'imagen': 'Imagen Principal:',
             'cuerpo': 'Cuerpo del Contenido:',
             'categoria': 'Categoria:',
-            'fecha_publicacion': 'Fecha de Publicación:',
-            'vigencia': 'Fecha de vigencia:',
+            'fecha_publicacion': '(Opcional) Fecha de Publicación:',
+            'vigencia': '(Opcional) Fecha de vigencia:',
         }
         widgets = {
             'fecha_publicacion': forms.DateInput(attrs={'type': 'date'}),
@@ -28,7 +28,12 @@ class ContenidoForm(forms.ModelForm):
 
         super(ContenidoForm, self).__init__(*args, **kwargs)
         self.fields['slug'].required = False
-        self.fields['categoria'].queryset = Categorias.objects.all()
+        self.fields['fecha_publicacion'].required = False
+        self.fields['vigencia'].required = False
+        if autor.has_perm('permissions.categoria_no_moderada'):
+            self.fields['categoria'].queryset = Categorias.objects.all()
+        else:
+            self.fields['categoria'].queryset = Categorias.objects.filter(moderada=True)
         
         # clases para el front
         self.fields['fecha_publicacion'].widget.attrs.update({

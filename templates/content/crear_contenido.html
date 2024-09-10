@@ -39,7 +39,7 @@
                 <label for="version-select" class="block text-sm font-medium text-gray-700 mr-2">Seleccionar versión anterior:</label>
                 <select name="version_id" id="version-select" class="form-select p-2 text-gray-700 bg-gray-200 rounded-md" onchange="this.form.submit()">
                     {% if versiones %}
-                        <option value="{{ versiones.last.id }}">Última versión: {{ versiones.last.fecha_version|date:"d M Y H:i" }}</option>
+                        <option value="{{ versiones.first.id }}">Última versión: {{ versiones.first.fecha_version|date:"d M Y H:i" }}</option>
                     {% else %}
                         <option value="">-- Crear nueva versión --</option>
                     {% endif %}
@@ -118,11 +118,11 @@
             <!-- Fecha de Publicación y Vigencia -->
             <div class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label for="fecha_publicacion" class="block text-sm font-medium text-gray-700">Fecha de Publicación</label>
+                    <label for="fecha_publicacion" class="block text-sm font-medium text-gray-700">{{ form.fecha_publicacion.label }}</label>
                     {{ form.fecha_publicacion }}
                 </div>
                 <div>
-                    <label for="vigencia" class="block text-sm font-medium text-gray-700">Vigencia</label>
+                    <label for="vigencia" class="block text-sm font-medium text-gray-700">{{form.vigencia.label}}</label>
                     {{ form.vigencia }}
                 </div>
             </div>

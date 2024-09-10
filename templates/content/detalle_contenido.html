@@ -8,6 +8,19 @@
 
 {% block content %}
 <div class="container mx-auto p-8 max-w-screen-md">
+
+    <!-- Mensajes de avisos/exitos -->
+    <div class="mx-1 mb-4">
+        {% if messages %}
+            <div class="space-y-3">
+                {% for message in messages %}
+                    <div class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
     
     <!-- Imagen con categoría -->
     <section id="summary" class="bg-white rounded-xl overflow-hidden mb-4 mx-auto" style="max-width: 90%; height: auto;">
@@ -44,7 +57,18 @@
         <!-- Botones de inactivar y estadísticas alineados a la derecha -->
         <div class="flex justify-end space-x-4 p-6">
             {% if perms.permissions.inactivar_contenido %}
-            <a href="#" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">Inactivar contenido</a>
+                <form action="{% url 'inactivar_contenido' contenido.id %}" method="POST">
+                    {% csrf_token %}
+                    {% if contenido.activo %}
+                        <button type="submit" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">
+                            Inactivar Contenido
+                        </button>
+                    {% else %}
+                        <button type="submit" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">
+                            Activar Contenido
+                        </button>
+                    {% endif %}
+                </form>
             {% endif %}
             {% if perms.permissions.ver_estadisticas_contenido %}
             <a href="#" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">Ver estadísticas</a>

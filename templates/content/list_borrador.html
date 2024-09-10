@@ -71,12 +71,23 @@
                 Editar Borrador
               </a>
               <!-- Botón Enviar a Edición -->
+              {% if contenido.categoria.moderada %}
               <form action="{% url 'cambiar_estado' contenido.id %}" method="POST" class="w-full">
                 {% csrf_token %}
-                <button type="submit" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md text-center w-full">
-                  Enviar al Editor
-                </button>
+                  <button type="submit"
+                    class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md text-center w-full">
+                    Enviar al Editor
+                  </button>
+                </form>
+                {% else %}
+                <form action="{% url 'cambiar_estado' contenido.id %}" method="POST" class="w-full">
+                  {% csrf_token %}
+                  <button type="submit"
+                    class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md text-center w-full">
+                    Publicar
+                  </button>
               </form>
+              {% endif %}
             </div>
             
           </div>
