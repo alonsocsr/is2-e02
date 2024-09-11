@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CambiarEstadoView, ContenidoBorradorList, CrearContenido, ContenidoEdicionList, EditarContenido, ContenidoPublicarList, RechazarContenido, VistaAllContenidos, VistaContenido
+from .views import CambiarEstadoView, ContenidoBorradorList, CrearContenido, ContenidoEdicionList, EditarContenido, ContenidoPublicarList, RechazarContenido, VistaAllContenidos, VistaContenido, VistaContenidosReportados
 from . import views
 urlpatterns = [
     #autor
@@ -22,4 +22,5 @@ urlpatterns = [
     path('detalle-contenido/<slug:slug>/', VistaContenido.as_view(), name='detalle_contenido'),
     
     path('rechazar-contenido/<int:pk>', RechazarContenido.as_view(), name='rechazar_contenido'),
+    path('contenidos-reportados', VistaContenidosReportados.as_view(), name='contenidos_reportados'),
 ]

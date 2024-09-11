@@ -103,7 +103,7 @@ class RechazarContenidoForm(forms.ModelForm):
 class ContenidoReportadoForm(forms.ModelForm):
     class Meta:
         model = ContenidoReportado
-        fields = ['motivo']
+        fields = ['motivo','email']
         widgets = {
             'motivo': forms.Select(attrs={'class': 'form-control'}),
         }

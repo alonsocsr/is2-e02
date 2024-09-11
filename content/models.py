@@ -140,6 +140,7 @@ REPORTE_OPCIONES = [
 class ContenidoReportado(models.Model):
     contenido = models.ForeignKey(Contenido, on_delete=models.CASCADE)
     usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    email = models.EmailField(null=True,default=None)
     motivo = models.CharField(
         max_length=50,
         choices=REPORTE_OPCIONES,

@@ -4,6 +4,8 @@ from django.contrib import messages
 from .forms import CategoriaForm
 from .models import Categorias
 from django.shortcuts import get_object_or_404, redirect
+from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 class CrearCategoriaView(View):
     form_class = CategoriaForm
@@ -128,7 +130,7 @@ class EliminarCategoriaView(View):
         messages.success(request, 'Categoría eliminada con éxito', extra_tags='categoria')
         return redirect('categories:manage')
 
-from django.views.generic import TemplateView
+
 
 class ListarCategoriasView(TemplateView):
     """
@@ -138,3 +140,4 @@ class ListarCategoriasView(TemplateView):
     en la base de datos.
     """
     template_name = 'categories/listar_categorias.html'
+

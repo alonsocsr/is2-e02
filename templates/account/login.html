@@ -36,7 +36,7 @@
                     {% endif %}
                     <div>
                         <label for="id_login" class="sr-only">Email</label>
-                        <input id="id_login" name="login" type="email" placeholder="Email" class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-pink-400" value="{{ form.login.value |default_if_none:''  }}" required>
+                        <input id="id_login" name="login" type="text" placeholder="username or email" class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-pink-400" value="{{ form.login.value |default_if_none:''  }}" required>
                     </div>
                     <div class="relative">
                         <label for="id_password" class="sr-only">Password</label>

@@ -3,6 +3,7 @@ from django.shortcuts import redirect, render
 from django.views.generic import FormView, ListView,DetailView
 from categories.models import Categorias
 from content.models import Contenido
+from content.views import replace_pdf_image_with_link
 
 def home(request):
     """
@@ -20,10 +21,14 @@ def home(request):
       HttpResponse
           La respuesta HTTP que contiene la página de inicio.
     """
-    if request.user.is_authenticated:
-        contenido = Contenido.objects.filter(estado="Publicado")
-    else:
-        categorias_publicas = Categorias.objects.filter(tipo_categoria='PU')
-        contenido = Contenido.objects.filter(estado="Publicado", categoria__in=categorias_publicas)
+    categorias_restringidas = ['GR', 'PA']
+    
+    contenido = Contenido.objects.filter(estado="Publicado")
+    
+    
 
-    return render(request, 'home/contenido_home.html',{"contenidos":contenido})
+
+    for c in contenido:
+        c.cuerpo = replace_pdf_image_with_link(c.cuerpo)
+
+    return render(request, 'home/contenido_home.html',{"contenidos":contenido,"categorias_restringidas":categorias_restringidas})

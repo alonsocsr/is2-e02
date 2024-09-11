@@ -7,6 +7,19 @@
 {% endblock %}
 
 {% block content %}
+<!-- Mensajes de avisos/exitos -->
+<div class="mx-1 mb-4">
+    {% if messages %}
+    <div class="space-y-3">
+      {% for message in messages %}
+      <div
+        class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
 <div class="container mx-auto p-8 max-w-screen-md">
     
     <!-- Imagen con categoría -->
@@ -47,6 +60,7 @@
             {% if perms.permissions.ver_estadisticas_contenido %}
             <a href="#" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">Ver estadísticas</a>
             {% endif %}
+            <button onclick="openModal('{{ contenido.slug }}')" class="bg-red-500 text-white py-2 px-4 rounded-lg">Reportar</button>
         </div>
     </section>
 
@@ -57,6 +71,45 @@
         </div>
     </main>
 </div>
+
+
+    
+    <!-- Modal para el reporte -->
+<div id="reportModal" class="hs-overlay hidden fixed top-0 start-0 z-50 w-full h-full bg-gray-500 bg-opacity-75">
+    <div class="flex justify-center items-center h-full">
+        <div class="bg-white rounded-lg shadow-md w-full max-w-md p-4">
+            <h3 class="text-lg font-semibold text-gray-800 mb-3">Reportar Contenido</h3>
+            <form id="reportForm" method="post" action="">
+                {% csrf_token %}
+                {{ form.as_p }}
+                {% if not user.is_authenticated %}
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
+                    <input type="email" name="email" id="email" required
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+                {% endif %}
+                <div class="flex justify-end mt-4 space-x-2">
+                    <button type="button" onclick="closeModal()" class="bg-gray-400 text-white hover:bg-gray-500 py-2 px-4 rounded-lg">Cancelar</button>
+                    <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-lg">Reportar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+function openModal(slug) {
+    document.getElementById('reportModal').classList.remove('hidden');
+    document.getElementById('reportForm').action = "{% url 'detalle_contenido' slug='slug_placeholder' %}".replace('slug_placeholder', slug);
+}
+
+function closeModal() {
+    document.getElementById('reportModal').classList.add('hidden');
+}
+</script>
+
 
 
 {% endblock %}
