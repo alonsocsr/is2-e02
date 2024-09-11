@@ -111,4 +111,10 @@ class ContenidoReportadoForm(forms.ModelForm):
         fields = ['motivo','email']
         widgets = {
             'motivo': forms.Select(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
         }
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if self.user and self.user.is_authenticated:
+            self.fields.pop('email')

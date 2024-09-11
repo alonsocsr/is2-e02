@@ -14,11 +14,11 @@ from django.utils.safestring import mark_safe
 class VistaAllContenidos(ListView):
     template_name="content/ver_contenidos.html"
     model=Contenido
-    ordering=["-fecha_publicacion"]
+    ordering=["fecha_publicacion"]
     context_object_name="all_contenidos"
     
     def get_queryset(self):
-        return Contenido.objects.filter(estado="Publicado").order_by("-fecha_publicacion")
+        return Contenido.objects.filter(estado="Publicado").order_by("fecha_publicacion")
     
 class VistaContenido(FormMixin, DetailView):
     template_name="content/detalle_contenido.html"
@@ -36,6 +36,10 @@ class VistaContenido(FormMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['contenido'].cuerpo = replace_pdf_image_with_link(context['contenido'].cuerpo)
         return context
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user 
+        return kwargs
 
     def get_success_url(self):
         return reverse('detalle_contenido', kwargs={'slug': self.object.slug})
@@ -55,8 +59,9 @@ class VistaContenido(FormMixin, DetailView):
             contenido_reportado.usuario = self.request.user
             contenido_reportado.email = self.request.user.email
         else:
-            email = self.request.POST.get('email')
+            email = form.cleaned_data.get('email')
             contenido_reportado.usuario = None 
+            contenido_reportado.email=email
             
         contenido_reportado.save()
         messages.success(self.request, "Se ha reportado el contenido con éxito.")
@@ -73,7 +78,7 @@ class ContenidoBorradorList(LoginRequiredMixin, ListView):
     context_object_name = 'borradores'
 
     def get_queryset(self):
-        return Contenido.objects.filter(autor=self.request.user, estado='Borrador')
+        return Contenido.objects.filter(autor=self.request.user, estado='Borrador').order_by('fecha_modificacion')
 
 class CrearContenido(LoginRequiredMixin, FormView, PermissionRequiredMixin):
     template_name = "content/crear_contenido.html"
@@ -206,7 +211,7 @@ class ContenidoEdicionList(LoginRequiredMixin, ListView, PermissionRequiredMixin
         return Contenido.objects.filter(
                 Q(estado='Edicion') &
                 (Q(usuario_editor=self.request.user) | Q(usuario_editor=None))
-            )
+            ).order_by('fecha_modificacion')
 
 
 class EditarContenido(LoginRequiredMixin, FormView, PermissionRequiredMixin):
@@ -289,7 +294,7 @@ class ContenidoPublicarList(LoginRequiredMixin, ListView, PermissionRequiredMixi
     permission_required = 'permissions.publicar_contenido'
 
     def get_queryset(self):
-        return Contenido.objects.filter(estado='Publicar')
+        return Contenido.objects.filter(estado='Publicar').order_by('fecha_modificacion')
 
 
 class RechazarContenido(LoginRequiredMixin, UpdateView, PermissionRequiredMixin):
