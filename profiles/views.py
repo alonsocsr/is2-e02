@@ -76,6 +76,20 @@ class UpdateProfile(LoginRequiredMixin, FormView, PermissionRequiredMixin):
         """
         return self.request.path
     
+    def get_context_data(self, **kwargs):
+        """
+        Añade los roles del usuario al contexto para ser utilizados en el template.
+
+        Returns:
+            dict: Contexto actualizado con la información de los roles del usuario.
+        """
+        context = super().get_context_data(**kwargs)
+        # Suponiendo que tienes una relación entre el usuario y los roles
+        user = self.request.user
+        context['user_roles'] = user.groups.all()  # Asumiendo que estás utilizando grupos para roles
+        return context
+
+
 @login_required
 def categoria_interes(request, categoria_id):
     if request.method == "POST" and request.user.is_authenticated:
@@ -90,3 +104,21 @@ def categoria_interes(request, categoria_id):
 
         return JsonResponse({'is_interes': is_interes})
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@login_required
+def registrar_suscripcion(request, categoria_id):
+    """
+    Registra una suscripción de un usuario a una categoría paga.
+
+    Args:
+        request: El objeto request de Django.
+        categoria_id (int): El ID de la categoría a la que se quiere suscribir.
+    
+    Returns:
+        HttpResponseRedirect: Redirige al usuario a la página de detalle de la categoría.
+    """
+    categoria = get_object_or_404(Categorias, id=categoria_id)
+    
+    perfil = request.user.profile
+    perfil.suscripciones.add(categoria)
+    return redirect('categories:detalle', pk=categoria_id)

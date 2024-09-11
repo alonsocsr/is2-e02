@@ -80,14 +80,16 @@
 <div class="w-full bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl overflow-hidden flex flex-col md:flex-row relative">
         
     <!-- Imagen clickeable -->
-    <div class="h-32 md:h-48 lg:h-auto lg:w-48 flex-none bg-cover bg-center" 
+    <div class="h-32 md:h-48 lg:h-auto lg:w-36 flex-none bg-cover bg-center" 
         style="background-image: url('{% if contenido.imagen %}{{ contenido.imagen.url }}{% else %}/static/default.jpg{% endif %}'); object-fit: cover;">
         <a href="{% url 'detalle_contenido' contenido.slug %}" class="block w-full h-full"></a>
     </div>
 
     <!-- Categoría -->
     <div class="absolute top-2 right-2 bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full">
-        {{ contenido.categoria.nombre_categoria }}
+        <a href="{% url 'categories:detalle' contenido.categoria.id %}" class="hover:underline hover:text-pink-700">
+            {{ contenido.categoria.nombre_categoria }}
+        </a>
     </div>
 
     <!-- Información -->
@@ -95,9 +97,12 @@
         
         <!-- Autor y Fecha -->
         <div class="flex items-center justify-between mb-2">
-            <div class="text-sm">
-                <p class="text-gray-900 leading-none">{{ contenido.autor.get_full_name }}</p>
-                <p class="text-gray-600 text-xs">{{ contenido.fecha_creacion|date:"d M Y" }}</p>
+            <div class="flex items-center">
+                <img class="w-8 h-8 rounded-full mr-4" src="{% if contenido.autor.profile.image %}{{ contenido.autor.profile.image.url }}{% else %}/static/default.png{% endif %}" alt="Foto del autor">
+                <div class="text-sm">
+                    <p class="text-gray-900 leading-none">{{ contenido.autor.username }}</p>
+                    <p class="text-gray-600 text-xs">{{ contenido.fecha_creacion|date:"d M Y" }}</p>
+                </div>
             </div>
         </div>
 

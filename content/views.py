@@ -94,8 +94,8 @@ class CrearContenido(LoginRequiredMixin, FormView, PermissionRequiredMixin):
                 'resumen': contenido.resumen,
                 'cuerpo': contenido.cuerpo,
                 'categoria': contenido.categoria,
-                'fecha_publicacion': contenido.fecha_publicacion.isoformat(),
-                'vigencia': contenido.vigencia.isoformat()
+                'fecha_publicacion': contenido.fecha_publicacion.isoformat() if contenido.fecha_publicacion is not None else None,
+                'vigencia': contenido.vigencia.isoformat() if contenido.vigencia is not None else None
             }
 
         #si estamos editando una version
@@ -108,8 +108,8 @@ class CrearContenido(LoginRequiredMixin, FormView, PermissionRequiredMixin):
                     'resumen': version.resumen,
                     'cuerpo': version.cuerpo,
                     'categoria': version.contenido.categoria,
-                    'fecha_publicacion': version.fecha_publicacion.isoformat(),
-                    'vigencia': version.vigencia.isoformat()
+                    'fecha_publicacion': version.fecha_publicacion.isoformat() if contenido.fecha_publicacion is not None else None,
+                    'vigencia': version.vigencia.isoformat() if contenido.vigencia is not None else None
                 }
                 messages.success(self.request, "Se ha seleccionado la version")
             except Version.DoesNotExist:
@@ -154,7 +154,7 @@ class CambiarEstadoView(UpdateView):
     def form_valid(self, form):
         contenido = form.instance
         categoria=contenido.categoria
-        if categoria.moderada is True:
+        if categoria.moderada is False:
             contenido.estado = 'Publicado'
             contenido.activo=True
             contenido.mensaje_rechazo = ''
@@ -325,9 +325,14 @@ class InactivarContenido(LoginRequiredMixin, UpdateView, PermissionRequiredMixin
     
     def form_valid(self, form):
         contenido = form.save(commit=False)
-        contenido.estado = 'Inactivo'
-        contenido.activo = False
-        messages.success(self.request, "El contenido ha sido enviado a Edicion.")
+        if contenido.activo:
+            contenido.estado = 'Inactivo'
+            contenido.activo = False
+            messages.success(self.request, "El contenido ha sido Inactivado.")
+        else:
+            contenido.estado = 'Publicado'
+            contenido.activo = True
+            messages.success(self.request, "El contenido ha sido Activado.")
         contenido.save()
 
         referer = self.request.META.get('HTTP_REFERER')

@@ -1,11 +1,10 @@
-from django.shortcuts import render
-from django.views.generic import View, TemplateView
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from .forms import CategoriaForm
 from .models import Categorias
-from django.shortcuts import get_object_or_404, redirect
-from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.views.generic import View, TemplateView, DetailView
+from content.models import Contenido
 
 class CrearCategoriaView(View):
     form_class = CategoriaForm
@@ -131,13 +130,48 @@ class EliminarCategoriaView(View):
         return redirect('categories:manage')
 
 
-
 class ListarCategoriasView(TemplateView):
     """
-    Vista para mostrar una lista de categorías.
-
-    Esta vista renderiza una plantilla que muestra todas las categorías disponibles
-    en la base de datos.
+    Vista para mostrar una lista de categorías y un modal si es necesario.
     """
     template_name = 'categories/listar_categorias.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        categorias = Categorias.objects.all().order_by('id')
+        categorias_list = list(categorias.values('id', 'descripcion', 'nombre_categoria', 'tipo_categoria', 'precio'))
+
+        # Verificar si se debe mostrar el modal
+        mostrar_modal = self.request.GET.get('modal') == 'true'
+        categoria_id = self.request.GET.get('categoria_id')
+        categoria = None
+        if categoria_id:
+            try:
+                categoria = Categorias.objects.get(id=categoria_id)
+            except Categorias.DoesNotExist:
+                categoria = None
+
+        context.update({
+            'categorias': categorias_list,
+            'mostrar_modal': mostrar_modal,
+            'categoria': categoria
+        })
+        return context
+
+class DetalleCategoriaView(DetailView):
+    """
+    Vista para mostrar los detalles de una categoría.
+
+    Esta vista renderiza una plantilla que muestra los detalles de una categoría
+    específica, incluyendo todos los contenidos asociados a ella.
+    """
+    model = Categorias
+    template_name = 'categories/detalle_categoria.html'
+    context_object_name = 'categoria'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Obtener todos los contenidos asociados a esta categoría
+        contenidos = Contenido.objects.filter(categoria=self.object, estado='Publicado')
+        context['contenidos'] = contenidos
+        return context

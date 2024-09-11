@@ -7,7 +7,7 @@ def test_home(client, transactional_db):
     response = client.get(reverse("home"))
     print(f"\n\nProbando la vista home.")
     print(f"Ingreso correcto. Http response {response.status_code}")
-    assert response.status_code == 200
+    assert response.status_code == 200, 'No se ha podido acceder a la vista home'
 
 
 @pytest.mark.parametrize("correo, username, contraseña, valido", [
@@ -26,7 +26,6 @@ def test_signup(client, correo, username, contraseña, valido, transactional_db)
         'username': username,
         'password1': contraseña,
         'password2': contraseña,
-
     }
 
     print(
@@ -34,8 +33,8 @@ def test_signup(client, correo, username, contraseña, valido, transactional_db)
     response = client.post(reverse('account_signup'), data)
 
     if valido:
-        assert User.objects.filter(username=username).exists()
-        assert response.status_code == 302
+        assert User.objects.filter(username=username).exists(), 'El usuario no se ha creado'
+        assert response.status_code == 302, 'La redirección no es correcta'
     else:
-        assert not User.objects.filter(username=username).exists()
-        assert response.status_code == 200
+        assert not User.objects.filter(username=username).exists(), 'El usuario se ha creado'
+        assert response.status_code == 200, 'La redirección no es correcta'
