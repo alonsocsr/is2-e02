@@ -30,7 +30,7 @@
                     <ul class="mt-2 space-y-1 px-4">
                         {% for categoria in categorias %}
                         <li class="flex justify-between items-center">
-                            <a href="#" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-pink-700">
+                            <a href="{% url 'categories:detalle' categoria.id %}" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-pink-700">
                                 {{ categoria.nombre_categoria }}
                             </a>
                             

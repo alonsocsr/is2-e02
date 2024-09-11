@@ -20,20 +20,6 @@
     </div>
     {% endif %}
   </div>
-<div class="container mx-auto p-8 max-w-screen-md">
-
-    <!-- Mensajes de avisos/exitos -->
-    <div class="mx-1 mb-4">
-        {% if messages %}
-            <div class="space-y-3">
-                {% for message in messages %}
-                    <div class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    </div>
     
     <!-- Imagen con categoría -->
     <section id="summary" class="bg-white rounded-xl overflow-hidden mb-4 mx-auto" style="max-width: 90%; height: auto;">
@@ -109,11 +95,11 @@
                 {% csrf_token %}
                 {{ form.as_p }}
                 {% if not user.is_authenticated %}
-                <div class="mb-4">
+                <!-- <div class="mb-4">
                     <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
                     <input type="email" name="email" id="email" required
                         class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                </div>
+                </div> -->
                 {% endif %}
                 <div class="flex justify-end mt-4 space-x-2">
                     <button type="button" onclick="closeModal()" class="bg-gray-400 text-white hover:bg-gray-500 py-2 px-4 rounded-lg">Cancelar</button>
