@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'sorl.thumbnail',
+    'filebrowser',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
@@ -39,7 +40,7 @@ INSTALLED_APPS = [
 
 # configuracion de ckeditor
 CKEDITOR_UPLOAD_PATH = 'content/ckeditor'
-CKEDITOR_ALLPW_NONIMAGE_FILES=True
+CKEDITOR_ALLOW_NONIMAGE_FILES=True
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'full',
@@ -47,10 +48,15 @@ CKEDITOR_CONFIGS = {
         'width': 800,
         'removePlugins': 'exportpdf',
         'extraPlugins': ','.join([
-          'youtube'
+          'youtube',
+          'uploadimage',  
+          'embed', 'autoembed', 'embedsemantic', 
         ])
     }
 }
+config.filebrowserBrowseUrl = '/browser/browse.php';
+config.filebrowserUploadUrl = '/uploader/upload.php';
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -142,7 +148,8 @@ MEDIA_ROOT = BASE_DIR / "uploads"
 SITE_ID = 1
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_CONFIRM_EMAIL_ON_GET = False        # True
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'none'         # mandatory

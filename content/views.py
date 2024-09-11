@@ -1,13 +1,14 @@
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required, permission_required
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.db.models import Q
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormView, FormMixin, UpdateView
 from .forms import ContenidoForm, EditarContenidoForm, RechazarContenidoForm, ContenidoReportadoForm
 from .models import Version, Contenido, ContenidoReportado   
+import re
+from django.utils.safestring import mark_safe
 
 
 class VistaAllContenidos(ListView):
@@ -24,22 +25,20 @@ class VistaContenido(FormMixin, DetailView):
     model=Contenido
     slug_field = 'slug'  
     slug_url_kwarg = 'slug' 
+    form_class = ContenidoReportadoForm
+    context_object_name="contenido"
 
     def get_object(self, queryset=None):
         slug = self.kwargs.get(self.slug_url_kwarg)
         return get_object_or_404(Contenido, slug=slug)
     
-    form_class = ContenidoReportadoForm
-    context_object_name="contenido"
-
-    # def get_success_url(self):
-    #     return reverse_lazy('detalle_contenido', kwargs={'pk': self.object.pk})
-
     def get_context_data(self, **kwargs):
-        context = super().get_context_data()
-        if self.request.method == 'POST':
-            context['form'] = self.get_form()
+        context = super().get_context_data(**kwargs)
+        context['contenido'].cuerpo = replace_pdf_image_with_link(context['contenido'].cuerpo)
         return context
+
+    def get_success_url(self):
+        return reverse('detalle_contenido', kwargs={'slug': self.object.slug})
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -50,12 +49,21 @@ class VistaContenido(FormMixin, DetailView):
             return self.form_invalid(form)
 
     def form_valid(self, form):
+        contenido_reportado = form.save(commit=False)
+        contenido_reportado.contenido = self.object
         if self.request.user.is_authenticated:
-            form.instance.usuario = self.request.user
-        form.instance.contenido = self.get_object()
-        messages.success(self.request, "Se reportado el contenido con éxito")
-        form.save()
-        return super().form_valid(form)
+            contenido_reportado.usuario = self.request.user
+            contenido_reportado.email = self.request.user.email
+        else:
+            email = self.request.POST.get('email')
+            contenido_reportado.usuario = None 
+            
+        contenido_reportado.save()
+        messages.success(self.request, "Se ha reportado el contenido con éxito.")
+        return redirect(self.get_success_url())
+    
+    
+
     
 
      
@@ -306,7 +314,10 @@ class RechazarContenido(LoginRequiredMixin, UpdateView, PermissionRequiredMixin)
             return redirect(referer)
         else:
             return redirect('/')
-        
+
+    
+    
+
 class InactivarContenido(LoginRequiredMixin, UpdateView, PermissionRequiredMixin):
     model = Contenido
     fields=[]
@@ -329,3 +340,39 @@ class InactivarContenido(LoginRequiredMixin, UpdateView, PermissionRequiredMixin
             return redirect(referer)
         else:
             return redirect('/')
+
+
+
+def replace_pdf_image_with_link(content):
+    pattern = r'<img[^>]+src="([^"]+\.pdf)"[^>]*>'
+    
+    def replace_match(match):
+        pdf_url = match.group(1)
+        archivo = pdf_url.split('/')[-1]
+        return f'<a href="{pdf_url}" target="_blank">{archivo}</a>'
+   
+    updated_content = re.sub(pattern, replace_match, content)
+    
+    return updated_content
+
+class VistaContenidosReportados(LoginRequiredMixin, ListView, PermissionRequiredMixin):
+    """
+    Vista que muestra los contenidos reportados en el sitio web
+    :param request: Objeto de solicitud HTTP
+
+    returns: Respuesta HTTP que muestra la lista de contenidos reportados
+    """
+    model = ContenidoReportado
+    template_name = 'content/contenidos_reportados.html'
+    context_object_name = 'contenidos'
+    permission_required = 'permissions.ver_reportes_contenido'
+
+    def get_queryset(self):
+        user=self.request.user
+        if user.has_perm('permissions.suspender_cuenta') or user.groups.filter(name="Admin"):
+            return ContenidoReportado.objects.all()
+        elif user.groups.filter(name="Autor").exists():
+            return ContenidoReportado.objects.filter(contenido__autor=user)
+        else:
+            return ContenidoReportado.objects.none()
+        

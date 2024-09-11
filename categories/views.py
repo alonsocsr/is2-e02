@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import View, TemplateView
 from django.contrib import messages
 from .forms import CategoriaForm
 from .models import Categorias
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic import View, TemplateView, DetailView
 from content.models import Contenido
 
