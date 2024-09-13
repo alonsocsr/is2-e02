@@ -16,6 +16,10 @@ class UpdateProfile(LoginRequiredMixin, FormView, PermissionRequiredMixin):
 
     Esta vista utiliza un formulario para permitir que los usuarios autenticados 
     modifiquen su información personal, como nombre, apellido, nombre de usuario y foto de perfil.
+
+    :cvar template_name: str - Nombre de la plantilla utilizada para el formulario de actualización del perfil.
+    :cvar permission_required: str - Permiso necesario para acceder a esta vista.
+    :cvar form_class: ProfileForm - El formulario utilizado para actualizar el perfil.
     
     """
     template_name = "profiles/profile.html"
@@ -25,10 +29,9 @@ class UpdateProfile(LoginRequiredMixin, FormView, PermissionRequiredMixin):
 
     def get_initial(self):
         """
-        Inicializa los valores del formulario con la información actual del usuario.
+        Inicializa los valores del formulario con la información actual del usuario.  
 
-        Returns:
-            dict: Un diccionario con los datos iniciales para el formulario.
+        :return: dict - Un diccionario con los datos iniciales para el formulario.
         """
         initial = super().get_initial()
         user = self.request.user
@@ -45,11 +48,9 @@ class UpdateProfile(LoginRequiredMixin, FormView, PermissionRequiredMixin):
         Actualiza el perfil del usuario con los nuevos datos proporcionados en el formulario.
         Muestra un mensaje de éxito al usuario.
 
-        Args:
-            form: El formulario validado.
+        :param form: ProfileForm - El formulario validado.  
 
-        Returns:
-            HttpResponse: La respuesta redirige a la URL de éxito.
+        :return: HttpResponseRedirect - Redirige a la URL de éxito.
         """
         user = self.request.user
         profile = Profile.objects.get(user=user)
@@ -69,10 +70,9 @@ class UpdateProfile(LoginRequiredMixin, FormView, PermissionRequiredMixin):
 
     def get_success_url(self):
         """
-        Define la URL de redirección después de que el formulario se haya procesado correctamente.
+        Define la URL de redirección después de que el formulario se haya procesado correctamente.  
 
-        Returns:
-            str: La URL a la que se redirige al usuario.
+        :return: str - La URL a la que se redirige al usuario.
         """
         return self.request.path
     
@@ -80,8 +80,9 @@ class UpdateProfile(LoginRequiredMixin, FormView, PermissionRequiredMixin):
         """
         Añade los roles del usuario al contexto para ser utilizados en el template.
 
-        Returns:
-            dict: Contexto actualizado con la información de los roles del usuario.
+        :param \**kwargs: Parámetros adicionales que se pasan al método.  
+
+        :return: dict - Contexto actualizado con la información de los roles del usuario.
         """
         context = super().get_context_data(**kwargs)
         # Suponiendo que tienes una relación entre el usuario y los roles
@@ -92,6 +93,16 @@ class UpdateProfile(LoginRequiredMixin, FormView, PermissionRequiredMixin):
 
 @login_required
 def categoria_interes(request, categoria_id):
+    """
+    Maneja el interés de un usuario en una categoría.
+
+    Permite agregar o quitar una categoría de la lista de intereses del usuario. 
+
+    :param request: HttpRequest - La solicitud HTTP POST.
+    :param categoria_id: int - El ID de la categoría a modificar.  
+
+    :return: JsonResponse - Respuesta en formato JSON indicando si la categoría está en los intereses o no.
+    """
     if request.method == "POST" and request.user.is_authenticated:
         categoria = get_object_or_404(Categorias, id=categoria_id)
         user_profile = request.user.profile  # Asumiendo que hay un perfil de usuario relacionado
@@ -110,12 +121,10 @@ def registrar_suscripcion(request, categoria_id):
     """
     Registra una suscripción de un usuario a una categoría paga.
 
-    Args:
-        request: El objeto request de Django.
-        categoria_id (int): El ID de la categoría a la que se quiere suscribir.
-    
-    Returns:
-        HttpResponseRedirect: Redirige al usuario a la página de detalle de la categoría.
+    :param request: HttpRequest - La solicitud HTTP POST.
+    :param categoria_id: int - El ID de la categoría a la que se quiere suscribir.  
+
+    :return: HttpResponseRedirect - Redirige al usuario a la página de detalle de la categoría.
     """
     categoria = get_object_or_404(Categorias, id=categoria_id)
     

@@ -87,8 +87,6 @@ class EditarContenidoForm(forms.ModelForm):
             self.initial['usuario_editor'] = editor
 
     def save(self, commit=True):
-        """
-        """
         contenido = super(EditarContenidoForm, self).save(commit=False)
         if 'usuario_editor' in self.initial:
             contenido.usuario_editor = self.initial['usuario_editor']

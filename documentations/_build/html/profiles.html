@@ -77,6 +77,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#module-profiles.urls">profiles.urls module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-profiles.views">profiles.views module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#profiles.views.UpdateProfile"><code class="docutils literal notranslate"><span class="pre">UpdateProfile</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#profiles.views.categoria_interes"><code class="docutils literal notranslate"><span class="pre">categoria_interes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#profiles.views.registrar_suscripcion"><code class="docutils literal notranslate"><span class="pre">registrar_suscripcion()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#module-profiles">Module contents</a></li>
@@ -212,8 +214,21 @@
 <span id="profiles-models-module"></span><h2>profiles.models module<a class="headerlink" href="#module-profiles.models" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="profiles.models.Profile">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">profiles.models.</span></span><span class="sig-name descname"><span class="pre">Profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/profiles/models.html#Profile"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#profiles.models.Profile" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">profiles.models.</span></span><span class="sig-name descname"><span class="pre">Profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/profiles/models.html#Profile"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#profiles.models.Profile" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>La clase Profile define el modelo para el perfil de cada usuario.</p>
+<p>El modelo <cite>Profile</cite> está vinculado uno a uno con el modelo <cite>User</cite> de Django, 
+lo que permite almacenar información adicional sobre el usuario como una imagen de perfil</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user</strong><strong>(</strong><strong>OneToOneField</strong><strong>)</strong> – Campo de relación uno a uno con el modelo <cite>User</cite>, que asocia un perfil con un usuario específico.</p></li>
+<li><p><strong>image</strong><strong>(</strong><strong>ImageField</strong><strong>)</strong> – Campo de imagen que almacena la foto de perfil del usuario. Las imágenes se suben al directorio “profiles”.</p></li>
+<li><p><strong>categorias_interes</strong><strong>(</strong><strong>ManyToManyField</strong><strong>)</strong> – Campo de relación de muchos a muchos con el modelo <cite>Categorias</cite>, que almacena las categorías de interés del usuario. Es opcional.</p></li>
+<li><p><strong>suscripciones</strong><strong>(</strong><strong>ManyToManyField</strong><strong>)</strong> – Campo de relación de muchos a muchos con el modelo <cite>Categorias</cite>, que almacena las categorías a las que el usuario está suscrito. Es opcional.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py exception">
 <dt class="sig sig-object py" id="profiles.models.Profile.DoesNotExist">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#profiles.models.Profile.DoesNotExist" title="Link to this definition"></a></dt>
@@ -224,6 +239,22 @@
 <dt class="sig sig-object py" id="profiles.models.Profile.MultipleObjectsReturned">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#profiles.models.Profile.MultipleObjectsReturned" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="profiles.models.Profile.categorias_interes">
+<span class="sig-name descname"><span class="pre">categorias_interes</span></span><a class="headerlink" href="#profiles.models.Profile.categorias_interes" title="Link to this definition"></a></dt>
+<dd><p>Accessor to the related objects manager on the forward and reverse sides of
+a many-to-many relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Pizza</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">toppings</span> <span class="o">=</span> <span class="n">ManyToManyField</span><span class="p">(</span><span class="n">Topping</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;pizzas&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Pizza.toppings</span></code> and <code class="docutils literal notranslate"><span class="pre">Topping.pizzas</span></code> are <code class="docutils literal notranslate"><span class="pre">ManyToManyDescriptor</span></code>
+instances.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal notranslate"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -244,6 +275,22 @@ assigning the width/height to the width_field/height_field, if appropriate.</p>
 <dt class="sig sig-object py" id="profiles.models.Profile.objects">
 <span class="sig-name descname"><span class="pre">objects</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;django.db.models.manager.Manager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#profiles.models.Profile.objects" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="profiles.models.Profile.suscripciones">
+<span class="sig-name descname"><span class="pre">suscripciones</span></span><a class="headerlink" href="#profiles.models.Profile.suscripciones" title="Link to this definition"></a></dt>
+<dd><p>Accessor to the related objects manager on the forward and reverse sides of
+a many-to-many relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Pizza</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">toppings</span> <span class="o">=</span> <span class="n">ManyToManyField</span><span class="p">(</span><span class="n">Topping</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;pizzas&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Pizza.toppings</span></code> and <code class="docutils literal notranslate"><span class="pre">Topping.pizzas</span></code> are <code class="docutils literal notranslate"><span class="pre">ManyToManyDescriptor</span></code>
+instances.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal notranslate"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="profiles.models.Profile.user">
@@ -267,7 +314,19 @@ assigning the width/height to the width_field/height_field, if appropriate.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="profiles.models.create_user_profile">
 <span class="sig-prename descclassname"><span class="pre">profiles.models.</span></span><span class="sig-name descname"><span class="pre">create_user_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sender</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">created</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/profiles/models.html#create_user_profile"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#profiles.models.create_user_profile" title="Link to this definition"></a></dt>
-<dd><p>Crea un nuevo perfil cuando un usuario es creado</p>
+<dd><p>Señal que se ejecuta después de que se guarda un usuario.</p>
+<p>Esta función se encarga de crear un perfil para cada nuevo usuario. Asigna automáticamente 
+el grupo «Admin» al primer usuario y el grupo «Suscriptor» a todos los otros usuarios.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sender</strong> – El modelo que envía la señal (User).</p></li>
+<li><p><strong>instance</strong> – La instancia del usuario que se está guardando.</p></li>
+<li><p><strong>created</strong> – Indica si se ha creado un nuevo usuario (bool).</p></li>
+<li><p><strong>kwargs</strong> – Argumentos adicionales pasados a la función.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -283,6 +342,18 @@ assigning the width/height to the width_field/height_field, if appropriate.</p>
 <dt class="sig sig-object py" id="profiles.views.UpdateProfile">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">profiles.views.</span></span><span class="sig-name descname"><span class="pre">UpdateProfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/profiles/views.html#UpdateProfile"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#profiles.views.UpdateProfile" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">LoginRequiredMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">FormView</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">PermissionRequiredMixin</span></code></p>
+<p>La clase <cite>UpdateProfile</cite> define la vista para actualizar el perfil del usuario actual.</p>
+<p>Esta vista utiliza un formulario para permitir que los usuarios autenticados 
+modifiquen su información personal, como nombre, apellido, nombre de usuario y foto de perfil.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>template_name</strong> – str - Nombre de la plantilla utilizada para el formulario de actualización del perfil.</p></li>
+<li><p><strong>permission_required</strong> – str - Permiso necesario para acceder a esta vista.</p></li>
+<li><p><strong>form_class</strong> – ProfileForm - El formulario utilizado para actualizar el perfil.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="profiles.views.UpdateProfile.form_class">
 <span class="sig-name descname"><span class="pre">form_class</span></span><a class="headerlink" href="#profiles.views.UpdateProfile.form_class" title="Link to this definition"></a></dt>
@@ -292,19 +363,53 @@ assigning the width/height to the width_field/height_field, if appropriate.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="profiles.views.UpdateProfile.form_valid">
 <span class="sig-name descname"><span class="pre">form_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">form</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/profiles/views.html#UpdateProfile.form_valid"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#profiles.views.UpdateProfile.form_valid" title="Link to this definition"></a></dt>
-<dd><p>If the form is valid, redirect to the supplied URL.</p>
+<dd><p>Procesa los datos cuando el formulario es valido.</p>
+<p>Actualiza el perfil del usuario con los nuevos datos proporcionados en el formulario.
+Muestra un mensaje de éxito al usuario.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>form</strong> – ProfileForm - El formulario validado.</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>HttpResponseRedirect - Redirige a la URL de éxito.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="profiles.views.UpdateProfile.get_context_data">
+<span class="sig-name descname"><span class="pre">get_context_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/profiles/views.html#UpdateProfile.get_context_data"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#profiles.views.UpdateProfile.get_context_data" title="Link to this definition"></a></dt>
+<dd><p>Añade los roles del usuario al contexto para ser utilizados en el template.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>**kwargs</strong> – Parámetros adicionales que se pasan al método.</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict - Contexto actualizado con la información de los roles del usuario.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="profiles.views.UpdateProfile.get_initial">
 <span class="sig-name descname"><span class="pre">get_initial</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/profiles/views.html#UpdateProfile.get_initial"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#profiles.views.UpdateProfile.get_initial" title="Link to this definition"></a></dt>
-<dd><p>Return the initial data to use for forms on this view.</p>
+<dd><p>Inicializa los valores del formulario con la información actual del usuario.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict - Un diccionario con los datos iniciales para el formulario.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="profiles.views.UpdateProfile.get_success_url">
 <span class="sig-name descname"><span class="pre">get_success_url</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/profiles/views.html#UpdateProfile.get_success_url"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#profiles.views.UpdateProfile.get_success_url" title="Link to this definition"></a></dt>
-<dd><p>Return the URL to redirect to after processing a valid form.</p>
+<dd><p>Define la URL de redirección después de que el formulario se haya procesado correctamente.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Devuelve<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str - La URL a la que se redirige al usuario.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py attribute">
@@ -317,6 +422,41 @@ assigning the width/height to the width_field/height_field, if appropriate.</p>
 <span class="sig-name descname"><span class="pre">template_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'profiles/profile.html'</span></em><a class="headerlink" href="#profiles.views.UpdateProfile.template_name" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="profiles.views.categoria_interes">
+<span class="sig-prename descclassname"><span class="pre">profiles.views.</span></span><span class="sig-name descname"><span class="pre">categoria_interes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">categoria_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/profiles/views.html#categoria_interes"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#profiles.views.categoria_interes" title="Link to this definition"></a></dt>
+<dd><p>Maneja el interés de un usuario en una categoría.</p>
+<p>Permite agregar o quitar una categoría de la lista de intereses del usuario.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – HttpRequest - La solicitud HTTP POST.</p></li>
+<li><p><strong>categoria_id</strong> – int - El ID de la categoría a modificar.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>JsonResponse - Respuesta en formato JSON indicando si la categoría está en los intereses o no.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="profiles.views.registrar_suscripcion">
+<span class="sig-prename descclassname"><span class="pre">profiles.views.</span></span><span class="sig-name descname"><span class="pre">registrar_suscripcion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">categoria_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/profiles/views.html#registrar_suscripcion"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#profiles.views.registrar_suscripcion" title="Link to this definition"></a></dt>
+<dd><p>Registra una suscripción de un usuario a una categoría paga.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – HttpRequest - La solicitud HTTP POST.</p></li>
+<li><p><strong>categoria_id</strong> – int - El ID de la categoría a la que se quiere suscribir.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>HttpResponseRedirect - Redirige al usuario a la página de detalle de la categoría.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

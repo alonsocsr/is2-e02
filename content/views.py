@@ -12,6 +12,14 @@ from django.utils.safestring import mark_safe
 
 
 class VistaAllContenidos(ListView):
+    """
+    Vista para listar todos los contenidos publicados.
+
+    :cvar template_name: str - Nombre de la plantilla utilizada para mostrar la lista de contenidos.
+    :cvar model: Contenido - El modelo de datos utilizado para mostrar los contenidos.
+    :cvar ordering: list - Lista de campos por los cuales se ordenan los contenidos.
+    :cvar context_object_name: str - Nombre del contexto para los contenidos en la plantilla.
+    """
     template_name="content/ver_contenidos.html"
     model=Contenido
     ordering=["fecha_publicacion"]
@@ -21,6 +29,16 @@ class VistaAllContenidos(ListView):
         return Contenido.objects.filter(estado="Publicado").order_by("fecha_publicacion")
     
 class VistaContenido(FormMixin, DetailView):
+    """
+    Vista para mostrar el detalle de un contenido y permitir su reporte.
+
+    :cvar template_name: str - Nombre de la plantilla utilizada para mostrar el detalle del contenido.
+    :cvar model: Contenido - El modelo de datos utilizado para mostrar el contenido.
+    :cvar slug_field: str - Campo utilizado para buscar el contenido por slug.
+    :cvar slug_url_kwarg: str - Nombre del argumento de URL que contiene el slug.
+    :cvar form_class: ContenidoReportadoForm - El formulario utilizado para reportar el contenido.
+    :cvar context_object_name: str - Nombre del contexto para el contenido en la plantilla.
+    """
     template_name="content/detalle_contenido.html"
     model=Contenido
     slug_field = 'slug'  
@@ -70,6 +88,13 @@ class VistaContenido(FormMixin, DetailView):
 
      
 class ContenidoBorradorList(LoginRequiredMixin, ListView):
+    """
+    Vista para listar los contenidos en estado de borrador del usuario actual.
+
+    :cvar model: Contenido - El modelo de datos utilizado para mostrar los contenidos.
+    :cvar template_name: str - Nombre de la plantilla utilizada para mostrar la lista de borradores.
+    :cvar context_object_name: str - Nombre del contexto para los borradores en la plantilla.
+    """
     model = Contenido
     template_name = 'content/list_borrador.html'
     context_object_name = 'borradores'
@@ -78,6 +103,14 @@ class ContenidoBorradorList(LoginRequiredMixin, ListView):
         return Contenido.objects.filter(autor=self.request.user, estado='Borrador').order_by('fecha_modificacion')
      
 class ContenidoInactivadoList(LoginRequiredMixin, ListView, PermissionRequiredMixin):
+    """
+    Vista para listar los contenidos inactivados, con permisos de acceso requeridos.
+
+    :cvar model: Type[Contenido] - El modelo de datos utilizado para recuperar los contenidos.
+    :cvar template_name: str - Nombre de la plantilla utilizada para mostrar la lista de contenidos inactivos.
+    :cvar context_object_name: str - Nombre del contexto para los contenidos en la plantilla.
+    :cvar permission_required: str - Permiso requerido para acceder a esta vista.
+    """
     model = Contenido
     template_name = 'content/list_inactivado.html'
     context_object_name = 'contenidos'
@@ -93,6 +126,13 @@ class ContenidoInactivadoList(LoginRequiredMixin, ListView, PermissionRequiredMi
             return Contenido.objects.none()
 
 class CrearContenido(LoginRequiredMixin, FormView, PermissionRequiredMixin):
+    """
+    Vista para crear un nuevo contenido.
+
+    :cvar template_name: str - Nombre de la plantilla utilizada para el formulario de creación de contenido.
+    :cvar form_class: ContenidoForm - El formulario utilizado para crear el contenido.
+    :cvar permission_required: str - Permiso requerido para crear contenido.
+    """
     template_name = "content/crear_contenido.html"
     form_class = ContenidoForm
     permission_required = 'permissions.crear_contenido'
@@ -157,13 +197,18 @@ class CrearContenido(LoginRequiredMixin, FormView, PermissionRequiredMixin):
         return super().form_valid(form)
     
     def get_success_url(self):
-        """
-        Returns:
-            str: La URL a la que se redirige al usuario.
-        """
         return reverse('crear_contenido', kwargs={'contenido_id': self.object.id})
 
 class CambiarEstadoView(UpdateView):
+    """
+    Vista para cambiar el estado de un contenido.
+
+    Esta vista permite cambiar el estado de un contenido basado en su categoría y estado actual.
+
+    :cvar model: Contenido - El modelo del contenido que se está actualizando.
+    :cvar fields: list - Lista de campos del modelo a mostrar en el formulario.
+    :cvar template_name: str - Nombre de la plantilla utilizada para renderizar el formulario.
+    """
     model = Contenido
     fields = []
     template_name = "content/cambiar_estado.html"
@@ -210,9 +255,12 @@ class CambiarEstadoView(UpdateView):
 class ContenidoEdicionList(LoginRequiredMixin, ListView, PermissionRequiredMixin):
     """
     Vista que lista los contenidos de un editor
-    :param request: Objeto de solicitud HTTP
+    :cvar model: Contenido - El modelo del contenido que se está listando.
+    :cvar template_name: str - Nombre de la plantilla utilizada para mostrar la lista de contenidos.
+    :cvar context_object_name: str - Nombre del contexto que contiene la lista de contenidos.
+    :cvar permission_required: str - Permiso requerido para acceder a esta vista.
     
-    returns: Respuesta HTTP que muestra la lista de contenidos
+    :returns: Respuesta HTTP que muestra la lista de contenidos
     """
     model = Contenido
     template_name = 'content/vista_editor.html'
@@ -227,6 +275,15 @@ class ContenidoEdicionList(LoginRequiredMixin, ListView, PermissionRequiredMixin
 
 
 class EditarContenido(LoginRequiredMixin, FormView, PermissionRequiredMixin):
+    """
+    Vista para editar el contenido.
+
+    Esta vista permite al usuario editar un contenido y sus versiones, si es necesario.
+
+    :cvar template_name: str - Nombre de la plantilla utilizada para renderizar el formulario de edición.
+    :cvar form_class: type - Clase del formulario utilizado para editar el contenido.
+    :cvar permission_required: str - Permiso requerido para acceder a esta vista.
+    """
     template_name = "content/editar_contenido.html"
     form_class = EditarContenidoForm
     permission_required = 'permissions.editar_contenido'
@@ -296,7 +353,10 @@ class EditarContenido(LoginRequiredMixin, FormView, PermissionRequiredMixin):
 class ContenidoPublicarList(LoginRequiredMixin, ListView, PermissionRequiredMixin):
     """
     Vista que lista los contenidos de un editor
-    :param request: Objeto de solicitud HTTP
+    :cvar model: Contenido - El modelo del contenido que se está listando.
+    :cvar template_name: str - Nombre de la plantilla utilizada para mostrar la lista de contenidos.
+    :cvar context_object_name: str - Nombre del contexto que contiene la lista de contenidos.
+    :cvar permission_required: str - Permiso requerido para acceder a esta vista.
     
     returns: Respuesta HTTP que muestra la lista de contenidos
     """
@@ -310,6 +370,15 @@ class ContenidoPublicarList(LoginRequiredMixin, ListView, PermissionRequiredMixi
 
 
 class RechazarContenido(LoginRequiredMixin, UpdateView, PermissionRequiredMixin):
+    """
+    Vista para rechazar un contenido.
+
+    Esta vista permite cambiar el estado de un contenido a Edición o Borrador, dependiendo de su estado actual.
+
+    :cvar model: Contenido - El modelo del contenido que se está actualizando.
+    :cvar form_class: type - Clase del formulario utilizado para rechazar el contenido.
+    :cvar permission_required: str - Permiso requerido para acceder a esta vista.
+    """
     model = Contenido
     form_class = RechazarContenidoForm
     permission_required = 'permissions.rechazar_contenido'
@@ -336,6 +405,15 @@ class RechazarContenido(LoginRequiredMixin, UpdateView, PermissionRequiredMixin)
     
 
 class InactivarContenido(LoginRequiredMixin, UpdateView, PermissionRequiredMixin):
+    """
+    Vista para activar o inactivar un contenido.
+
+    Esta vista permite cambiar el estado de un contenido entre Inactivo y Activo.
+
+    :cvar model: Contenido - El modelo del contenido que se está actualizando.
+    :cvar fields: list - Lista de campos del modelo a mostrar en el formulario.
+    :cvar permission_required: str - Permiso requerido para acceder a esta vista.
+    """
     model = Contenido
     fields=[]
     permission_required = 'permissions.inactivar_contenido'
@@ -361,6 +439,14 @@ class InactivarContenido(LoginRequiredMixin, UpdateView, PermissionRequiredMixin
 
 
 def replace_pdf_image_with_link(content):
+    """
+    Reemplaza imágenes en el contenido con enlaces a archivos PDF.
+
+    Esta función busca imágenes que enlazan a archivos PDF y las reemplaza con un enlace al archivo PDF.
+
+    :param content: str - Contenido HTML con imágenes.
+    :return: str - Contenido HTML con imágenes reemplazadas por enlaces.
+    """
     pattern = r'<img[^>]+src="([^"]+\.pdf)"[^>]*>'
     
     def replace_match(match):
@@ -375,9 +461,12 @@ def replace_pdf_image_with_link(content):
 class VistaContenidosReportados(LoginRequiredMixin, ListView, PermissionRequiredMixin):
     """
     Vista que muestra los contenidos reportados en el sitio web
-    :param request: Objeto de solicitud HTTP
+    cvar model: ContenidoReportado - El modelo de los contenidos reportados.
+    :cvar template_name: str - Nombre de la plantilla utilizada para mostrar la lista de contenidos reportados.
+    :cvar context_object_name: str - Nombre del contexto que contiene la lista de contenidos reportados.
+    :cvar permission_required: str - Permiso requerido para acceder a esta vista.
 
-    returns: Respuesta HTTP que muestra la lista de contenidos reportados
+    :return: Respuesta HTTP que muestra la lista de contenidos reportados
     """
     model = ContenidoReportado
     template_name = 'content/contenidos_reportados.html'

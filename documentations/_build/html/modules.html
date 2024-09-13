@@ -54,6 +54,7 @@
 <li class="toctree-l2"><a class="reference internal" href="manage.html">manage module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="permissions.html">permissions package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="profiles.html">profiles package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="content.html">content package</a></li>
 </ul>
 </li>
 </ul>
@@ -123,6 +124,8 @@
 <li class="toctree-l3"><a class="reference internal" href="categories.html#categories.models.Categorias"><code class="docutils literal notranslate"><span class="pre">Categorias</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="categories.html#categories.models.Categorias.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">Categorias.DoesNotExist</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="categories.html#categories.models.Categorias.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">Categorias.MultipleObjectsReturned</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="categories.html#categories.models.Categorias.categorias_interes"><code class="docutils literal notranslate"><span class="pre">Categorias.categorias_interes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="categories.html#categories.models.Categorias.contenido_set"><code class="docutils literal notranslate"><span class="pre">Categorias.contenido_set</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="categories.html#categories.models.Categorias.descripcion"><code class="docutils literal notranslate"><span class="pre">Categorias.descripcion</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="categories.html#categories.models.Categorias.descripcion_corta"><code class="docutils literal notranslate"><span class="pre">Categorias.descripcion_corta</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="categories.html#categories.models.Categorias.estado"><code class="docutils literal notranslate"><span class="pre">Categorias.estado</span></code></a></li>
@@ -132,7 +135,9 @@
 <li class="toctree-l4"><a class="reference internal" href="categories.html#categories.models.Categorias.nombre_categoria"><code class="docutils literal notranslate"><span class="pre">Categorias.nombre_categoria</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="categories.html#categories.models.Categorias.objects"><code class="docutils literal notranslate"><span class="pre">Categorias.objects</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="categories.html#categories.models.Categorias.precio"><code class="docutils literal notranslate"><span class="pre">Categorias.precio</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="categories.html#categories.models.Categorias.prioridad"><code class="docutils literal notranslate"><span class="pre">Categorias.prioridad</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="categories.html#categories.models.Categorias.save"><code class="docutils literal notranslate"><span class="pre">Categorias.save()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="categories.html#categories.models.Categorias.suscripciones"><code class="docutils literal notranslate"><span class="pre">Categorias.suscripciones</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="categories.html#categories.models.Categorias.tipo_categoria"><code class="docutils literal notranslate"><span class="pre">Categorias.tipo_categoria</span></code></a></li>
 </ul>
 </li>
@@ -148,10 +153,22 @@
 <li class="toctree-l4"><a class="reference internal" href="categories.html#categories.views.CrearCategoriaView.template_name"><code class="docutils literal notranslate"><span class="pre">CrearCategoriaView.template_name</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="categories.html#categories.views.DetalleCategoriaView"><code class="docutils literal notranslate"><span class="pre">DetalleCategoriaView</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="categories.html#categories.views.DetalleCategoriaView.context_object_name"><code class="docutils literal notranslate"><span class="pre">DetalleCategoriaView.context_object_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="categories.html#categories.views.DetalleCategoriaView.get_context_data"><code class="docutils literal notranslate"><span class="pre">DetalleCategoriaView.get_context_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="categories.html#categories.views.DetalleCategoriaView.model"><code class="docutils literal notranslate"><span class="pre">DetalleCategoriaView.model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="categories.html#categories.views.DetalleCategoriaView.template_name"><code class="docutils literal notranslate"><span class="pre">DetalleCategoriaView.template_name</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="categories.html#categories.views.EliminarCategoriaView"><code class="docutils literal notranslate"><span class="pre">EliminarCategoriaView</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="categories.html#categories.views.EliminarCategoriaView.get"><code class="docutils literal notranslate"><span class="pre">EliminarCategoriaView.get()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="categories.html#categories.views.EliminarCategoriaView.post"><code class="docutils literal notranslate"><span class="pre">EliminarCategoriaView.post()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="categories.html#categories.views.EliminarCategoriaView.template_name"><code class="docutils literal notranslate"><span class="pre">EliminarCategoriaView.template_name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="categories.html#categories.views.ListarCategoriasView"><code class="docutils literal notranslate"><span class="pre">ListarCategoriasView</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="categories.html#categories.views.ListarCategoriasView.get_context_data"><code class="docutils literal notranslate"><span class="pre">ListarCategoriasView.get_context_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="categories.html#categories.views.ListarCategoriasView.template_name"><code class="docutils literal notranslate"><span class="pre">ListarCategoriasView.template_name</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="categories.html#categories.views.ModificarCategoriaView"><code class="docutils literal notranslate"><span class="pre">ModificarCategoriaView</span></code></a><ul>
@@ -311,9 +328,11 @@
 <li class="toctree-l3"><a class="reference internal" href="profiles.html#profiles.models.Profile"><code class="docutils literal notranslate"><span class="pre">Profile</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="profiles.html#profiles.models.Profile.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">Profile.DoesNotExist</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="profiles.html#profiles.models.Profile.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">Profile.MultipleObjectsReturned</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="profiles.html#profiles.models.Profile.categorias_interes"><code class="docutils literal notranslate"><span class="pre">Profile.categorias_interes</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="profiles.html#profiles.models.Profile.id"><code class="docutils literal notranslate"><span class="pre">Profile.id</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="profiles.html#profiles.models.Profile.image"><code class="docutils literal notranslate"><span class="pre">Profile.image</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="profiles.html#profiles.models.Profile.objects"><code class="docutils literal notranslate"><span class="pre">Profile.objects</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="profiles.html#profiles.models.Profile.suscripciones"><code class="docutils literal notranslate"><span class="pre">Profile.suscripciones</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="profiles.html#profiles.models.Profile.user"><code class="docutils literal notranslate"><span class="pre">Profile.user</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="profiles.html#profiles.models.Profile.user_id"><code class="docutils literal notranslate"><span class="pre">Profile.user_id</span></code></a></li>
 </ul>
@@ -327,15 +346,302 @@
 <li class="toctree-l3"><a class="reference internal" href="profiles.html#profiles.views.UpdateProfile"><code class="docutils literal notranslate"><span class="pre">UpdateProfile</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="profiles.html#profiles.views.UpdateProfile.form_class"><code class="docutils literal notranslate"><span class="pre">UpdateProfile.form_class</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="profiles.html#profiles.views.UpdateProfile.form_valid"><code class="docutils literal notranslate"><span class="pre">UpdateProfile.form_valid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="profiles.html#profiles.views.UpdateProfile.get_context_data"><code class="docutils literal notranslate"><span class="pre">UpdateProfile.get_context_data()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="profiles.html#profiles.views.UpdateProfile.get_initial"><code class="docutils literal notranslate"><span class="pre">UpdateProfile.get_initial()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="profiles.html#profiles.views.UpdateProfile.get_success_url"><code class="docutils literal notranslate"><span class="pre">UpdateProfile.get_success_url()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="profiles.html#profiles.views.UpdateProfile.permission_required"><code class="docutils literal notranslate"><span class="pre">UpdateProfile.permission_required</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="profiles.html#profiles.views.UpdateProfile.template_name"><code class="docutils literal notranslate"><span class="pre">UpdateProfile.template_name</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="profiles.html#profiles.views.categoria_interes"><code class="docutils literal notranslate"><span class="pre">categoria_interes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="profiles.html#profiles.views.registrar_suscripcion"><code class="docutils literal notranslate"><span class="pre">registrar_suscripcion()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="profiles.html#module-profiles">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="content.html">content package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="content.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="content.migrations.html">content.migrations package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.migrations.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.migrations.html#module-content.migrations.0001_initial">content.migrations.0001_initial module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.migrations.html#module-content.migrations.0002_alter_contenido_cuerpo">content.migrations.0002_alter_contenido_cuerpo module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.migrations.html#module-content.migrations.0003_rename_numero_valoraciones_contenido_cantidad_dislikes_and_more">content.migrations.0003_rename_numero_valoraciones_contenido_cantidad_dislikes_and_more module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.migrations.html#module-content.migrations.0004_contenido_comentario_rechazo_version_editor_and_more">content.migrations.0004_contenido_comentario_rechazo_version_editor_and_more module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.migrations.html#module-content.migrations.0005_remove_contenido_comentario_rechazo_and_more">content.migrations.0005_remove_contenido_comentario_rechazo_and_more module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.migrations.html#module-content.migrations.0006_alter_valoracion_usuario_contenidoseleccionado_and_more">content.migrations.0006_alter_valoracion_usuario_contenidoseleccionado_and_more module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.migrations.html#module-content.migrations.0007_alter_contenido_fecha_publicacion_and_more">content.migrations.0007_alter_contenido_fecha_publicacion_and_more module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.migrations.html#module-content.migrations.0007_contenidoreportado_email">content.migrations.0007_contenidoreportado_email module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.migrations.html#module-content.migrations.0008_alter_contenido_fecha_publicacion_and_more">content.migrations.0008_alter_contenido_fecha_publicacion_and_more module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.migrations.html#module-content.migrations.0009_merge_20240911_1518">content.migrations.0009_merge_20240911_1518 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.migrations.html#module-content.migrations.0010_alter_contenido_cuerpo">content.migrations.0010_alter_contenido_cuerpo module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.migrations.html#module-content.migrations">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="content.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="content.html#module-content.admin">content.admin module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="content.html#module-content.apps">content.apps module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.apps.ContentConfig"><code class="docutils literal notranslate"><span class="pre">ContentConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.apps.ContentConfig.default_auto_field"><code class="docutils literal notranslate"><span class="pre">ContentConfig.default_auto_field</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.apps.ContentConfig.name"><code class="docutils literal notranslate"><span class="pre">ContentConfig.name</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="content.html#module-content.forms">content.forms module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.forms.ContenidoForm"><code class="docutils literal notranslate"><span class="pre">ContenidoForm</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.forms.ContenidoForm.Meta"><code class="docutils literal notranslate"><span class="pre">ContenidoForm.Meta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.forms.ContenidoForm.base_fields"><code class="docutils literal notranslate"><span class="pre">ContenidoForm.base_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.forms.ContenidoForm.clean_slug"><code class="docutils literal notranslate"><span class="pre">ContenidoForm.clean_slug()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.forms.ContenidoForm.declared_fields"><code class="docutils literal notranslate"><span class="pre">ContenidoForm.declared_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.forms.ContenidoForm.media"><code class="docutils literal notranslate"><span class="pre">ContenidoForm.media</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.forms.ContenidoForm.save"><code class="docutils literal notranslate"><span class="pre">ContenidoForm.save()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.forms.ContenidoReportadoForm"><code class="docutils literal notranslate"><span class="pre">ContenidoReportadoForm</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.forms.ContenidoReportadoForm.Meta"><code class="docutils literal notranslate"><span class="pre">ContenidoReportadoForm.Meta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.forms.ContenidoReportadoForm.base_fields"><code class="docutils literal notranslate"><span class="pre">ContenidoReportadoForm.base_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.forms.ContenidoReportadoForm.declared_fields"><code class="docutils literal notranslate"><span class="pre">ContenidoReportadoForm.declared_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.forms.ContenidoReportadoForm.media"><code class="docutils literal notranslate"><span class="pre">ContenidoReportadoForm.media</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.forms.EditarContenidoForm"><code class="docutils literal notranslate"><span class="pre">EditarContenidoForm</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.forms.EditarContenidoForm.Meta"><code class="docutils literal notranslate"><span class="pre">EditarContenidoForm.Meta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.forms.EditarContenidoForm.base_fields"><code class="docutils literal notranslate"><span class="pre">EditarContenidoForm.base_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.forms.EditarContenidoForm.declared_fields"><code class="docutils literal notranslate"><span class="pre">EditarContenidoForm.declared_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.forms.EditarContenidoForm.media"><code class="docutils literal notranslate"><span class="pre">EditarContenidoForm.media</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.forms.EditarContenidoForm.save"><code class="docutils literal notranslate"><span class="pre">EditarContenidoForm.save()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.forms.RechazarContenidoForm"><code class="docutils literal notranslate"><span class="pre">RechazarContenidoForm</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.forms.RechazarContenidoForm.Meta"><code class="docutils literal notranslate"><span class="pre">RechazarContenidoForm.Meta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.forms.RechazarContenidoForm.base_fields"><code class="docutils literal notranslate"><span class="pre">RechazarContenidoForm.base_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.forms.RechazarContenidoForm.declared_fields"><code class="docutils literal notranslate"><span class="pre">RechazarContenidoForm.declared_fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.forms.RechazarContenidoForm.media"><code class="docutils literal notranslate"><span class="pre">RechazarContenidoForm.media</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="content.html#module-content.models">content.models module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.models.Contenido"><code class="docutils literal notranslate"><span class="pre">Contenido</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">Contenido.DoesNotExist</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">Contenido.MultipleObjectsReturned</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.activo"><code class="docutils literal notranslate"><span class="pre">Contenido.activo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.autor"><code class="docutils literal notranslate"><span class="pre">Contenido.autor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.autor_id"><code class="docutils literal notranslate"><span class="pre">Contenido.autor_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.cambios"><code class="docutils literal notranslate"><span class="pre">Contenido.cambios</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.cantidad_dislikes"><code class="docutils literal notranslate"><span class="pre">Contenido.cantidad_dislikes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.cantidad_likes"><code class="docutils literal notranslate"><span class="pre">Contenido.cantidad_likes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.cantidad_valoraciones"><code class="docutils literal notranslate"><span class="pre">Contenido.cantidad_valoraciones</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.cantidad_vistas"><code class="docutils literal notranslate"><span class="pre">Contenido.cantidad_vistas</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.categoria"><code class="docutils literal notranslate"><span class="pre">Contenido.categoria</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.categoria_id"><code class="docutils literal notranslate"><span class="pre">Contenido.categoria_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.contenidoreportado_set"><code class="docutils literal notranslate"><span class="pre">Contenido.contenidoreportado_set</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.contenidoseleccionado_set"><code class="docutils literal notranslate"><span class="pre">Contenido.contenidoseleccionado_set</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.cuerpo"><code class="docutils literal notranslate"><span class="pre">Contenido.cuerpo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.estado"><code class="docutils literal notranslate"><span class="pre">Contenido.estado</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.fecha_creacion"><code class="docutils literal notranslate"><span class="pre">Contenido.fecha_creacion</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.fecha_modificacion"><code class="docutils literal notranslate"><span class="pre">Contenido.fecha_modificacion</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.fecha_publicacion"><code class="docutils literal notranslate"><span class="pre">Contenido.fecha_publicacion</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.get_next_by_fecha_creacion"><code class="docutils literal notranslate"><span class="pre">Contenido.get_next_by_fecha_creacion()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.get_next_by_fecha_modificacion"><code class="docutils literal notranslate"><span class="pre">Contenido.get_next_by_fecha_modificacion()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.get_previous_by_fecha_creacion"><code class="docutils literal notranslate"><span class="pre">Contenido.get_previous_by_fecha_creacion()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.get_previous_by_fecha_modificacion"><code class="docutils literal notranslate"><span class="pre">Contenido.get_previous_by_fecha_modificacion()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.id"><code class="docutils literal notranslate"><span class="pre">Contenido.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.imagen"><code class="docutils literal notranslate"><span class="pre">Contenido.imagen</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.mensaje_rechazo"><code class="docutils literal notranslate"><span class="pre">Contenido.mensaje_rechazo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.objects"><code class="docutils literal notranslate"><span class="pre">Contenido.objects</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.puntuacion"><code class="docutils literal notranslate"><span class="pre">Contenido.puntuacion</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.resumen"><code class="docutils literal notranslate"><span class="pre">Contenido.resumen</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.save_version"><code class="docutils literal notranslate"><span class="pre">Contenido.save_version()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.slug"><code class="docutils literal notranslate"><span class="pre">Contenido.slug</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.titulo"><code class="docutils literal notranslate"><span class="pre">Contenido.titulo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.usuario_editor"><code class="docutils literal notranslate"><span class="pre">Contenido.usuario_editor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.usuario_editor_id"><code class="docutils literal notranslate"><span class="pre">Contenido.usuario_editor_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.valoracion_set"><code class="docutils literal notranslate"><span class="pre">Contenido.valoracion_set</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.versiones"><code class="docutils literal notranslate"><span class="pre">Contenido.versiones</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Contenido.vigencia"><code class="docutils literal notranslate"><span class="pre">Contenido.vigencia</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.models.ContenidoReportado"><code class="docutils literal notranslate"><span class="pre">ContenidoReportado</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoReportado.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">ContenidoReportado.DoesNotExist</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoReportado.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">ContenidoReportado.MultipleObjectsReturned</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoReportado.contenido"><code class="docutils literal notranslate"><span class="pre">ContenidoReportado.contenido</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoReportado.contenido_id"><code class="docutils literal notranslate"><span class="pre">ContenidoReportado.contenido_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoReportado.email"><code class="docutils literal notranslate"><span class="pre">ContenidoReportado.email</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoReportado.fecha"><code class="docutils literal notranslate"><span class="pre">ContenidoReportado.fecha</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoReportado.get_motivo_display"><code class="docutils literal notranslate"><span class="pre">ContenidoReportado.get_motivo_display()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoReportado.get_next_by_fecha"><code class="docutils literal notranslate"><span class="pre">ContenidoReportado.get_next_by_fecha()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoReportado.get_previous_by_fecha"><code class="docutils literal notranslate"><span class="pre">ContenidoReportado.get_previous_by_fecha()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoReportado.id"><code class="docutils literal notranslate"><span class="pre">ContenidoReportado.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoReportado.motivo"><code class="docutils literal notranslate"><span class="pre">ContenidoReportado.motivo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoReportado.objects"><code class="docutils literal notranslate"><span class="pre">ContenidoReportado.objects</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoReportado.usuario"><code class="docutils literal notranslate"><span class="pre">ContenidoReportado.usuario</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoReportado.usuario_id"><code class="docutils literal notranslate"><span class="pre">ContenidoReportado.usuario_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.models.ContenidoSeleccionado"><code class="docutils literal notranslate"><span class="pre">ContenidoSeleccionado</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoSeleccionado.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">ContenidoSeleccionado.DoesNotExist</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoSeleccionado.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">ContenidoSeleccionado.MultipleObjectsReturned</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoSeleccionado.contenido"><code class="docutils literal notranslate"><span class="pre">ContenidoSeleccionado.contenido</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoSeleccionado.contenido_id"><code class="docutils literal notranslate"><span class="pre">ContenidoSeleccionado.contenido_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoSeleccionado.fecha"><code class="docutils literal notranslate"><span class="pre">ContenidoSeleccionado.fecha</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoSeleccionado.get_next_by_fecha"><code class="docutils literal notranslate"><span class="pre">ContenidoSeleccionado.get_next_by_fecha()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoSeleccionado.get_previous_by_fecha"><code class="docutils literal notranslate"><span class="pre">ContenidoSeleccionado.get_previous_by_fecha()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoSeleccionado.id"><code class="docutils literal notranslate"><span class="pre">ContenidoSeleccionado.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoSeleccionado.objects"><code class="docutils literal notranslate"><span class="pre">ContenidoSeleccionado.objects</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoSeleccionado.usuario"><code class="docutils literal notranslate"><span class="pre">ContenidoSeleccionado.usuario</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.ContenidoSeleccionado.usuario_id"><code class="docutils literal notranslate"><span class="pre">ContenidoSeleccionado.usuario_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.models.Valoracion"><code class="docutils literal notranslate"><span class="pre">Valoracion</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Valoracion.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">Valoracion.DoesNotExist</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Valoracion.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">Valoracion.MultipleObjectsReturned</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Valoracion.contenido"><code class="docutils literal notranslate"><span class="pre">Valoracion.contenido</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Valoracion.contenido_id"><code class="docutils literal notranslate"><span class="pre">Valoracion.contenido_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Valoracion.fecha"><code class="docutils literal notranslate"><span class="pre">Valoracion.fecha</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Valoracion.get_next_by_fecha"><code class="docutils literal notranslate"><span class="pre">Valoracion.get_next_by_fecha()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Valoracion.get_previous_by_fecha"><code class="docutils literal notranslate"><span class="pre">Valoracion.get_previous_by_fecha()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Valoracion.id"><code class="docutils literal notranslate"><span class="pre">Valoracion.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Valoracion.objects"><code class="docutils literal notranslate"><span class="pre">Valoracion.objects</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Valoracion.puntuacion"><code class="docutils literal notranslate"><span class="pre">Valoracion.puntuacion</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Valoracion.usuario"><code class="docutils literal notranslate"><span class="pre">Valoracion.usuario</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Valoracion.usuario_id"><code class="docutils literal notranslate"><span class="pre">Valoracion.usuario_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.models.Version"><code class="docutils literal notranslate"><span class="pre">Version</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Version.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">Version.DoesNotExist</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Version.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">Version.MultipleObjectsReturned</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Version.contenido"><code class="docutils literal notranslate"><span class="pre">Version.contenido</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Version.contenido_id"><code class="docutils literal notranslate"><span class="pre">Version.contenido_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Version.cuerpo"><code class="docutils literal notranslate"><span class="pre">Version.cuerpo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Version.editor"><code class="docutils literal notranslate"><span class="pre">Version.editor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Version.editor_id"><code class="docutils literal notranslate"><span class="pre">Version.editor_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Version.fecha_publicacion"><code class="docutils literal notranslate"><span class="pre">Version.fecha_publicacion</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Version.fecha_version"><code class="docutils literal notranslate"><span class="pre">Version.fecha_version</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Version.get_next_by_fecha_version"><code class="docutils literal notranslate"><span class="pre">Version.get_next_by_fecha_version()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Version.get_previous_by_fecha_version"><code class="docutils literal notranslate"><span class="pre">Version.get_previous_by_fecha_version()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Version.id"><code class="docutils literal notranslate"><span class="pre">Version.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Version.objects"><code class="docutils literal notranslate"><span class="pre">Version.objects</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Version.resumen"><code class="docutils literal notranslate"><span class="pre">Version.resumen</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Version.titulo"><code class="docutils literal notranslate"><span class="pre">Version.titulo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.models.Version.vigencia"><code class="docutils literal notranslate"><span class="pre">Version.vigencia</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="content.html#module-content.tests">content.tests module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="content.html#module-content.urls">content.urls module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="content.html#module-content.views">content.views module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.views.CambiarEstadoView"><code class="docutils literal notranslate"><span class="pre">CambiarEstadoView</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.CambiarEstadoView.fields"><code class="docutils literal notranslate"><span class="pre">CambiarEstadoView.fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.CambiarEstadoView.form_valid"><code class="docutils literal notranslate"><span class="pre">CambiarEstadoView.form_valid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.CambiarEstadoView.model"><code class="docutils literal notranslate"><span class="pre">CambiarEstadoView.model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.CambiarEstadoView.template_name"><code class="docutils literal notranslate"><span class="pre">CambiarEstadoView.template_name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.views.ContenidoBorradorList"><code class="docutils literal notranslate"><span class="pre">ContenidoBorradorList</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.ContenidoBorradorList.context_object_name"><code class="docutils literal notranslate"><span class="pre">ContenidoBorradorList.context_object_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.ContenidoBorradorList.get_queryset"><code class="docutils literal notranslate"><span class="pre">ContenidoBorradorList.get_queryset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.ContenidoBorradorList.model"><code class="docutils literal notranslate"><span class="pre">ContenidoBorradorList.model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.ContenidoBorradorList.template_name"><code class="docutils literal notranslate"><span class="pre">ContenidoBorradorList.template_name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.views.ContenidoEdicionList"><code class="docutils literal notranslate"><span class="pre">ContenidoEdicionList</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.ContenidoEdicionList.context_object_name"><code class="docutils literal notranslate"><span class="pre">ContenidoEdicionList.context_object_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.ContenidoEdicionList.get_queryset"><code class="docutils literal notranslate"><span class="pre">ContenidoEdicionList.get_queryset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.ContenidoEdicionList.model"><code class="docutils literal notranslate"><span class="pre">ContenidoEdicionList.model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.ContenidoEdicionList.permission_required"><code class="docutils literal notranslate"><span class="pre">ContenidoEdicionList.permission_required</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.ContenidoEdicionList.template_name"><code class="docutils literal notranslate"><span class="pre">ContenidoEdicionList.template_name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.views.ContenidoInactivadoList"><code class="docutils literal notranslate"><span class="pre">ContenidoInactivadoList</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.ContenidoInactivadoList.context_object_name"><code class="docutils literal notranslate"><span class="pre">ContenidoInactivadoList.context_object_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.ContenidoInactivadoList.get_queryset"><code class="docutils literal notranslate"><span class="pre">ContenidoInactivadoList.get_queryset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.ContenidoInactivadoList.model"><code class="docutils literal notranslate"><span class="pre">ContenidoInactivadoList.model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.ContenidoInactivadoList.permission_required"><code class="docutils literal notranslate"><span class="pre">ContenidoInactivadoList.permission_required</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.ContenidoInactivadoList.template_name"><code class="docutils literal notranslate"><span class="pre">ContenidoInactivadoList.template_name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.views.ContenidoPublicarList"><code class="docutils literal notranslate"><span class="pre">ContenidoPublicarList</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.ContenidoPublicarList.context_object_name"><code class="docutils literal notranslate"><span class="pre">ContenidoPublicarList.context_object_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.ContenidoPublicarList.get_queryset"><code class="docutils literal notranslate"><span class="pre">ContenidoPublicarList.get_queryset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.ContenidoPublicarList.model"><code class="docutils literal notranslate"><span class="pre">ContenidoPublicarList.model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.ContenidoPublicarList.permission_required"><code class="docutils literal notranslate"><span class="pre">ContenidoPublicarList.permission_required</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.ContenidoPublicarList.template_name"><code class="docutils literal notranslate"><span class="pre">ContenidoPublicarList.template_name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.views.CrearContenido"><code class="docutils literal notranslate"><span class="pre">CrearContenido</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.CrearContenido.form_class"><code class="docutils literal notranslate"><span class="pre">CrearContenido.form_class</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.CrearContenido.form_valid"><code class="docutils literal notranslate"><span class="pre">CrearContenido.form_valid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.CrearContenido.get_context_data"><code class="docutils literal notranslate"><span class="pre">CrearContenido.get_context_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.CrearContenido.get_form_kwargs"><code class="docutils literal notranslate"><span class="pre">CrearContenido.get_form_kwargs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.CrearContenido.get_success_url"><code class="docutils literal notranslate"><span class="pre">CrearContenido.get_success_url()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.CrearContenido.permission_required"><code class="docutils literal notranslate"><span class="pre">CrearContenido.permission_required</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.CrearContenido.template_name"><code class="docutils literal notranslate"><span class="pre">CrearContenido.template_name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.views.EditarContenido"><code class="docutils literal notranslate"><span class="pre">EditarContenido</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.EditarContenido.form_class"><code class="docutils literal notranslate"><span class="pre">EditarContenido.form_class</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.EditarContenido.form_valid"><code class="docutils literal notranslate"><span class="pre">EditarContenido.form_valid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.EditarContenido.get_context_data"><code class="docutils literal notranslate"><span class="pre">EditarContenido.get_context_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.EditarContenido.get_form_kwargs"><code class="docutils literal notranslate"><span class="pre">EditarContenido.get_form_kwargs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.EditarContenido.get_success_url"><code class="docutils literal notranslate"><span class="pre">EditarContenido.get_success_url()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.EditarContenido.permission_required"><code class="docutils literal notranslate"><span class="pre">EditarContenido.permission_required</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.EditarContenido.template_name"><code class="docutils literal notranslate"><span class="pre">EditarContenido.template_name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.views.InactivarContenido"><code class="docutils literal notranslate"><span class="pre">InactivarContenido</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.InactivarContenido.fields"><code class="docutils literal notranslate"><span class="pre">InactivarContenido.fields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.InactivarContenido.form_valid"><code class="docutils literal notranslate"><span class="pre">InactivarContenido.form_valid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.InactivarContenido.model"><code class="docutils literal notranslate"><span class="pre">InactivarContenido.model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.InactivarContenido.permission_required"><code class="docutils literal notranslate"><span class="pre">InactivarContenido.permission_required</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.views.RechazarContenido"><code class="docutils literal notranslate"><span class="pre">RechazarContenido</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.RechazarContenido.form_class"><code class="docutils literal notranslate"><span class="pre">RechazarContenido.form_class</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.RechazarContenido.form_valid"><code class="docutils literal notranslate"><span class="pre">RechazarContenido.form_valid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.RechazarContenido.model"><code class="docutils literal notranslate"><span class="pre">RechazarContenido.model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.RechazarContenido.permission_required"><code class="docutils literal notranslate"><span class="pre">RechazarContenido.permission_required</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.views.VistaAllContenidos"><code class="docutils literal notranslate"><span class="pre">VistaAllContenidos</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.VistaAllContenidos.context_object_name"><code class="docutils literal notranslate"><span class="pre">VistaAllContenidos.context_object_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.VistaAllContenidos.get_queryset"><code class="docutils literal notranslate"><span class="pre">VistaAllContenidos.get_queryset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.VistaAllContenidos.model"><code class="docutils literal notranslate"><span class="pre">VistaAllContenidos.model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.VistaAllContenidos.ordering"><code class="docutils literal notranslate"><span class="pre">VistaAllContenidos.ordering</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.VistaAllContenidos.template_name"><code class="docutils literal notranslate"><span class="pre">VistaAllContenidos.template_name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.views.VistaContenido"><code class="docutils literal notranslate"><span class="pre">VistaContenido</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.VistaContenido.context_object_name"><code class="docutils literal notranslate"><span class="pre">VistaContenido.context_object_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.VistaContenido.form_class"><code class="docutils literal notranslate"><span class="pre">VistaContenido.form_class</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.VistaContenido.form_valid"><code class="docutils literal notranslate"><span class="pre">VistaContenido.form_valid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.VistaContenido.get_context_data"><code class="docutils literal notranslate"><span class="pre">VistaContenido.get_context_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.VistaContenido.get_form_kwargs"><code class="docutils literal notranslate"><span class="pre">VistaContenido.get_form_kwargs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.VistaContenido.get_object"><code class="docutils literal notranslate"><span class="pre">VistaContenido.get_object()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.VistaContenido.get_success_url"><code class="docutils literal notranslate"><span class="pre">VistaContenido.get_success_url()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.VistaContenido.model"><code class="docutils literal notranslate"><span class="pre">VistaContenido.model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.VistaContenido.post"><code class="docutils literal notranslate"><span class="pre">VistaContenido.post()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.VistaContenido.slug_field"><code class="docutils literal notranslate"><span class="pre">VistaContenido.slug_field</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.VistaContenido.slug_url_kwarg"><code class="docutils literal notranslate"><span class="pre">VistaContenido.slug_url_kwarg</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.VistaContenido.template_name"><code class="docutils literal notranslate"><span class="pre">VistaContenido.template_name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.views.VistaContenidosReportados"><code class="docutils literal notranslate"><span class="pre">VistaContenidosReportados</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.VistaContenidosReportados.context_object_name"><code class="docutils literal notranslate"><span class="pre">VistaContenidosReportados.context_object_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.VistaContenidosReportados.get_queryset"><code class="docutils literal notranslate"><span class="pre">VistaContenidosReportados.get_queryset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.VistaContenidosReportados.model"><code class="docutils literal notranslate"><span class="pre">VistaContenidosReportados.model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.VistaContenidosReportados.permission_required"><code class="docutils literal notranslate"><span class="pre">VistaContenidosReportados.permission_required</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="content.html#content.views.VistaContenidosReportados.template_name"><code class="docutils literal notranslate"><span class="pre">VistaContenidosReportados.template_name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="content.html#content.views.replace_pdf_image_with_link"><code class="docutils literal notranslate"><span class="pre">replace_pdf_image_with_link()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="content.html#module-content">Module contents</a></li>
 </ul>
 </li>
 </ul>
