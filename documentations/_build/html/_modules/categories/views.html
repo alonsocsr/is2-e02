@@ -72,12 +72,13 @@
            <div itemprop="articleBody">
              
   <h1>Código fuente para categories.views</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span>
-<span class="kn">from</span> <span class="nn">django.views.generic</span> <span class="kn">import</span> <span class="n">View</span>
+<span></span><span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span><span class="p">,</span> <span class="n">get_object_or_404</span><span class="p">,</span> <span class="n">redirect</span>
 <span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">messages</span>
 <span class="kn">from</span> <span class="nn">.forms</span> <span class="kn">import</span> <span class="n">CategoriaForm</span>
 <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Categorias</span>
-<span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">get_object_or_404</span><span class="p">,</span> <span class="n">redirect</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.mixins</span> <span class="kn">import</span> <span class="n">LoginRequiredMixin</span><span class="p">,</span> <span class="n">PermissionRequiredMixin</span>
+<span class="kn">from</span> <span class="nn">django.views.generic</span> <span class="kn">import</span> <span class="n">View</span><span class="p">,</span> <span class="n">TemplateView</span><span class="p">,</span> <span class="n">DetailView</span>
+<span class="kn">from</span> <span class="nn">content.models</span> <span class="kn">import</span> <span class="n">Contenido</span>
 
 <div class="viewcode-block" id="CrearCategoriaView">
 <a class="viewcode-back" href="../../categories.html#categories.views.CrearCategoriaView">[documentos]</a>
@@ -85,12 +86,10 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Vista para crear una nueva categoría.</span>
 
-<span class="sd">    Esta `View` maneja la creación de una nueva categoría. Se encarga de mostrar un formulario</span>
-<span class="sd">    vacío en el método `GET` y de procesar el formulario en el método `POST`.</span>
+<span class="sd">    Esta vista maneja la creación de una nueva categoría. En el método `GET`, muestra un formulario vacío para la creación de una nueva categoría. En el método `POST`, procesa la creación de la categoría y valida si se excede el límite de categorías con prioridad.</span>
 
-<span class="sd">    Atributos:</span>
-<span class="sd">        form_class (forms.ModelForm): Clase del formulario utilizada para la creación.</span>
-<span class="sd">        template_name (str): Nombre de la plantilla utilizada para renderizar el formulario.</span>
+<span class="sd">    :cvar form_class: CategoriaForm - El formulario usado para crear una categoría.</span>
+<span class="sd">    :cvar template_name: str - Nombre de la plantilla utilizada para el formulario de creación.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">form_class</span> <span class="o">=</span> <span class="n">CategoriaForm</span>
     <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;categories/new_category.html&#39;</span>
@@ -99,19 +98,13 @@
 <a class="viewcode-back" href="../../categories.html#categories.views.CrearCategoriaView.get">[documentos]</a>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Muestra el formulario para crear una nueva categoría.</span>
+<span class="sd">        Muestra el formulario para la creación de una nueva categoría.</span>
 
-<span class="sd">        Obtiene y renderiza un formulario vacío para crear una nueva categoría, junto con la lista</span>
-<span class="sd">        de todas las categorías existentes.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            request (HttpRequest): La solicitud HTTP GET.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            HttpResponse: Respuesta renderizada con el formulario de creación.</span>
+<span class="sd">        :param request: HttpRequest - La solicitud HTTP GET.</span>
+<span class="sd">        :return: HttpResponse - Respuesta renderizada con el formulario de creación y la lista de categorías.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">()</span>
-        <span class="n">categorias</span> <span class="o">=</span> <span class="n">Categorias</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;pk&#39;</span><span class="p">)</span>
+        <span class="n">categorias</span> <span class="o">=</span> <span class="n">Categorias</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;-prioridad&#39;</span><span class="p">,</span><span class="s1">&#39;pk&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span><span class="p">,</span> <span class="p">{</span>
             <span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">,</span>
             <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;create&#39;</span><span class="p">,</span>
@@ -123,26 +116,29 @@
 <a class="viewcode-back" href="../../categories.html#categories.views.CrearCategoriaView.post">[documentos]</a>
     <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Procesa el formulario de creación de una nueva categoría.</span>
+<span class="sd">        Procesa el formulario para crear una nueva categoría.</span>
 
-<span class="sd">        Valida y guarda el formulario enviado. En caso de éxito, muestra un mensaje de éxito y</span>
-<span class="sd">        redirige al usuario a la vista de gestión de categorías. Si el formulario no es válido,</span>
-<span class="sd">        vuelve a mostrar el formulario con los errores.</span>
+<span class="sd">        Valida el formulario y crea la categoría si los datos son válidos. También valida si se ha alcanzado el límite de categorías con prioridad.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            request (HttpRequest): La solicitud HTTP POST con datos del formulario.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            HttpResponse: Respuesta renderizada con el formulario, si hay errores, o redirección</span>
-<span class="sd">            en caso de éxito.</span>
+<span class="sd">        :param request: HttpRequest - La solicitud HTTP POST con los datos del formulario.</span>
+<span class="sd">        :return: HttpResponse - Redirección a la vista de gestión de categorías con un mensaje de éxito o error.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
-            <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-            <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;Categoría creada con éxito.&#39;</span><span class="p">,</span> <span class="n">extra_tags</span><span class="o">=</span><span class="s1">&#39;categoria&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;categories:manage&#39;</span><span class="p">)</span>
+            <span class="c1"># Validar límite de categorías con prioridad</span>
+            <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;prioridad&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">Categorias</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">prioridad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">:</span>
+                    <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;No se pueden crear más de 5 categorías con prioridad.&#39;</span><span class="p">,</span> <span class="n">extra_tags</span><span class="o">=</span><span class="s1">&#39;categoria&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                    <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;Categoría creada con éxito.&#39;</span><span class="p">,</span> <span class="n">extra_tags</span><span class="o">=</span><span class="s1">&#39;categoria&#39;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;categories:manage&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;Categoría creada con éxito.&#39;</span><span class="p">,</span> <span class="n">extra_tags</span><span class="o">=</span><span class="s1">&#39;categoria&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;categories:manage&#39;</span><span class="p">)</span>
 
-        <span class="n">categorias</span> <span class="o">=</span> <span class="n">Categorias</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;pk&#39;</span><span class="p">)</span>
+        <span class="n">categorias</span> <span class="o">=</span> <span class="n">Categorias</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;-prioridad&#39;</span><span class="p">,</span><span class="s1">&#39;pk&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span><span class="p">,</span> <span class="p">{</span>
             <span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">,</span>
             <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;create&#39;</span><span class="p">,</span>
@@ -156,14 +152,12 @@
 <a class="viewcode-back" href="../../categories.html#categories.views.ModificarCategoriaView">[documentos]</a>
 <span class="k">class</span> <span class="nc">ModificarCategoriaView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Vista para actualizar una categoría existente.</span>
+<span class="sd">    Vista para modificar una categoría existente.</span>
 
-<span class="sd">    Este `View` maneja la actualización de una categoría existente. Se encarga de mostrar el</span>
-<span class="sd">    formulario con los datos actuales en el método `GET` y de procesar el formulario en el método `POST`.</span>
+<span class="sd">    Esta vista maneja la modificación de una categoría existente. En el método `GET`, muestra un formulario con los datos de la categoría a modificar. En el método `POST`, procesa la modificación de la categoría y valida si se excede el límite de categorías con prioridad.</span>
 
-<span class="sd">    Atributos:</span>
-<span class="sd">        form_class (forms.ModelForm): Clase del formulario utilizada para la actualización.</span>
-<span class="sd">        template_name (str): Nombre de la plantilla utilizada para renderizar el formulario.</span>
+<span class="sd">    :cvar form_class: CategoriaForm - El formulario usado para modificar una categoría.</span>
+<span class="sd">    :cvar template_name: str - Nombre de la plantilla utilizada para el formulario de modificación.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">form_class</span> <span class="o">=</span> <span class="n">CategoriaForm</span>
     <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;categories/new_category.html&#39;</span>
@@ -172,21 +166,15 @@
 <a class="viewcode-back" href="../../categories.html#categories.views.ModificarCategoriaView.get">[documentos]</a>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Muestra el formulario para actualizar una categoría existente.</span>
+<span class="sd">        Muestra el formulario para la modificación de una categoría existente.</span>
 
-<span class="sd">        Obtiene la categoría especificada por `pk` y renderiza el formulario con los datos actuales</span>
-<span class="sd">        de la categoría. También se incluye la lista de todas las categorías existentes.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            request (HttpRequest): La solicitud HTTP GET.</span>
-<span class="sd">            pk (int): El id de la categoría a actualizar.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            HttpResponse: Respuesta renderizada con el formulario de actualización.</span>
+<span class="sd">        :param request: HttpRequest - La solicitud HTTP GET.</span>
+<span class="sd">        :param pk: int - El identificador primario de la categoría a modificar.</span>
+<span class="sd">        :return: HttpResponse - Respuesta renderizada con el formulario de modificación y la lista de categorías.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">categoria</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Categorias</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">pk</span><span class="p">)</span>
         <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="n">categoria</span><span class="p">)</span>
-        <span class="n">categorias</span> <span class="o">=</span> <span class="n">Categorias</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;pk&#39;</span><span class="p">)</span>
+        <span class="n">categorias</span> <span class="o">=</span> <span class="n">Categorias</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;-prioridad&#39;</span><span class="p">,</span><span class="s1">&#39;pk&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span><span class="p">,</span> <span class="p">{</span>
             <span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">,</span>
             <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;edit&#39;</span><span class="p">,</span>
@@ -198,28 +186,31 @@
 <a class="viewcode-back" href="../../categories.html#categories.views.ModificarCategoriaView.post">[documentos]</a>
     <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Procesa el formulario para actualizar una categoría existente.</span>
+<span class="sd">        Procesa el formulario para modificar una categoría existente.</span>
 
-<span class="sd">        Valida y guarda el formulario enviado con los datos de la categoría existente. En caso de</span>
-<span class="sd">        éxito, muestra un mensaje de éxito y redirige al usuario a la vista de gestión de categorías.</span>
-<span class="sd">        Si el formulario no es válido, vuelve a mostrar el formulario con los errores.</span>
+<span class="sd">        Valida el formulario y modifica la categoría si los datos son válidos. También valida si se ha alcanzado el límite de categorías con prioridad.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            request (HttpRequest): La solicitud HTTP POST con datos del formulario.</span>
-<span class="sd">            pk (int): El identificador primario de la categoría a actualizar.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            HttpResponse: Respuesta renderizada con el formulario, si hay errores, o redirección</span>
-<span class="sd">            en caso de éxito.</span>
+<span class="sd">        :param request: HttpRequest - La solicitud HTTP POST con los datos del formulario.</span>
+<span class="sd">        :param pk: int - El identificador primario de la categoría a modificar.</span>
+<span class="sd">        :return: HttpResponse - Redirección a la vista de gestión de categorías con un mensaje de éxito o error.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">categoria</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Categorias</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">pk</span><span class="p">)</span>
         <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="n">categoria</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
-            <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-            <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;Categoría modificada con éxito.&#39;</span><span class="p">,</span> <span class="n">extra_tags</span><span class="o">=</span><span class="s1">&#39;categoria&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;categories:manage&#39;</span><span class="p">)</span>
+            <span class="c1"># Validar límite de categorías con prioridad</span>
+            <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;prioridad&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">Categorias</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">prioridad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">categoria</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">:</span>
+                    <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;No se pueden tener más de 5 categorías con prioridad.&#39;</span><span class="p">,</span> <span class="n">extra_tags</span><span class="o">=</span><span class="s1">&#39;categoria&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                    <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;Categoría modificada con éxito.&#39;</span><span class="p">,</span> <span class="n">extra_tags</span><span class="o">=</span><span class="s1">&#39;categoria&#39;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;categories:manage&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;Categoría modificada con éxito.&#39;</span><span class="p">,</span> <span class="n">extra_tags</span><span class="o">=</span><span class="s1">&#39;categoria&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;categories:manage&#39;</span><span class="p">)</span>
 
-        <span class="n">categorias</span> <span class="o">=</span> <span class="n">Categorias</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;pk&#39;</span><span class="p">)</span>
+        <span class="n">categorias</span> <span class="o">=</span> <span class="n">Categorias</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;-prioridad&#39;</span><span class="p">,</span><span class="s1">&#39;pk&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span><span class="p">,</span> <span class="p">{</span>
             <span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">,</span>
             <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;edit&#39;</span><span class="p">,</span>
@@ -234,11 +225,9 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Vista para eliminar una categoría existente.</span>
 
-<span class="sd">    Este `View` maneja la eliminación de una categoría. Muestra una confirmación en el método `GET`</span>
-<span class="sd">    y procesa la eliminación en el método `POST`.</span>
+<span class="sd">    Esta vista maneja la eliminación de una categoría. Muestra una confirmación en el método `GET` y procesa la eliminación en el método `POST`.</span>
 
-<span class="sd">    Atributos:</span>
-<span class="sd">        template_name (str): Nombre de la plantilla utilizada para confirmar la eliminación.</span>
+<span class="sd">    :cvar template_name: str - Nombre de la plantilla utilizada para confirmar la eliminación.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;categories/delete_category.html&#39;</span>
 
@@ -250,12 +239,9 @@
 
 <span class="sd">        Obtiene la categoría especificada por `pk` y muestra una plantilla de confirmación de eliminación.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            request (HttpRequest): La solicitud HTTP GET.</span>
-<span class="sd">            pk (int): El identificador primario de la categoría a eliminar.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            HttpResponse: Respuesta renderizada con la plantilla de confirmación de eliminación.</span>
+<span class="sd">        :param request: HttpRequest - La solicitud HTTP GET.</span>
+<span class="sd">        :param pk: int - El identificador primario de la categoría a eliminar.</span>
+<span class="sd">        :return: HttpResponse - Respuesta renderizada con la plantilla de confirmación de eliminación.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">categoria</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Categorias</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">pk</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;categoria&#39;</span><span class="p">:</span> <span class="n">categoria</span><span class="p">})</span></div>
@@ -267,21 +253,99 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Procesa la eliminación de una categoría existente.</span>
 
-<span class="sd">        Elimina la categoría especificada por `pk` y muestra un mensaje de éxito. Redirige al</span>
-<span class="sd">        usuario a la vista de gestión de categorías.</span>
+<span class="sd">        Elimina la categoría especificada por `pk` y muestra un mensaje de éxito. Redirige al usuario a la vista de gestión de categorías.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            request (HttpRequest): La solicitud HTTP POST para confirmar la eliminación.</span>
-<span class="sd">            pk (int): El identificador primario de la categoría a eliminar.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            HttpResponse: Redirección a la vista de gestión de categorías con un mensaje de éxito.</span>
+<span class="sd">        :param request: HttpRequest - La solicitud HTTP POST para confirmar la eliminación.</span>
+<span class="sd">        :param pk: int - El identificador primario de la categoría a eliminar.</span>
+<span class="sd">        :return: HttpResponse - Redirección a la vista de gestión de categorías con un mensaje de éxito.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">categoria</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Categorias</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">pk</span><span class="p">)</span>
         <span class="n">nombre_categoria</span> <span class="o">=</span> <span class="n">categoria</span><span class="o">.</span><span class="n">nombre_categoria</span>
         <span class="n">categoria</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
-        <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;Categoría eliminada con éxito&#39;</span><span class="p">)</span>
+        <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;Categoría eliminada con éxito&#39;</span><span class="p">,</span> <span class="n">extra_tags</span><span class="o">=</span><span class="s1">&#39;categoria&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;categories:manage&#39;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ListarCategoriasView">
+<a class="viewcode-back" href="../../categories.html#categories.views.ListarCategoriasView">[documentos]</a>
+<span class="k">class</span> <span class="nc">ListarCategoriasView</span><span class="p">(</span><span class="n">TemplateView</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Vista para mostrar una lista de categorías y un modal si es necesario.</span>
+
+<span class="sd">    Esta vista renderiza una plantilla con una lista de todas las categorías y, opcionalmente, muestra un modal si se solicita mediante parámetros en la solicitud.</span>
+
+<span class="sd">    :cvar template_name: str - Nombre de la plantilla utilizada para mostrar la lista de categorías.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;categories/listar_categorias.html&#39;</span>
+
+<div class="viewcode-block" id="ListarCategoriasView.get_context_data">
+<a class="viewcode-back" href="../../categories.html#categories.views.ListarCategoriasView.get_context_data">[documentos]</a>
+    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Proporciona el contexto para la plantilla de lista de categorías.</span>
+
+<span class="sd">        Incluye una lista de categorías y verifica si se debe mostrar un modal.</span>
+
+<span class="sd">        :param \**kwargs: Parámetros adicionales que se pasan al método.</span>
+<span class="sd">        :return: dict - Contexto para la plantilla, incluyendo la lista de categorías, el estado del modal y la categoría específica si se solicita.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">categorias</span> <span class="o">=</span> <span class="n">Categorias</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+        <span class="n">categorias_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">categorias</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;descripcion&#39;</span><span class="p">,</span> <span class="s1">&#39;nombre_categoria&#39;</span><span class="p">,</span> <span class="s1">&#39;tipo_categoria&#39;</span><span class="p">,</span> <span class="s1">&#39;precio&#39;</span><span class="p">))</span>
+
+        <span class="c1"># Verificar si se debe mostrar el modal</span>
+        <span class="n">mostrar_modal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;modal&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span>
+        <span class="n">categoria_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;categoria_id&#39;</span><span class="p">)</span>
+        <span class="n">categoria</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">categoria_id</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">categoria</span> <span class="o">=</span> <span class="n">Categorias</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">categoria_id</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">Categorias</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+                <span class="n">categoria</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">context</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+            <span class="s1">&#39;categorias&#39;</span><span class="p">:</span> <span class="n">categorias_list</span><span class="p">,</span>
+            <span class="s1">&#39;mostrar_modal&#39;</span><span class="p">:</span> <span class="n">mostrar_modal</span><span class="p">,</span>
+            <span class="s1">&#39;categoria&#39;</span><span class="p">:</span> <span class="n">categoria</span>
+        <span class="p">})</span>
+        <span class="k">return</span> <span class="n">context</span></div>
+</div>
+
+
+<div class="viewcode-block" id="DetalleCategoriaView">
+<a class="viewcode-back" href="../../categories.html#categories.views.DetalleCategoriaView">[documentos]</a>
+<span class="k">class</span> <span class="nc">DetalleCategoriaView</span><span class="p">(</span><span class="n">DetailView</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Vista para mostrar los detalles de una categoría.</span>
+
+<span class="sd">    Esta vista renderiza una plantilla que muestra los detalles de una categoría específica, incluyendo todos los contenidos asociados a ella.</span>
+
+<span class="sd">    :cvar model: Categorias - El modelo de la categoría que se muestra.</span>
+<span class="sd">    :cvar template_name: str - Nombre de la plantilla utilizada para mostrar los detalles de la categoría.</span>
+<span class="sd">    :cvar context_object_name: str - Nombre del contexto que contiene la categoría.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Categorias</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;categories/detalle_categoria.html&#39;</span>
+    <span class="n">context_object_name</span> <span class="o">=</span> <span class="s1">&#39;categoria&#39;</span>
+
+<div class="viewcode-block" id="DetalleCategoriaView.get_context_data">
+<a class="viewcode-back" href="../../categories.html#categories.views.DetalleCategoriaView.get_context_data">[documentos]</a>
+    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Proporciona el contexto para la plantilla de detalles de una categoría.</span>
+
+<span class="sd">        Incluye todos los contenidos asociados a la categoría específica.</span>
+
+<span class="sd">        :param \**kwargs: Parámetros adicionales que se pasan al método.</span>
+<span class="sd">        :return: dict - Contexto para la plantilla, incluyendo los detalles de la categoría y los contenidos asociados.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># Obtener todos los contenidos asociados a esta categoría</span>
+        <span class="n">contenidos</span> <span class="o">=</span> <span class="n">Contenido</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">categoria</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="p">,</span> <span class="n">estado</span><span class="o">=</span><span class="s1">&#39;Publicado&#39;</span><span class="p">)</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;contenidos&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">contenidos</span>
+        <span class="k">return</span> <span class="n">context</span></div>
 </div>
 
 </pre></div>

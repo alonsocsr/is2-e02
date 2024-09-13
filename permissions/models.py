@@ -7,18 +7,11 @@ from django.contrib.auth.models import Group,Permission
 class Roles(models.Model):
     """
     Modelo que representa los roles en el sistema, cada uno de los cuales puede tener permisos asociados.
-    
-    Atributos:
-    ----------
-    nombre_rol : CharField
-        Nombre representativo del rol. Ejemplo: Editor (str)
-    rol_por_defecto : BooleanField
-        Indica si el rol es un rol por defecto. Valor por defecto es False.
-    descripcion : TextField
-         Descripcion de lo que representa el rol. Ejemplo: Rol que se encargara de la edicion de contenidos dentro del sistema (str)
-    permisos : ManyToManyField
-        Permisos asociados al rol, opcionales.
 
+    :cvar nombre_rol: CharField - Nombre representativo del rol. Ejemplo: 'Editor'.
+    :cvar rol_por_defecto: BooleanField - Indica si el rol es un rol por defecto. El valor por defecto es ``False``.
+    :cvar descripcion: TextField - Descripción de lo que representa el rol. Ejemplo: 'Rol encargado de la edición de contenidos dentro del sistema'.
+    :cvar permisos: ManyToManyField - Permisos asociados al rol. Este campo es opcional y permite definir múltiples permisos que el rol puede tener.
     """
     nombre_rol=models.CharField(max_length=25,unique=True,blank=False,verbose_name='Roles del Sistema')
     
@@ -79,10 +72,7 @@ class Roles(models.Model):
         """
         Retorna una representación en cadena del rol, que es su nombre.
         
-        Returns:
-        --------
-        str
-            El nombre del rol.
+        :return: str - El nombre del rol.
         """
         return self.nombre_rol
     
@@ -90,10 +80,7 @@ class Roles(models.Model):
         """
         Retorna el nombre del rol.
         
-        Returns:
-        --------
-        str
-            El nombre del rol.
+        :return: str - El nombre del rol.
         """
         return self.nombre_rol
   
@@ -101,40 +88,29 @@ class Roles(models.Model):
     
     def asginar_permisos_rol(self,lista_permisos):
         """
-        Funcion para crear un rol o actualizarlo segun se quiera. 
-        
-        Parámetros:
-        -----------
-        lista_permisos : QuerySet
-            Lista de permisos a ser asignados al rol.
-        
-        Returns:
-        --------
-        None
+        Asigna permisos al rol y al grupo asociado con el mismo nombre. Si el grupo no existe, se crea uno nuevo.
+
+        :param lista_permisos: QuerySet - Lista de permisos a ser asignados al rol.
         """
         grupo,created=Group.objects.get_or_create(name=self.nombre_rol)
         
 
-        """
-        obtener los permisos y asignarlos al grupo
-        """
+        #obtener los permisos y asignarlos al grupo
+    
         
         grupo.permissions.set(lista_permisos)
 
         grupo.save()
         
-        """asignar permisos a nivel modelo"""
+        #asignar permisos a nivel modelo
         self.permisos.set(lista_permisos)
         self.save()
     
     def obtener_permisos(self):
         """
-        Funcion que retorna los permisos asignados a un grupo
-        
-        Returns:
-        --------
-        list
-            lista de permisos del grupo
+        Retorna los permisos asignados al rol.
+
+        :return: list - Lista de permisos del rol.
         """
         permisos=list(self.permisos.all())
         

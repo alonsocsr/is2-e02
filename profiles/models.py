@@ -13,6 +13,11 @@ class Profile(models.Model):
     El modelo `Profile` está vinculado uno a uno con el modelo `User` de Django, 
     lo que permite almacenar información adicional sobre el usuario como una imagen de perfil
 
+    :cvar user(OneToOneField): Campo de relación uno a uno con el modelo `User`, que asocia un perfil con un usuario específico.
+    :cvar image(ImageField): Campo de imagen que almacena la foto de perfil del usuario. Las imágenes se suben al directorio 'profiles'.
+    :cvar categorias_interes(ManyToManyField): Campo de relación de muchos a muchos con el modelo `Categorias`, que almacena las categorías de interés del usuario. Es opcional.
+    :cvar suscripciones(ManyToManyField): Campo de relación de muchos a muchos con el modelo `Categorias`, que almacena las categorías a las que el usuario está suscrito. Es opcional.
+
     """
     user = models.OneToOneField(
         User,
@@ -36,11 +41,10 @@ def create_user_profile(sender, instance, created, **kwargs):
     Esta función se encarga de crear un perfil para cada nuevo usuario. Asigna automáticamente 
     el grupo "Admin" al primer usuario y el grupo "Suscriptor" a todos los otros usuarios.
 
-    Args:
-        sender: El modelo que envía la señal (User).
-        instance: La instancia del usuario que se está guardando.
-        created (bool): Indica si se ha creado un nuevo usuario.
-        **kwargs: Argumentos adicionales.
+    :param sender: El modelo que envía la señal (User).
+    :param instance: La instancia del usuario que se está guardando.
+    :param created: Indica si se ha creado un nuevo usuario (bool).
+    :param kwargs: Argumentos adicionales pasados a la función.
     """
     if created:
         Profile.objects.create(user=instance)

@@ -10,15 +10,14 @@ class Categorias(models.Model):
     """
     Modelo que representa una categoría en el sistema.
 
-    Atributos:
-        :nombre_categoria (CharField): El nombre de la categoría, debe ser único y no puede estar en blanco.  
-        :descripcion (TextField): Una descripción detallada de la categoría.  
-        :descripcion_corta (CharField): Una descripción corta de la categoría.  
-        :estado (BooleanField): Estado de la categoría, por defecto es True.  
-        :moderada (BooleanField): Indica si la categoría está moderada, por defecto es True.  
-        :tipo_categoria (CharField): Tipo de la categoría, elige entre las opciones definidas en `TIPO_CATEGORIA_OPCIONES`, por defecto es 'PU'.  
-        :precio (IntegerField): Precio asociado a la categoría, puede ser None.  
-
+    :cvar nombre_categoria(CharField): El nombre de la categoría, debe ser único y no puede estar en blanco.
+    :cvar descripcion(TextField): Una descripción detallada de la categoría.
+    :cvar descripcion_corta(CharField): Una descripción corta de la categoría.
+    :cvar estado(BooleanField): Estado de la categoría, por defecto es ``True``.
+    :cvar moderada(BooleanField): Indica si la categoría está moderada, por defecto es ``True``.
+    :cvar prioridad(BooleanField): Indica si la categoría tiene prioridad de visualización sobre otras categorías. Puede haber hasta 5 categorías con prioridad activa.
+    :cvar tipo_categoria(CharField): Tipo de la categoría, elige entre las opciones definidas en `TIPO_CATEGORIA_OPCIONES`, por defecto es 'PU'.
+    :cvar precio(IntegerField): Precio asociado a la categoría, puede ser `None`.
     """
     nombre_categoria = models.CharField(max_length=30, unique=True, blank=False)
     descripcion = models.TextField(max_length=100, blank=False)

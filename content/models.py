@@ -13,18 +13,27 @@ class Contenido(models.Model):
     """
     Modelo para almacenar el contenido creado por los usuarios.
 
-    Atributos:
-        - titulo (str): Título del contenido.
-        - cuerpo (RichTextField): Cuerpo del contenido en formato rico.
-        - autor (User): Usuario que crea el contenido.
-        - categoria (Categoria): Categoría a la que pertenece el contenido.
-        - fecha_creacion (datetime): Fecha y hora de creación del contenido.
-        - puntuacion (Decimal): Puntuación promedio del contenido.
-        - numero_valoraciones (int): Número total de valoraciones del contenido.
-        - estado (str): Estado del contenido. Puede ser 'Borrador', 'Edicion', 'Publicacion' o 'Inactivo'.
-
-    Métodos:
-        - save_version(self): Crea una versión del contenido cuando cambios son hechos
+    :cvar titulo: str - Título del contenido.
+    :cvar resumen: str - Resumen del contenido.
+    :cvar imagen: ImageField - Imagen asociada al contenido.
+    :cvar cuerpo: RichTextUploadingField - Cuerpo del contenido en formato enriquecido.
+    :cvar autor: User - Usuario que crea el contenido.
+    :cvar categoria: Categorias - Categoría a la que pertenece el contenido.
+    :cvar fecha_creacion: DateTimeField - Fecha y hora de creación del contenido.
+    :cvar fecha_publicacion: DateField - Fecha de publicación del contenido.
+    :cvar vigencia: DateField - Fecha de vigencia del contenido.
+    :cvar estado: str - Estado del contenido Estado del contenido ('Borrador', 'Edición', 'Publicación', 'Inactivo').
+    :cvar activo: bool - Indica si el contenido está activo o no.
+    :cvar mensaje_rechazo: str - Mensaje de rechazo del contenido.
+    :cvar slug: SlugField - Slug único para el contenido.
+    :cvar cantidad_likes: int - Número de "likes" del contenido.
+    :cvar cantidad_dislikes: int - Número de "dislikes" del contenido.
+    :cvar puntuacion: DecimalField - Puntuación promedio del contenido.
+    :cvar cantidad_valoraciones: int - Número total de valoraciones del contenido.
+    :cvar cantidad_vistas: int - Número total de vistas del contenido.
+    :cvar fecha_modificacion: DateTimeField - Fecha de la última modificación del contenido.
+    :cvar usuario_editor: User - Usuario que editó el contenido.
+    :cvar cambios: GenericRelation - Registros de cambios del contenido.
     """
     titulo = models.CharField(max_length=200, default="")
     resumen = models.TextField(default="")
@@ -68,6 +77,11 @@ class Contenido(models.Model):
     cambios = GenericRelation(LogEntry)
 
     def save_version(self, user):
+        """
+        Crea una nueva versión del contenido con los datos actuales.
+
+        :param user: User - Usuario que edita el contenido.
+        """
         Version.objects.create(
             contenido=self,
             titulo=self.titulo,
@@ -91,6 +105,18 @@ class Contenido(models.Model):
 
 #clase para almacerar las versiones del contenido borrador y edicion
 class Version(models.Model):
+    """
+    Modelo para almacenar las versiones de un contenido.
+
+    :cvar contenido: ForeignKey - El contenido al que pertenece esta versión.
+    :cvar titulo: CharField - Título de la versión.
+    :cvar resumen: TextField - Resumen de la versión.
+    :cvar cuerpo: RichTextUploadingField - Cuerpo de la versión.
+    :cvar fecha_publicacion: DateField - Fecha de publicación de la versión.
+    :cvar vigencia: DateField - Fecha de vigencia de la versión.
+    :cvar fecha_version: DateTimeField - Fecha y hora de creación de la versión.
+    :cvar editor: ForeignKey - Usuario que editó la versión.
+    """
     contenido = models.ForeignKey(Contenido, on_delete=models.CASCADE, related_name='versiones')
     titulo = models.CharField(max_length=200)
     resumen = models.TextField()
@@ -112,14 +138,10 @@ class Valoracion(models.Model):
     """
     Modelo que representa una valoración de contenido.
 
-    Atributos:
-        contenido (Contenido): El contenido que se valora.
-        usuario (User): El usuario que realiza la valoración.
-        puntuacion (int): La puntuación otorgada, generalmente en un rango de 1 a 5.
-        fecha (datetime): La fecha y hora en que se creó la valoración.
-
-    Métodos:
-        __str__(): Devuelve una representación legible de la valoración.
+    :cvar contenido: ForeignKey - El contenido que se valora.
+    :cvar usuario: ForeignKey - El usuario que realiza la valoración.
+    :cvar puntuacion: PositiveIntegerField - Puntuación otorgada (generalmente de 1 a 5).
+    :cvar fecha: DateTimeField - Fecha y hora en que se creó la valoración.
     """
 
     contenido = models.ForeignKey(Contenido, on_delete=models.CASCADE)
@@ -136,6 +158,13 @@ class Valoracion(models.Model):
     
 
 class ContenidoSeleccionado(models.Model):
+    """
+    Modelo que representa un contenido seleccionado por un usuario.
+
+    :cvar contenido: ForeignKey - El contenido seleccionado.
+    :cvar usuario: ForeignKey - El usuario que seleccionó el contenido.
+    :cvar fecha: DateTimeField - Fecha y hora en que se seleccionó el contenido.
+    """
     contenido = models.ForeignKey(Contenido, on_delete=models.CASCADE)
     usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     fecha = models.DateTimeField(auto_now_add=True)
@@ -150,6 +179,15 @@ REPORTE_OPCIONES = [
     ('spam', 'Spam'),
 ]
 class ContenidoReportado(models.Model):
+    """
+    Modelo para gestionar los reportes de contenido.
+
+    :cvar contenido: ForeignKey - El contenido que se reporta.
+    :cvar usuario: ForeignKey - El usuario que realiza el reporte.
+    :cvar email: EmailField - El correo electrónico del usuario que reporta.
+    :cvar motivo: CharField - Motivo del reporte, basado en las opciones definidas en `REPORTE_OPCIONES`.
+    :cvar fecha: DateTimeField - Fecha y hora en que se realizó el reporte.
+    """
     contenido = models.ForeignKey(Contenido, on_delete=models.CASCADE)
     usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     email = models.EmailField(null=True,default=None)

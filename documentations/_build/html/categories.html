@@ -71,7 +71,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#module-categories.urls">categories.urls module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-categories.views">categories.views module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#categories.views.CrearCategoriaView"><code class="docutils literal notranslate"><span class="pre">CrearCategoriaView</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#categories.views.DetalleCategoriaView"><code class="docutils literal notranslate"><span class="pre">DetalleCategoriaView</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#categories.views.EliminarCategoriaView"><code class="docutils literal notranslate"><span class="pre">EliminarCategoriaView</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#categories.views.ListarCategoriasView"><code class="docutils literal notranslate"><span class="pre">ListarCategoriasView</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#categories.views.ModificarCategoriaView"><code class="docutils literal notranslate"><span class="pre">ModificarCategoriaView</span></code></a></li>
 </ul>
 </li>
@@ -196,7 +198,7 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="categories.forms.CategoriaForm.Meta.fields">
-<span class="sig-name descname"><span class="pre">fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['nombre_categoria',</span> <span class="pre">'descripcion',</span> <span class="pre">'descripcion_corta',</span> <span class="pre">'moderada',</span> <span class="pre">'tipo_categoria']</span></em><a class="headerlink" href="#categories.forms.CategoriaForm.Meta.fields" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['nombre_categoria',</span> <span class="pre">'descripcion',</span> <span class="pre">'descripcion_corta',</span> <span class="pre">'moderada',</span> <span class="pre">'prioridad',</span> <span class="pre">'tipo_categoria']</span></em><a class="headerlink" href="#categories.forms.CategoriaForm.Meta.fields" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -209,7 +211,7 @@
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="categories.forms.CategoriaForm.base_fields">
-<span class="sig-name descname"><span class="pre">base_fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'descripcion':</span> <span class="pre">&lt;django.forms.fields.CharField</span> <span class="pre">object&gt;,</span> <span class="pre">'descripcion_corta':</span> <span class="pre">&lt;django.forms.fields.CharField</span> <span class="pre">object&gt;,</span> <span class="pre">'moderada':</span> <span class="pre">&lt;django.forms.fields.BooleanField</span> <span class="pre">object&gt;,</span> <span class="pre">'nombre_categoria':</span> <span class="pre">&lt;django.forms.fields.CharField</span> <span class="pre">object&gt;,</span> <span class="pre">'tipo_categoria':</span> <span class="pre">&lt;django.forms.fields.TypedChoiceField</span> <span class="pre">object&gt;}</span></em><a class="headerlink" href="#categories.forms.CategoriaForm.base_fields" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">base_fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'descripcion':</span> <span class="pre">&lt;django.forms.fields.CharField</span> <span class="pre">object&gt;,</span> <span class="pre">'descripcion_corta':</span> <span class="pre">&lt;django.forms.fields.CharField</span> <span class="pre">object&gt;,</span> <span class="pre">'moderada':</span> <span class="pre">&lt;django.forms.fields.BooleanField</span> <span class="pre">object&gt;,</span> <span class="pre">'nombre_categoria':</span> <span class="pre">&lt;django.forms.fields.CharField</span> <span class="pre">object&gt;,</span> <span class="pre">'prioridad':</span> <span class="pre">&lt;django.forms.fields.BooleanField</span> <span class="pre">object&gt;,</span> <span class="pre">'tipo_categoria':</span> <span class="pre">&lt;django.forms.fields.TypedChoiceField</span> <span class="pre">object&gt;}</span></em><a class="headerlink" href="#categories.forms.CategoriaForm.base_fields" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -233,30 +235,18 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">categories.models.</span></span><span class="sig-name descname"><span class="pre">Categorias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/categories/models.html#Categorias"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#categories.models.Categorias" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
 <p>Modelo que representa una categoría en el sistema.</p>
-<dl class="simple">
-<dt>Atributos:</dt><dd><dl class="field-list simple">
-<dt class="field-odd">nombre_categoria (CharField)<span class="colon">:</span></dt>
-<dd class="field-odd"><p>El nombre de la categoría, debe ser único y no puede estar en blanco.</p>
-</dd>
-<dt class="field-even">descripcion (TextField)<span class="colon">:</span></dt>
-<dd class="field-even"><p>Una descripción detallada de la categoría.</p>
-</dd>
-<dt class="field-odd">descripcion_corta (CharField)<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Una descripción corta de la categoría.</p>
-</dd>
-<dt class="field-even">estado (BooleanField)<span class="colon">:</span></dt>
-<dd class="field-even"><p>Estado de la categoría, por defecto es True.</p>
-</dd>
-<dt class="field-odd">moderada (BooleanField)<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Indica si la categoría está moderada, por defecto es True.</p>
-</dd>
-<dt class="field-even">tipo_categoria (CharField)<span class="colon">:</span></dt>
-<dd class="field-even"><p>Tipo de la categoría, elige entre las opciones definidas en <cite>TIPO_CATEGORIA_OPCIONES</cite>, por defecto es “PU”.</p>
-</dd>
-<dt class="field-odd">precio (IntegerField)<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Precio asociado a la categoría, puede ser None.</p>
-</dd>
-</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nombre_categoria</strong><strong>(</strong><strong>CharField</strong><strong>)</strong> – El nombre de la categoría, debe ser único y no puede estar en blanco.</p></li>
+<li><p><strong>descripcion</strong><strong>(</strong><strong>TextField</strong><strong>)</strong> – Una descripción detallada de la categoría.</p></li>
+<li><p><strong>descripcion_corta</strong><strong>(</strong><strong>CharField</strong><strong>)</strong> – Una descripción corta de la categoría.</p></li>
+<li><p><strong>estado</strong><strong>(</strong><strong>BooleanField</strong><strong>)</strong> – Estado de la categoría, por defecto es <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>moderada</strong><strong>(</strong><strong>BooleanField</strong><strong>)</strong> – Indica si la categoría está moderada, por defecto es <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>prioridad</strong><strong>(</strong><strong>BooleanField</strong><strong>)</strong> – Indica si la categoría tiene prioridad de visualización sobre otras categorías. Puede haber hasta 5 categorías con prioridad activa.</p></li>
+<li><p><strong>tipo_categoria</strong><strong>(</strong><strong>CharField</strong><strong>)</strong> – Tipo de la categoría, elige entre las opciones definidas en <cite>TIPO_CATEGORIA_OPCIONES</cite>, por defecto es “PU”.</p></li>
+<li><p><strong>precio</strong><strong>(</strong><strong>IntegerField</strong><strong>)</strong> – Precio asociado a la categoría, puede ser <cite>None</cite>.</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py exception">
@@ -269,6 +259,37 @@
 <dt class="sig sig-object py" id="categories.models.Categorias.MultipleObjectsReturned">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#categories.models.Categorias.MultipleObjectsReturned" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="categories.models.Categorias.categorias_interes">
+<span class="sig-name descname"><span class="pre">categorias_interes</span></span><a class="headerlink" href="#categories.models.Categorias.categorias_interes" title="Link to this definition"></a></dt>
+<dd><p>Accessor to the related objects manager on the forward and reverse sides of
+a many-to-many relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Pizza</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">toppings</span> <span class="o">=</span> <span class="n">ManyToManyField</span><span class="p">(</span><span class="n">Topping</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;pizzas&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Pizza.toppings</span></code> and <code class="docutils literal notranslate"><span class="pre">Topping.pizzas</span></code> are <code class="docutils literal notranslate"><span class="pre">ManyToManyDescriptor</span></code>
+instances.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal notranslate"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="categories.models.Categorias.contenido_set">
+<span class="sig-name descname"><span class="pre">contenido_set</span></span><a class="headerlink" href="#categories.models.Categorias.contenido_set" title="Link to this definition"></a></dt>
+<dd><p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Parent.children</span></code> is a <code class="docutils literal notranslate"><span class="pre">ReverseManyToOneDescriptor</span></code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal notranslate"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -330,6 +351,13 @@ object the first time, the query is executed.</p>
 object the first time, the query is executed.</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="categories.models.Categorias.prioridad">
+<span class="sig-name descname"><span class="pre">prioridad</span></span><a class="headerlink" href="#categories.models.Categorias.prioridad" title="Link to this definition"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="categories.models.Categorias.save">
 <span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/categories/models.html#Categorias.save"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#categories.models.Categorias.save" title="Link to this definition"></a></dt>
@@ -344,6 +372,22 @@ La descripción corta se convierte a mayúsculas antes de guardar.</p>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="categories.models.Categorias.suscripciones">
+<span class="sig-name descname"><span class="pre">suscripciones</span></span><a class="headerlink" href="#categories.models.Categorias.suscripciones" title="Link to this definition"></a></dt>
+<dd><p>Accessor to the related objects manager on the forward and reverse sides of
+a many-to-many relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Pizza</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">toppings</span> <span class="o">=</span> <span class="n">ManyToManyField</span><span class="p">(</span><span class="n">Topping</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;pizzas&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Pizza.toppings</span></code> and <code class="docutils literal notranslate"><span class="pre">Topping.pizzas</span></code> are <code class="docutils literal notranslate"><span class="pre">ManyToManyDescriptor</span></code>
+instances.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal notranslate"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -369,11 +413,13 @@ object the first time, the query is executed.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">categories.views.</span></span><span class="sig-name descname"><span class="pre">CrearCategoriaView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/categories/views.html#CrearCategoriaView"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#categories.views.CrearCategoriaView" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">View</span></code></p>
 <p>Vista para crear una nueva categoría.</p>
-<p>Esta <cite>View</cite> maneja la creación de una nueva categoría. Se encarga de mostrar un formulario
-vacío en el método <cite>GET</cite> y de procesar el formulario en el método <cite>POST</cite>.</p>
-<dl class="simple">
-<dt>Atributos:</dt><dd><p>form_class (forms.ModelForm): Clase del formulario utilizada para la creación.
-template_name (str): Nombre de la plantilla utilizada para renderizar el formulario.</p>
+<p>Esta vista maneja la creación de una nueva categoría. En el método <cite>GET</cite>, muestra un formulario vacío para la creación de una nueva categoría. En el método <cite>POST</cite>, procesa la creación de la categoría y valida si se excede el límite de categorías con prioridad.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>form_class</strong> – CategoriaForm - El formulario usado para crear una categoría.</p></li>
+<li><p><strong>template_name</strong> – str - Nombre de la plantilla utilizada para el formulario de creación.</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py attribute">
@@ -385,13 +431,13 @@ template_name (str): Nombre de la plantilla utilizada para renderizar el formula
 <dl class="py method">
 <dt class="sig sig-object py" id="categories.views.CrearCategoriaView.get">
 <span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/categories/views.html#CrearCategoriaView.get"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#categories.views.CrearCategoriaView.get" title="Link to this definition"></a></dt>
-<dd><p>Muestra el formulario para crear una nueva categoría.</p>
-<p>Obtiene y renderiza un formulario vacío para crear una nueva categoría, junto con la lista
-de todas las categorías existentes.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>request (HttpRequest): La solicitud HTTP GET.</p>
+<dd><p>Muestra el formulario para la creación de una nueva categoría.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> – HttpRequest - La solicitud HTTP GET.</p>
 </dd>
-<dt>Returns:</dt><dd><p>HttpResponse: Respuesta renderizada con el formulario de creación.</p>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>HttpResponse - Respuesta renderizada con el formulario de creación y la lista de categorías.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -399,15 +445,14 @@ de todas las categorías existentes.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="categories.views.CrearCategoriaView.post">
 <span class="sig-name descname"><span class="pre">post</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/categories/views.html#CrearCategoriaView.post"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#categories.views.CrearCategoriaView.post" title="Link to this definition"></a></dt>
-<dd><p>Procesa el formulario de creación de una nueva categoría.</p>
-<p>Valida y guarda el formulario enviado. En caso de éxito, muestra un mensaje de éxito y
-redirige al usuario a la vista de gestión de categorías. Si el formulario no es válido,
-vuelve a mostrar el formulario con los errores.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>request (HttpRequest): La solicitud HTTP POST con datos del formulario.</p>
+<dd><p>Procesa el formulario para crear una nueva categoría.</p>
+<p>Valida el formulario y crea la categoría si los datos son válidos. También valida si se ha alcanzado el límite de categorías con prioridad.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> – HttpRequest - La solicitud HTTP POST con los datos del formulario.</p>
 </dd>
-<dt>Returns:</dt><dd><p>HttpResponse: Respuesta renderizada con el formulario, si hay errores, o redirección
-en caso de éxito.</p>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>HttpResponse - Redirección a la vista de gestión de categorías con un mensaje de éxito o error.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -420,14 +465,62 @@ en caso de éxito.</p>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="categories.views.DetalleCategoriaView">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">categories.views.</span></span><span class="sig-name descname"><span class="pre">DetalleCategoriaView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/categories/views.html#DetalleCategoriaView"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#categories.views.DetalleCategoriaView" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">DetailView</span></code></p>
+<p>Vista para mostrar los detalles de una categoría.</p>
+<p>Esta vista renderiza una plantilla que muestra los detalles de una categoría específica, incluyendo todos los contenidos asociados a ella.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – Categorias - El modelo de la categoría que se muestra.</p></li>
+<li><p><strong>template_name</strong> – str - Nombre de la plantilla utilizada para mostrar los detalles de la categoría.</p></li>
+<li><p><strong>context_object_name</strong> – str - Nombre del contexto que contiene la categoría.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="categories.views.DetalleCategoriaView.context_object_name">
+<span class="sig-name descname"><span class="pre">context_object_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'categoria'</span></em><a class="headerlink" href="#categories.views.DetalleCategoriaView.context_object_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="categories.views.DetalleCategoriaView.get_context_data">
+<span class="sig-name descname"><span class="pre">get_context_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/categories/views.html#DetalleCategoriaView.get_context_data"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#categories.views.DetalleCategoriaView.get_context_data" title="Link to this definition"></a></dt>
+<dd><p>Proporciona el contexto para la plantilla de detalles de una categoría.</p>
+<p>Incluye todos los contenidos asociados a la categoría específica.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>**kwargs</strong> – Parámetros adicionales que se pasan al método.</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict - Contexto para la plantilla, incluyendo los detalles de la categoría y los contenidos asociados.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="categories.views.DetalleCategoriaView.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#categories.views.DetalleCategoriaView.model" title="Link to this definition"></a></dt>
+<dd><p>alias de <a class="reference internal" href="#categories.models.Categorias" title="categories.models.Categorias"><code class="xref py py-class docutils literal notranslate"><span class="pre">Categorias</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="categories.views.DetalleCategoriaView.template_name">
+<span class="sig-name descname"><span class="pre">template_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'categories/detalle_categoria.html'</span></em><a class="headerlink" href="#categories.views.DetalleCategoriaView.template_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="categories.views.EliminarCategoriaView">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">categories.views.</span></span><span class="sig-name descname"><span class="pre">EliminarCategoriaView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/categories/views.html#EliminarCategoriaView"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#categories.views.EliminarCategoriaView" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">View</span></code></p>
 <p>Vista para eliminar una categoría existente.</p>
-<p>Este <cite>View</cite> maneja la eliminación de una categoría. Muestra una confirmación en el método <cite>GET</cite>
-y procesa la eliminación en el método <cite>POST</cite>.</p>
-<dl class="simple">
-<dt>Atributos:</dt><dd><p>template_name (str): Nombre de la plantilla utilizada para confirmar la eliminación.</p>
+<p>Esta vista maneja la eliminación de una categoría. Muestra una confirmación en el método <cite>GET</cite> y procesa la eliminación en el método <cite>POST</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>template_name</strong> – str - Nombre de la plantilla utilizada para confirmar la eliminación.</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -435,11 +528,15 @@ y procesa la eliminación en el método <cite>POST</cite>.</p>
 <span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pk</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/categories/views.html#EliminarCategoriaView.get"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#categories.views.EliminarCategoriaView.get" title="Link to this definition"></a></dt>
 <dd><p>Muestra la confirmación para eliminar una categoría.</p>
 <p>Obtiene la categoría especificada por <cite>pk</cite> y muestra una plantilla de confirmación de eliminación.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>request (HttpRequest): La solicitud HTTP GET.
-pk (int): El identificador primario de la categoría a eliminar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – HttpRequest - La solicitud HTTP GET.</p></li>
+<li><p><strong>pk</strong> – int - El identificador primario de la categoría a eliminar.</p></li>
+</ul>
 </dd>
-<dt>Returns:</dt><dd><p>HttpResponse: Respuesta renderizada con la plantilla de confirmación de eliminación.</p>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>HttpResponse - Respuesta renderizada con la plantilla de confirmación de eliminación.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -448,13 +545,16 @@ pk (int): El identificador primario de la categoría a eliminar.</p>
 <dt class="sig sig-object py" id="categories.views.EliminarCategoriaView.post">
 <span class="sig-name descname"><span class="pre">post</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pk</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/categories/views.html#EliminarCategoriaView.post"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#categories.views.EliminarCategoriaView.post" title="Link to this definition"></a></dt>
 <dd><p>Procesa la eliminación de una categoría existente.</p>
-<p>Elimina la categoría especificada por <cite>pk</cite> y muestra un mensaje de éxito. Redirige al
-usuario a la vista de gestión de categorías.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>request (HttpRequest): La solicitud HTTP POST para confirmar la eliminación.
-pk (int): El identificador primario de la categoría a eliminar.</p>
+<p>Elimina la categoría especificada por <cite>pk</cite> y muestra un mensaje de éxito. Redirige al usuario a la vista de gestión de categorías.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – HttpRequest - La solicitud HTTP POST para confirmar la eliminación.</p></li>
+<li><p><strong>pk</strong> – int - El identificador primario de la categoría a eliminar.</p></li>
+</ul>
 </dd>
-<dt>Returns:</dt><dd><p>HttpResponse: Redirección a la vista de gestión de categorías con un mensaje de éxito.</p>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>HttpResponse - Redirección a la vista de gestión de categorías con un mensaje de éxito.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -467,15 +567,50 @@ pk (int): El identificador primario de la categoría a eliminar.</p>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="categories.views.ListarCategoriasView">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">categories.views.</span></span><span class="sig-name descname"><span class="pre">ListarCategoriasView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/categories/views.html#ListarCategoriasView"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#categories.views.ListarCategoriasView" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TemplateView</span></code></p>
+<p>Vista para mostrar una lista de categorías y un modal si es necesario.</p>
+<p>Esta vista renderiza una plantilla con una lista de todas las categorías y, opcionalmente, muestra un modal si se solicita mediante parámetros en la solicitud.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>template_name</strong> – str - Nombre de la plantilla utilizada para mostrar la lista de categorías.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="categories.views.ListarCategoriasView.get_context_data">
+<span class="sig-name descname"><span class="pre">get_context_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/categories/views.html#ListarCategoriasView.get_context_data"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#categories.views.ListarCategoriasView.get_context_data" title="Link to this definition"></a></dt>
+<dd><p>Proporciona el contexto para la plantilla de lista de categorías.</p>
+<p>Incluye una lista de categorías y verifica si se debe mostrar un modal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>**kwargs</strong> – Parámetros adicionales que se pasan al método.</p>
+</dd>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict - Contexto para la plantilla, incluyendo la lista de categorías, el estado del modal y la categoría específica si se solicita.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="categories.views.ListarCategoriasView.template_name">
+<span class="sig-name descname"><span class="pre">template_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'categories/listar_categorias.html'</span></em><a class="headerlink" href="#categories.views.ListarCategoriasView.template_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="categories.views.ModificarCategoriaView">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">categories.views.</span></span><span class="sig-name descname"><span class="pre">ModificarCategoriaView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/categories/views.html#ModificarCategoriaView"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#categories.views.ModificarCategoriaView" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">View</span></code></p>
-<p>Vista para actualizar una categoría existente.</p>
-<p>Este <cite>View</cite> maneja la actualización de una categoría existente. Se encarga de mostrar el
-formulario con los datos actuales en el método <cite>GET</cite> y de procesar el formulario en el método <cite>POST</cite>.</p>
-<dl class="simple">
-<dt>Atributos:</dt><dd><p>form_class (forms.ModelForm): Clase del formulario utilizada para la actualización.
-template_name (str): Nombre de la plantilla utilizada para renderizar el formulario.</p>
+<p>Vista para modificar una categoría existente.</p>
+<p>Esta vista maneja la modificación de una categoría existente. En el método <cite>GET</cite>, muestra un formulario con los datos de la categoría a modificar. En el método <cite>POST</cite>, procesa la modificación de la categoría y valida si se excede el límite de categorías con prioridad.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>form_class</strong> – CategoriaForm - El formulario usado para modificar una categoría.</p></li>
+<li><p><strong>template_name</strong> – str - Nombre de la plantilla utilizada para el formulario de modificación.</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py attribute">
@@ -487,14 +622,16 @@ template_name (str): Nombre de la plantilla utilizada para renderizar el formula
 <dl class="py method">
 <dt class="sig sig-object py" id="categories.views.ModificarCategoriaView.get">
 <span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pk</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/categories/views.html#ModificarCategoriaView.get"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#categories.views.ModificarCategoriaView.get" title="Link to this definition"></a></dt>
-<dd><p>Muestra el formulario para actualizar una categoría existente.</p>
-<p>Obtiene la categoría especificada por <cite>pk</cite> y renderiza el formulario con los datos actuales
-de la categoría. También se incluye la lista de todas las categorías existentes.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>request (HttpRequest): La solicitud HTTP GET.
-pk (int): El id de la categoría a actualizar.</p>
+<dd><p>Muestra el formulario para la modificación de una categoría existente.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – HttpRequest - La solicitud HTTP GET.</p></li>
+<li><p><strong>pk</strong> – int - El identificador primario de la categoría a modificar.</p></li>
+</ul>
 </dd>
-<dt>Returns:</dt><dd><p>HttpResponse: Respuesta renderizada con el formulario de actualización.</p>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>HttpResponse - Respuesta renderizada con el formulario de modificación y la lista de categorías.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -502,16 +639,17 @@ pk (int): El id de la categoría a actualizar.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="categories.views.ModificarCategoriaView.post">
 <span class="sig-name descname"><span class="pre">post</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pk</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/categories/views.html#ModificarCategoriaView.post"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#categories.views.ModificarCategoriaView.post" title="Link to this definition"></a></dt>
-<dd><p>Procesa el formulario para actualizar una categoría existente.</p>
-<p>Valida y guarda el formulario enviado con los datos de la categoría existente. En caso de
-éxito, muestra un mensaje de éxito y redirige al usuario a la vista de gestión de categorías.
-Si el formulario no es válido, vuelve a mostrar el formulario con los errores.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>request (HttpRequest): La solicitud HTTP POST con datos del formulario.
-pk (int): El identificador primario de la categoría a actualizar.</p>
+<dd><p>Procesa el formulario para modificar una categoría existente.</p>
+<p>Valida el formulario y modifica la categoría si los datos son válidos. También valida si se ha alcanzado el límite de categorías con prioridad.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – HttpRequest - La solicitud HTTP POST con los datos del formulario.</p></li>
+<li><p><strong>pk</strong> – int - El identificador primario de la categoría a modificar.</p></li>
+</ul>
 </dd>
-<dt>Returns:</dt><dd><p>HttpResponse: Respuesta renderizada con el formulario, si hay errores, o redirección
-en caso de éxito.</p>
+<dt class="field-even">Devuelve<span class="colon">:</span></dt>
+<dd class="field-even"><p>HttpResponse - Redirección a la vista de gestión de categorías con un mensaje de éxito o error.</p>
 </dd>
 </dl>
 </dd></dl>
