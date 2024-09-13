@@ -13,6 +13,7 @@ django-js-asset==2.2.0
 django-sphinxdoc==2.0.0
 docutils==0.20.1
 exceptiongroup==1.2.2
+django-filebrowser==4.0.3
 gunicorn==23.0.0
 idna==3.8
 imagesize==1.4.1

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-
+sudo systemctl stop gunicorn
 
 DJANGO_SETTINGS_MODULE="cms.settings.dev"  # Cambia según sea necesario
 PROJECT_NAME="is2-e02"  # Nombre de la carpeta raíz de tu proyecto
