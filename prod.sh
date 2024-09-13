@@ -36,5 +36,5 @@ sudo systemctl enable gunicorn
 
 sudo systemctl restart nginx
 
-#gunicorn --workers 3 --bind 0.0.0.0:8000 cms.wsgi:application
+# gunicorn --workers 3 --bind 0.0.0.0:8000 cms.wsgi:application
 
