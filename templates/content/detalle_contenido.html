@@ -42,13 +42,20 @@
         </div>
 
         <!-- Autor y Fecha -->
-        <div class="ml-6 mt-4 mr-6 mb-6 flex items-center text-sm text-gray-500 ">
-            <img class="w-10 h-10 rounded-full mr-4" src="{% if contenido.autor.profile.image %}{{ contenido.autor.profile.image.url }}{% else %}{% static 'default.png' %}{% endif %}" alt="{{ contenido.autor.username }}">
-            <div>
-                <p class="leading-none font-semibold">{{ contenido.autor.username }}</p>
-                <p>Publicado el <time datetime="{{ contenido.fecha_modificacion }}">{{ contenido.fecha_modificacion|date:"d M Y" }}</time></p>
-            </div>
+<div class="ml-6 mt-4 mr-6 mb-6 flex items-center justify-between text-sm text-gray-500">
+    <div class="flex items-center">
+        <img class="w-10 h-10 rounded-full mr-4" src="{% if contenido.autor.profile.image %}{{ contenido.autor.profile.image.url }}{% else %}{% static 'default.png' %}{% endif %}" alt="{{ contenido.autor.username }}">
+        <div>
+            <p class="leading-none font-semibold">{{ contenido.autor.username }}</p>
+            <p>Publicado el <time datetime="{{ contenido.fecha_modificacion }}">{{ contenido.fecha_modificacion|date:"d M Y" }}</time></p>
         </div>
+    </div>
+    <div>
+        <button onclick="openModal('{{ contenido.slug }}')" class="bg-red-500 text-white py-2 px-4 rounded-lg">
+            Reportar
+        </button>
+    </div>
+</div>
         <div class="relative aspect-[4/3]">
             <img src="{{ contenido.imagen.url }}" alt="{{ contenido.titulo }}" class="w-full h-full object-cover">
         </div>
@@ -56,23 +63,33 @@
         <!-- Botones de inactivar y estadísticas alineados a la derecha -->
         <div class="flex justify-end space-x-4 p-6">
             {% if perms.permissions.inactivar_contenido %}
+                {% if contenido.autor == request.user %}
                 <form action="{% url 'inactivar_contenido' contenido.id %}" method="POST">
                     {% csrf_token %}
                     {% if contenido.activo %}
-                        <button type="submit" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">
-                            Inactivar Contenido
-                        </button>
+                    <button type="submit" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">
+                        Inactivar Contenido
+                    </button>
                     {% else %}
-                        <button type="submit" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">
-                            Activar Contenido
-                        </button>
+                    <button type="submit" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">
+                        Activar Contenido
+                    </button>
                     {% endif %}
                 </form>
+                {%else%}
+                <form action="{% url 'inactivar_contenido' contenido.id %}" method="POST">
+                    {% csrf_token %}
+                    {% if contenido.activo %}
+                    <button type="submit" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">
+                        Inactivar Contenido
+                    </button>
+                    {% else %}
+                    <button type="submit" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">
+                        Activar Contenido
+                    </button>
+                {% endif %}
             {% endif %}
-            {% if perms.permissions.ver_estadisticas_contenido %}
-            <a href="#" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">Ver estadísticas</a>
             {% endif %}
-            <button onclick="openModal('{{ contenido.slug }}')" class="bg-red-500 text-white py-2 px-4 rounded-lg">Reportar</button>
         </div>
     </section>
 
