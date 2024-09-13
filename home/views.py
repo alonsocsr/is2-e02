@@ -23,7 +23,7 @@ def home(request):
     """
     categorias_restringidas = ['GR', 'PA']
     
-    contenido = Contenido.objects.filter(estado="Publicado")
+    contenido = Contenido.objects.filter(estado="Publicado").order_by("fecha_publicacion")
     
     
 

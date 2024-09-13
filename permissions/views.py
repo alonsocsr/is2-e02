@@ -17,7 +17,7 @@ def crear_rol(request):
 
     Renderiza la plantilla 'permissions/crear_rol.html' con el formulario y la lista de roles existentes.
 
-    Parámetros:
+    Parámetros :
     -----------
     request : HttpRequest
         La solicitud HTTP recibida por la vista.

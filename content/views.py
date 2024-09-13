@@ -67,9 +67,6 @@ class VistaContenido(FormMixin, DetailView):
         messages.success(self.request, "Se ha reportado el contenido con éxito.")
         return redirect(self.get_success_url())
     
-    
-
-    
 
      
 class ContenidoBorradorList(LoginRequiredMixin, ListView):
@@ -79,6 +76,21 @@ class ContenidoBorradorList(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Contenido.objects.filter(autor=self.request.user, estado='Borrador').order_by('fecha_modificacion')
+     
+class ContenidoInactivadoList(LoginRequiredMixin, ListView, PermissionRequiredMixin):
+    model = Contenido
+    template_name = 'content/list_inactivado.html'
+    context_object_name = 'contenidos'
+    permission_required = 'permissions.inactivar_contenido'
+
+    def get_queryset(self):
+        user=self.request.user
+        if user.groups.filter(name="Admin").exists():
+           return Contenido.objects.filter(estado='Inactivo').order_by('fecha_modificacion')
+        elif user.groups.filter(name="Autor").exists():
+            return Contenido.objects.filter(autor=self.request.user, estado='Inactivo').order_by('fecha_modificacion')
+        else:
+            return Contenido.objects.none()
 
 class CrearContenido(LoginRequiredMixin, FormView, PermissionRequiredMixin):
     template_name = "content/crear_contenido.html"
