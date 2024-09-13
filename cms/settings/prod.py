@@ -9,7 +9,7 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.now.sh']
 
 STATICFILES_STORAGES = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+#DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 DATABASES = {
     'default': {
