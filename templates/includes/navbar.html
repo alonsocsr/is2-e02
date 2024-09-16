@@ -1,48 +1,107 @@
 {% load static %}
 {% load thumbnail %}
 
-<!-- <nav class="bg-white shadow-lg fixed top-64left-64 right-0 z-10"> -->
 <nav class="bg-white shadow-lg fixed top-0 left-0 right-0 z-20">
     <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
         <div class="relative flex items-center justify-between h-16">
-            <!-- ver logo -->
+            <!-- Logo -->
             <div class="flex-shrink-0">
                 <a href="{% url 'home' %}">
                     <img src="{% static 'logo.png' %}" alt="Logo" class="h-8 w-auto">
                 </a>
             </div>
-            <!-- links -->
-            <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
-                <div class="hidden sm:block sm:ml-6">
-                    <div class="flex space-x-4">
-                        <a href="{% url 'home' %}" class="text-gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300 focus:outline-none focus:ring-2 focus:ring-pink-500">Home</a>
-                        <a href="{% url 'categories:listar' %}"  class="text-gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300 focus:outline-none focus:ring-2 focus:ring-pink-500">Categorías</a>
-                        {%if user.is_authenticated%}
-                            <a href="{% url 'vista_all_contenidos' %}" class="text-gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300 focus:outline-none focus:ring-2 focus:ring-pink-500"><button>Ver todos los contenidos</button></a>                                           
-                            </a>
-                        {%endif%}                
-                    </div>
+
+            <!-- Toggle button para el menú en pantallas pequeñas -->
+            <div class="absolute inset-y-0 right-0 flex items-center sm:hidden">
+                <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-900 hover:text-pink-800 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-pink-500" aria-controls="mobile-menu" aria-expanded="false" id="hamburger-btn">
+                    <span class="sr-only">Abrir menú</span>
+                    <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Menú normal (pantallas medianas/grandes) -->
+            <div class="hidden sm:flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+                <div class="flex space-x-4">
+                    <a href="{% url 'home' %}" class="text-gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Home</a>
+                    <a href="{% url 'categories:listar' %}" class="text-gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Categorías</a>
+
+                    <!-- Formulario de búsqueda -->
+                    <form method="GET" action="{% url 'buscar_contenido' %}" class="relative text-gray-800">
+                        <input type="search" name="q" placeholder="Buscar..." class="bg-gray-200 h-10 px-5 pr-10 rounded-full text-sm focus:outline-none">
+                        <button type="submit" class="absolute right-0 top-0 mt-3 mr-4">
+                            <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56.966 56.966">
+                                <path d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z"/>
+                            </svg>
+                        </button>
+                    </form>
+
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'vista_all_contenidos' %}" class="text-gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300">
+                            Ver todos los contenidos
+                        </a>
+                    {% endif %}
                 </div>
             </div>
-            <!-- links para ath  -->
-            <div class="flex items-center">
+
+            <!-- Links de autenticación en pantallas grandes -->
+            <div class="hidden sm:flex items-center">
                 {% if user.is_authenticated %}
                     <div class="flex items-center space-x-3">
                         {% if user.profile.image %}
                             {% thumbnail user.profile.image "40x40" crop="center" as im %}
-                            <img src="{{ im.url }}" alt="Profile Picture" class="w-10 h-10 rounded-full border border-gray-300">
+                                <img src="{{ im.url }}" alt="Profile Picture" class="w-10 h-10 rounded-full border border-gray-300">
                             {% endthumbnail %}
                         {% else %}
                             <img src="{% static 'default.png' %}" alt="Default Profile Picture" class="w-10 h-10 rounded-full border border-gray-300">
                         {% endif %}
-                        <a href="{% url 'profile' %}" class="text-gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300 focus:outline-none focus:ring-2 focus:ring-pink-500">Perfil</a>
+                        <a href="{% url 'profile' %}" class="text-gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Perfil</a>
                     </div>
-                    <a href="{% url 'account_logout' %}" class="text-gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300 focus:outline-none focus:ring-2 focus:ring-pink-500">Logout</a>
+                    <a href="{% url 'account_logout' %}" class="text-gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Logout</a>
                 {% else %}
-                    <a href="{% url 'account_login' %}" class="text-gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300 focus:outline-none focus:ring-2 focus:ring-pink-500">Login</a>
-                    <a href="{% url 'account_signup' %}" class="ml-4 text-gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300 focus:outline-none focus:ring-2 focus:ring-pink-500">Sign Up</a>
+                    <a href="{% url 'account_login' %}" class="text-gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Login</a>
+                    <a href="{% url 'account_signup' %}" class="ml-4 text-gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Sign Up</a>
                 {% endif %}
             </div>
         </div>
     </div>
+
+    <!-- Menú móvil -->
+    <div class="hidden sm:hidden" id="mobile-menu">
+        <div class="px-2 pt-2 pb-3 space-y-1">
+            <a href="{% url 'home' %}" class="text-gray-900 block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-200 hover:text-pink-800">Home</a>
+            <a href="{% url 'categories:listar' %}" class="text-gray-900 block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-200 hover:text-pink-800">Categorías</a>
+
+            <!-- Agregar el bloque de búsqueda aquí -->
+            <form method="GET" action="{% url 'buscar_contenido' %}" class="relative text-gray-800">
+                <input type="search" name="q" placeholder="Buscar..." class="bg-gray-200 h-10 px-5 pr-10 rounded-full text-sm focus:outline-none w-full">
+                <button type="submit" class="absolute right-0 top-0 mt-3 mr-4">
+                    <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56.966 56.966">
+                        <path d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z"/>
+                    </svg>
+                </button>
+            </form>
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'vista_all_contenidos' %}" class="text-gray-900 block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-200 hover:text-pink-800">Ver todos los contenidos</a>
+                <a href="{% url 'profile' %}" class="text-gray-900 block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-200 hover:text-pink-800">Perfil</a>
+                <a href="{% url 'account_logout' %}" class="text-gray-900 block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-200 hover:text-pink-800">Logout</a>
+            {% else %}
+                <a href="{% url 'account_login' %}" class="text-gray-900 block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-200 hover:text-pink-800">Login</a>
+                <a href="{% url 'account_signup' %}" class="text-gray-900 block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-200 hover:text-pink-800">Sign Up</a>
+            {% endif %}
+        </div>
+    </div>
+
 </nav>
+
+<!-- Script para alternar el menú móvil -->
+<script>
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    hamburgerBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+</script>
