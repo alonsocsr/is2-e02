@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CambiarEstadoView, ContenidoBorradorList, ContenidoInactivadoList, CrearContenido, ContenidoEdicionList, EditarContenido, ContenidoPublicarList, RechazarContenido, VistaAllContenidos, VistaContenido, InactivarContenido, VistaContenidosReportados
+from .views import CambiarEstadoView, ContenidoBorradorList, ContenidoInactivadoList, CrearContenido, ContenidoEdicionList, EditarContenido, ContenidoPublicarList, RechazarContenido, VistaAllContenidos, VistaContenido, InactivarContenido, VistaContenidosReportados, TableroKanbanView,  UpdatePostStatusView
 from . import views
 urlpatterns = [
     #autor
@@ -25,4 +25,10 @@ urlpatterns = [
     path('rechazar-contenido/<int:pk>', RechazarContenido.as_view(), name='rechazar_contenido'),
     path('contenidos-reportados', VistaContenidosReportados.as_view(), name='contenidos_reportados'),
     path('contenidos-inactivos', ContenidoInactivadoList.as_view(), name='contenidos_inactivados'),
+
+    #tablero kanban
+    path('tablero-kanban/', TableroKanbanView.as_view(), name='tablero_kanban'),
+    path('update-post-status/',  UpdatePostStatusView.as_view(), name='update_post_status'),
+    # urls.py
+
 ]
