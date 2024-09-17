@@ -1,14 +1,18 @@
+import json
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
 from django.urls import reverse
 from django.db.models import Q
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView, View
 from django.views.generic.edit import FormView, FormMixin, UpdateView
 from .forms import ContenidoForm, EditarContenidoForm, RechazarContenidoForm, ContenidoReportadoForm
 from .models import Version, Contenido, ContenidoReportado   
-import re
+import re, json
 from django.utils.safestring import mark_safe
+from django.http import JsonResponse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 
 
 class VistaAllContenidos(ListView):
@@ -481,4 +485,83 @@ class VistaContenidosReportados(LoginRequiredMixin, ListView, PermissionRequired
             return ContenidoReportado.objects.filter(contenido__autor=user)
         else:
             return ContenidoReportado.objects.none()
-        
+
+
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class TableroKanbanView(LoginRequiredMixin, TemplateView, PermissionRequiredMixin):
+    """
+    Vista para mostrar el Tablero Kanban.
+
+    Esta vista agrupa el contenido en diferentes columnas según su estado (Borrador, Edición, Publicación, Publicado, Inactivo)
+    y permite a los usuarios con los permisos correspondientes mover los contenidos entre estas columnas.
+
+    :cvar template_name: str - Nombre de la plantilla utilizada para renderizar el tablero Kanban.
+    :cvar permission_required: str - Permiso requerido para acceder a esta vista.
+    
+    :return: Respuesta HTTP que muestra el tablero Kanban con los contenidos agrupados por su estado.
+    """
+    template_name = 'content/tablero_kanban.html'
+    permission_required = 'permissions.ver_tablero_kanban'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Obtener las publicaciones y agruparlas por estado
+        contenido = Contenido.objects.all()
+        context['borrador'] = contenido.filter(estado='Borrador')
+        context['edicion'] = contenido.filter(estado='Edicion')
+        context['publicacion'] = contenido.filter(estado='Publicar')
+        context['publicado'] = contenido.filter(estado='Publicado')
+        context['inactivo'] = contenido.filter(estado='Inactivo')
+        # Obtener los permisos necesarios para mover los contenidos
+        context['crear_perm'] = self.request.user.has_perm('permissions.crear_contenido')
+        context['editar_perm'] = self.request.user.has_perm('permissions.editar_contenido')
+        context['publicar_perm'] = self.request.user.has_perm('permissions.publicar_contenido')
+        context['inactivar_perm'] = self.request.user.has_perm('permissions.inactivar_contenido')
+        # context['activar_contenido'] = self.request.user.has_perm('permissions.modificar_tablero_kanban')
+        return context
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class UpdatePostStatusView(LoginRequiredMixin, View):
+    """
+    Vista para actualizar el estado de un contenido en el tablero Kanban.
+
+    Esta vista procesa las solicitudes POST que contienen una lista de cambios en el estado de los contenidos.
+    Dependiendo del nuevo estado proporcionado, se actualiza el estado de los contenidos en la base de datos.
+
+    :return: Redirige a la página anterior o al tablero Kanban después de actualizar el estado.
+    """
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        cambios = data.get('cambios', [])
+
+        for cambio in cambios:
+            post_id = cambio['id']
+            new_status = cambio['status']
+
+            # Obtener el contenido y actualizar su estado
+            post = Contenido.objects.get(id=post_id)
+
+            if new_status == 'Borrador':
+                post.estado = 'Borrador'
+            elif new_status == 'Edicion':
+                post.estado = 'Edicion'
+            elif new_status == 'Publicacion':
+                post.estado = 'Publicar'
+            elif new_status == 'Publicado':
+                post.estado = 'Publicado'
+                post.activo = True
+                post.mensaje_rechazo = ''
+            elif new_status == 'Inactivo':
+                post.estado = 'Inactivo'
+                post.activo = False
+
+            post.save()
+
+        messages.success(self.request, "Se ha actualizado el tablero kanban con éxito.")
+
+
+
+
