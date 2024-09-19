@@ -2248,10 +2248,6 @@ video {
 }
 
 @media (min-width: 640px){
-  .sm\:relative{
-    position: relative;
-  }
-
   .sm\:flex{
     display: flex;
   }
@@ -2262,11 +2258,6 @@ video {
 
   .sm\:max-w-4xl{
     max-width: 56rem;
-  }
-
-  .sm\:translate-x-0{
-    --tw-translate-x: 0px;
-    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
   }
 
   .sm\:grid-cols-2{

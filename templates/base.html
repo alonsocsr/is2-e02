@@ -19,7 +19,7 @@
     <!-- Sidebar oculto por defecto en pantallas pequeñas -->
     {% if user.is_authenticated %}
     <aside id="sidebar"
-      class="fixed z-20 transform -translate-x-full sm:relative sm:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col min-w-[12rem] max-w-[15rem] w-full h-screen px-5 py-8 overflow-y-auto bg-white border-r">
+    class="fixed z-20 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col min-w-[12rem] max-w-[15rem] w-full h-screen px-5 py-8 overflow-y-auto bg-white border-r">
       {% include 'includes/sidebar.html' %}
     </aside>
     {% endif %}
@@ -27,7 +27,7 @@
     <div class="flex flex-col flex-1 w-full">
       {% if user.is_authenticated %}
         <!-- Botón para mostrar/ocultar el sidebar en pantallas pequeñas -->
-        <div class="fixed top-3 left-16 z-30 px-4 sm:hidden">
+        <div class="fixed top-3 left-16 z-30 md:hidden">
           <button id="toggleSidebar" class="p-3 bg-pink-700 text-white rounded-full shadow-md">
             <!-- Botón redondeado -->
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
