@@ -7,7 +7,7 @@
             <!-- Logo -->
             <div class="flex-shrink-0">
                 <a href="{% url 'home' %}">
-                    <img src="{% static 'logo.png' %}" alt="Logo" class="h-8 w-auto">
+                    <img src="{% static 'logo.png' %}" alt="Logo" class="h-8 w-auto px-3">
                 </a>
             </div>
 
@@ -24,7 +24,7 @@
             <!-- Menú normal (pantallas medianas/grandes) -->
             <div class="hidden sm:flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div class="flex space-x-4">
-                    <a href="{% url 'home' %}" class="text-gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Home</a>
+                    <a href="{% url 'home' %}" class="text-gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 ml-4 rounded-md text-sm font-medium transition duration-300">Home</a>
                     <a href="{% url 'categories:listar' %}" class="text-gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300">Categorías</a>
 
                     <!-- Formulario de búsqueda -->

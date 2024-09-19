@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CrearCategoriaView, ModificarCategoriaView, EliminarCategoriaView, ListarCategoriasView, DetalleCategoriaView
+from .views import CrearCategoriaView, ModificarCategoriaView, EliminarCategoriaView, ListarCategoriasView, DetalleCategoriaView, PaymentSuccessView, PaymentCancelView
 from django.contrib.auth.decorators import login_required, permission_required
 
 app_name = 'categories'
@@ -10,4 +10,6 @@ urlpatterns = [
     path('gestion/eliminar/<int:pk>/', EliminarCategoriaView.as_view(), name='eliminar'),
     path('', ListarCategoriasView.as_view(), name="listar"),
     path('<int:pk>/', DetalleCategoriaView.as_view(), name='detalle'),
+    path('success/', PaymentSuccessView.as_view(), name='pago_completado'),
+    path('cancel/', PaymentCancelView.as_view(), name='pago_cancelado'),
 ]

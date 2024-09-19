@@ -23,12 +23,85 @@
         <h2 class="text-3xl font-bold text-gray-800 mb-8">Contenidos en la categoría: {{ categoria.nombre_categoria }}</h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
             {% for contenido in contenidos %}
-                {% include "includes/contenido.html" %}
+                    <div class="w-full bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl overflow-hidden flex flex-col md:flex-row relative">
+
+                        {% if contenido.categoria.tipo_categoria in categorias_restringidas and not user.is_authenticated %}
+                        <a href="{% url 'account_login' %}">    
+                        {% elif contenido.categoria.tipo_categoria == 'PA' and contenido.categoria.id not in categorias_suscritas_ids %}
+                        <a href="?modal=true&categoria_id={{ contenido.categoria.id }}">
+                        {% else %}
+                        <a href="{% url 'detalle_contenido' contenido.slug %}">
+                        {% endif %}    
+
+                            <!-- Imagen -->
+                            <div class="h-32 md:h-48 lg:h-auto lg:w-36 flex-none bg-cover bg-center"> 
+                                <img src="{{ contenido.imagen.url }}" alt="{{ contenido.titulo }}" class="block w-full h-full" style="object-fit: cover;"> 
+                            </div> 
+                            <!-- Información -->
+                            <div class="px-4 py-3 w-full flex flex-col justify-between leading-normal overflow-hidden">
+                                <!-- Autor y Fecha -->
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center">
+                                        <img class="w-8 h-8 rounded-full mr-4" src="{% if contenido.autor.profile.image %}{{ contenido.autor.profile.image.url }}{% else %}/static/default.png{% endif %}" alt="Foto del autor">
+                                        <div class="text-sm">
+                                            <p class="text-gray-900 leading-none">{{ contenido.autor.username }}</p>
+                                            <p class="text-gray-600 text-xs">{{ contenido.fecha_creacion|date:"d M Y" }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Título -->
+                                <div class="mb-4">
+                                    <div class="text-gray-900 font-bold text-lg mb-1 truncate" >{{ contenido.titulo }}</div>
+                                <!-- Descripción -->
+                                    <p class="text-gray-700 text-xs overflow-hidden" 
+                                        style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; font-size: 0.85rem;">
+                                        {{ contenido.resumen|truncatewords:30 }}
+                                    </p>
+                                </div>
+                                <!-- Botón de Opciones  -->
+                                <div class="absolute bottom-2 right-2">
+                                    <div class="relative">
+                                        <button onClick="toggleMenu(event, '{{ contenido.id }}')" class="text-gray-500 hover:text-pink-700 focus:outline-none">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                                                <circle cx="12" cy="5" r="1.5"/>
+                                                <circle cx="12" cy="12" r="1.5"/>
+                                                <circle cx="12" cy="19" r="1.5"/>
+                                            </svg>
+                                        </button>
+                                        <!-- Menú desplegable -->
+                                        <div id="menu-{{ contenido.id }}" class="hidden absolute right-0 bottom-8 w-40 bg-white rounded-md shadow-lg z-10">
+                                            <div class="py-2">
+                                                {% if perms.permissions.inactivar_contenido %}
+                                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-pink-700">Inactivar</a>
+                                                {% endif %}
+                                                {% if perms.permissions.ver_estadisticas_contenido %}
+                                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-pink-700">Estadísticas</a>
+                                                {% endif %}
+                                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-pink-700">Compartir</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
             {% empty %}
                 <p class="text-gray-600">No hay contenidos en esta categoría.</p>
             {% endfor %}
         </div>
     </section>
 </div>
+
+
+<script>
+    function toggleMenu(event, contenidoId) {
+        event.preventDefault();  // Evitar que el clic propague al enlace padre
+        const menu = document.getElementById('menu-' + contenidoId);
+        menu.classList.toggle('hidden');
+    }
+</script>
+
+{% include 'includes/pago_categoria.html' %}
 {% endblock %}

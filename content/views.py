@@ -1,4 +1,3 @@
-import json
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
@@ -9,9 +8,6 @@ from django.views.generic.edit import FormView, FormMixin, UpdateView
 from .forms import ContenidoForm, EditarContenidoForm, RechazarContenidoForm, ContenidoReportadoForm
 from .models import Version, Contenido, ContenidoReportado   
 import re, json
-from django.utils.safestring import mark_safe
-from django.conf import settings
-from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
