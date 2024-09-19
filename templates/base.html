@@ -10,12 +10,12 @@
   <link href="{% static 'css/output.css' %}" rel="stylesheet">
   <script src="{% static 'js/categorias.js' %}"></script>
   <script src="{% static 'js/intereses.js' %}"></script>
-  <script src="{% static 'js/kanban.js' %}"></script>
 </head>
 
 <body>
 
-  <div class="flex h-screen">
+  <body class="flex flex-col min-h-screen">
+    <div class="flex flex-col flex-1">
     <!-- sidebar oculto por defecto en pantallas pequeñas -->
     {% if user.is_authenticated %}
     <aside id="sidebar"
@@ -58,6 +58,15 @@
 
     </div>
   </div>
+  <!-- footer -->
+ <footer class="py-6 bg-gray-100 text-center text-gray-600">
+  <p>© Stark. Todos los derechos reservados.</p>
+  <div class="mt-2">
+      <a href="#" class="mx-2 hover:underline">Términos</a>
+      <a href="#" class="mx-2 hover:underline">Política de Privacidad</a>
+      <a href="#" class="mx-2 hover:underline">Contáctenos</a>
+  </div>
+</footer>
 
   <!-- Script para el comportamiento del sidebar en pantallas pequeñas -->
   <script>
