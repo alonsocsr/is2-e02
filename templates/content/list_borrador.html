@@ -81,24 +81,20 @@ Mis borradores | Stark
           </a>
           <!-- Botón Enviar a Edición -->
           {% if contenido.categoria.moderada %}
-          <form action="{% url 'cambiar_estado' contenido.id %}" method="POST" class="w-full">
-            {% csrf_token %}
-            <button type="submit"
-              class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md text-center w-full">
-              Publicar
-            </button>
+          <form id="sendToEditorForm-{{ contenido.id }}" action="{% url 'cambiar_estado' contenido.id %}" method="POST" class="w-full">
+              {% csrf_token %}
+              <button type="button" onclick="openConfirmModal('sendToEditorForm-{{ contenido.id }}')" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md text-center w-full">
+                  Enviar al Editor
+              </button>
           </form>
           {% else %}
-          <form action="{% url 'cambiar_estado' contenido.id %}" method="POST" class="w-full">
-            {% csrf_token %}
-            <button type="submit"
-              class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md text-center w-full">
-              Enviar al Editor
-            </button>
-          </form>
+          <form id="publishForm-{{ contenido.id }}" action="{% url 'cambiar_estado' contenido.id %}" method="POST" class="w-full">
+              {% csrf_token %}
+              <button type="button" onclick="openConfirmModal('publishForm-{{ contenido.id }}')" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md text-center w-full">
+                  Publicar
+              </button>
+            </form>
           {% endif %}
-
-
         </div>
 
       </div>
@@ -135,6 +131,21 @@ Mis borradores | Stark
   </div>
 </div>
 
+<!-- Modal de confirmación -->
+<div id="confirmModal" class="hs-overlay hidden fixed top-0 start-0 z-50 w-full h-full bg-gray-500 bg-opacity-75">
+  <div class="flex justify-center items-center h-full">
+    <div class="bg-white rounded-lg shadow-md w-full max-w-md p-4">
+      <h3 class="text-lg font-semibold text-gray-800 mb-3">Confirmación</h3>
+      <p class="text-gray-600">¿Estás seguro de que deseas realizar esta acción? Esta acción es irreversible.</p>
+      <div class="flex justify-end mt-4 space-x-2">
+        <button type="button" onclick="closeConfirmModal()" class="bg-gray-400 text-white hover:bg-gray-500 py-2 px-4 rounded-lg">Cancelar</button>
+        <button id="confirmButton" type="button" class="bg-pink-800 text-white hover:bg-pink-700 py-2 px-4 rounded-lg">Confirmar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <script>
   function toggleRejectionMessage(id) {
     var message = document.getElementById('rejection-message-' + id);
@@ -143,6 +154,22 @@ Mis borradores | Stark
     } else {
       message.classList.add('hidden');
     }
+  }
+
+  // Función para abrir el modal de confirmación
+  function openConfirmModal(formId) {
+      document.getElementById('confirmModal').classList.remove('hidden');
+      const confirmButton = document.getElementById('confirmButton');
+
+      // Cuando el usuario haga clic en "Confirmar", enviar el formulario
+      confirmButton.onclick = function() {
+          document.getElementById(formId).submit();
+      };
+  }
+
+  // Función para cerrar el modal de confirmación
+  function closeConfirmModal() {
+      document.getElementById('confirmModal').classList.add('hidden');
   }
 </script>
 {% endblock content %}

@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% block title %}Resultados de búsqueda{% endblock %}
+
+{% block content %}
+<div class="container mx-auto pt-10">
+    <h2 class="text-3xl font-bold text-gray-800 text-center mb-8">
+        Resultados de búsqueda para: "{{ query }}"
+    </h2>
+
+    <!-- Dropdown para filtrar por categorías y autores -->
+    <div class="flex justify-end mb-6 space-x-4">
+        <!-- Dropdown de categorías con buscador -->
+        <div class="relative inline-block text-left">
+            <button id="dropdownCategorias" class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none">
+                Filtrar por Categorías
+                <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+            <div id="dropdownCategoriasMenu" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 hidden p-2 space-y-2">
+                <form method="GET" action="{% url 'buscar_contenido' %}">
+                    <input type="hidden" name="q" value="{{ query }}">
+                    <!-- Input de búsqueda para categorías -->
+                    <input type="text" id="buscarCategoria" placeholder="Buscar categoría..." class="px-3 py-1 border rounded-md text-sm w-full mb-2">
+                    <div id="listaCategorias" class="py-1 space-y-2 max-h-40 overflow-y-auto">
+                        {% for categoria in categorias %}
+                            <div class="px-4 py-2 text-sm text-gray-700">
+                                <input type="checkbox" name="categorias" value="{{ categoria.id }}" id="cat-{{ categoria.id }}" {% if categoria.id|stringformat:"s" in request.GET.categorias %}checked{% endif %}>
+                                <label for="cat-{{ categoria.id }}">{{ categoria.nombre_categoria }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center mt-2">
+                        <button type="submit" class="bg-pink-600 text-white px-3 py-1 rounded-md text-sm hover:bg-pink-500">
+                            Aplicar filtros
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Dropdown de autores con búsqueda -->
+        <div class="relative inline-block text-left">
+            <button id="dropdownAutores" class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none">
+                Filtrar por Autores
+                <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+            <div id="dropdownAutoresMenu" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 hidden p-2 space-y-2">
+                <form method="GET" action="{% url 'buscar_contenido' %}">
+                    <input type="hidden" name="q" value="{{ query }}">
+                    <!-- Input de búsqueda -->
+                    <input type="text" id="buscarAutor" placeholder="Buscar autor..." class="px-3 py-1 border rounded-md text-sm w-full mb-2">
+                    <div id="listaAutores" class="py-1 space-y-2 max-h-40 overflow-y-auto">
+                        {% for autor in autores %}
+                            <div class="px-4 py-2 text-sm text-gray-700">
+                                <input type="checkbox" name="autores" value="{{ autor.username }}" id="autor-{{ autor.username }}" {% if autor.username in request.GET.autores %}checked{% endif %}>
+                                <label for="autor-{{ autor.username }}">{{ autor.username }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center mt-2">
+                        <button type="submit" class="bg-pink-600 text-white px-3 py-1 rounded-md text-sm hover:bg-pink-500">
+                            Aplicar filtros
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resultados de la búsqueda -->
+    {% if resultados %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for contenido in resultados %}
+                {% include "includes/contenido.html" %}
+            {% endfor %}
+        </div>
+
+    {% else %}
+        <div class="mt-8 text-center">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">No se encontraron resultados para "{{ query }}"</h2>
+            <p class="text-gray-600">Intenta con otro término de búsqueda.</p>
+            <p class="text-gray-600 mt-4">Aquí tienes otros post que te podrían interesar:</p>
+
+            <!-- Sugerencias como contenidos -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 text-left">
+                {% for contenido in sugerencias %}
+                    {% include "includes/contenido.html" %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+<!-- Script para manejar los dropdowns, búsqueda de autores/categorías y el cierre automático al hacer clic fuera -->
+<script>
+    const dropdownCategorias = document.getElementById('dropdownCategorias');
+    const dropdownAutores = document.getElementById('dropdownAutores');
+    const dropdownCategoriasMenu = document.getElementById('dropdownCategoriasMenu');
+    const dropdownAutoresMenu = document.getElementById('dropdownAutoresMenu');
+    const buscarAutorInput = document.getElementById('buscarAutor');
+    const buscarCategoriaInput = document.getElementById('buscarCategoria');
+    const listaAutores = document.getElementById('listaAutores');
+    const listaCategorias = document.getElementById('listaCategorias');
+
+    // Manejar los dropdowns
+    dropdownCategorias.addEventListener('click', function(event) {
+        event.stopPropagation();
+        dropdownCategoriasMenu.classList.toggle('hidden');
+    });
+
+    dropdownAutores.addEventListener('click', function(event) {
+        event.stopPropagation();
+        dropdownAutoresMenu.classList.toggle('hidden');
+    });
+
+    // Búsqueda dinámica de autores (petición AJAX simulada)
+    buscarAutorInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase();
+
+        // Simula la búsqueda de autores. Aquí puedes hacer una petición AJAX si es necesario.
+        listaAutores.innerHTML = ''; // Limpia la lista
+        {% for autor in autores %}
+            if ('{{ autor.username }}'.toLowerCase().includes(query)) {
+                listaAutores.innerHTML += `
+                    <div class="px-4 py-2 text-sm text-gray-700">
+                        <input type="checkbox" name="autores" value="{{ autor.username }}" id="autor-{{ autor.username }}">
+                        <label for="autor-{{ autor.username }}">{{ autor.username }}</label>
+                    </div>
+                `;
+            }
+        {% endfor %}
+    });
+
+    // Búsqueda dinámica de categorías
+    buscarCategoriaInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase();
+        const categorias = listaCategorias.querySelectorAll('div');
+
+        categorias.forEach(function(categoria) {
+            const categoriaNombre = categoria.textContent.toLowerCase();
+            categoria.style.display = categoriaNombre.includes(query) ? 'block' : 'none';
+        });
+    });
+
+    // Evitar que el dropdown se cierre al hacer clic dentro de él
+    dropdownCategoriasMenu.addEventListener('click', function(event) {
+        event.stopPropagation();
+    });
+
+    dropdownAutoresMenu.addEventListener('click', function(event) {
+        event.stopPropagation();
+    });
+
+    // Cerrar dropdowns al hacer clic fuera del menú
+    document.addEventListener('click', function(event) {
+        if (!dropdownCategorias.contains(event.target)) {
+            dropdownCategoriasMenu.classList.add('hidden');
+        }
+
+        if (!dropdownAutores.contains(event.target)) {
+            dropdownAutoresMenu.classList.add('hidden');
+        }
+    });
+
+    // Prevenir que se cierre el dropdown al hacer clic en los inputs de búsqueda
+    buscarAutorInput.addEventListener('click', function(event) {
+        event.stopPropagation();
+    });
+
+    buscarCategoriaInput.addEventListener('click', function(event) {
+        event.stopPropagation();
+    });
+
+    // Evitar que el dropdown se cierre al hacer clic en los checkboxes dentro del menú
+    listaAutores.addEventListener('click', function(event) {
+        event.stopPropagation();
+    });
+
+    listaCategorias.addEventListener('click', function(event) {
+        event.stopPropagation();
+    });
+</script>
+
+
+{% endblock %}

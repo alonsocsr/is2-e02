@@ -17,15 +17,9 @@ def crear_rol(request):
 
     Renderiza la plantilla 'permissions/crear_rol.html' con el formulario y la lista de roles existentes.
 
-    Parámetros :
-    -----------
-    request : HttpRequest
-        La solicitud HTTP recibida por la vista.
-
-    Returns:
-    --------
-    HttpResponse
-        La respuesta HTTP que renderiza la plantilla 'permissions/crear_rol.html'.
+    :param request: HttpRequest - La solicitud HTTP recibida por la vista.
+    
+    :return: HttpResponse - La respuesta HTTP que renderiza la plantilla 'permissions/crear_rol.html'.
     """
     if request.method == 'POST':
         form = Rol_Form(request.POST)
@@ -60,15 +54,9 @@ def asignar_rol_usuario(request):
 
     Renderiza la plantilla 'permissions/asignar_rol.html' con el formulario para asignar roles.
 
-    Parámetros:
-    -----------
-    request : HttpRequest
-        La solicitud HTTP recibida por la vista.
+    :param request: HttpRequest - La solicitud HTTP recibida por la vista.
 
-    Returns:
-    --------
-    HttpResponse
-        La respuesta HTTP que renderiza la plantilla 'permissions/asignar_rol.html'.
+    :return: HttpResponse - La respuesta HTTP que renderiza la plantilla 'permissions/asignar_rol.html'.
     """    
     form = Asignar_Rol_Form(request.POST or None)
 
@@ -121,19 +109,13 @@ def asignar_rol_usuario(request):
 def modificar_rol(request, rol_id=None):
     """
     Función que se encarga de modificar un rol.
-    
+
     Renderiza la plantilla 'permissions/modificar_rol.html' y permite al usuario modificar un rol existente.
-    
-    Parámetros:
-    -----------
-    request : HttpRequest
-        La solicitud HTTP recibida por la vista.
-    rol_id : int, opcional
-    
-    Returns:
-    --------
-    HttpResponse
-        La respuesta HTTP que renderiza la plantilla 'permissions/modificar_rol.html'.
+
+    :param request: HttpRequest - La solicitud HTTP recibida por la vista.
+    :param rol_id: int, opcional - El ID del rol a modificar. Si no se proporciona, se crea un nuevo rol.
+
+    :return: HttpResponse - La respuesta HTTP que renderiza la plantilla 'permissions/crear_rol.html'.
     """
 
     rol_seleccionado = get_object_or_404(Roles, id=rol_id)
@@ -165,20 +147,12 @@ def eliminar_rol(request, rol_id):
     """
     Función que se encarga de eliminar un rol y su grupo asociado.
 
-    Renderiza el template 'permissions/eliminar_rol.html' y muestra un mensaje de exito si el rol se elimina correctamente.
+    Renderiza la plantilla 'permissions/eliminar_rol.html' y muestra un mensaje de éxito si el rol se elimina correctamente.
 
-    Parámetros:
-    -----------
-    request : HttpRequest
-        La solicitud HTTP recibida.
-    rol_id : int
-        El ID del rol a eliminar.
+    :param request: HttpRequest - La solicitud HTTP recibida por la vista.
+    :param rol_id: int - El ID del rol a eliminar.
 
-    Returns:
-    --------
-    HttpResponseRedirect
-        Redirecciona a la vista 'crear_rol' después de eliminar el rol.
-
+    :return: HttpResponseRedirect - Redirecciona a la vista 'crear_rol' después de eliminar el rol.
     """
 
     rol = get_object_or_404(Roles, id=rol_id)
@@ -203,19 +177,12 @@ def modificar_usuario(request, user_id=None):
     """
     Función que se encarga de modificar los roles de un usuario.
 
-    Renderiza el template 'permissions/modificar_usuario.html' y actualiza los roles del usuario seleccionado.
+    Renderiza la plantilla 'permissions/modificar_usuario.html' y actualiza los roles del usuario seleccionado.
 
-    Parámetros:
-    -----------
-    request : HttpRequest
-        La solicitud HTTP recibida.
-    user_id : int, opcional
-        El ID del usuario cuyos roles se desean modificar. Por defecto es None.
+    :param request: HttpRequest - La solicitud HTTP recibida por la vista.
+    :param user_id: int, opcional - El ID del usuario cuyos roles se desean modificar. Si no se proporciona, se consideran todos los usuarios.
 
-    Returns:
-    --------
-    HttpResponse
-        La respuesta HTTP que renderiza el template 'permissions/modificar_usuario.html'.
+    :return: HttpResponse - La respuesta HTTP que renderiza la plantilla 'permissions/modificar_usuario.html'.
     """
     usuarios = User.objects.all()
     roles = Group.objects.all()

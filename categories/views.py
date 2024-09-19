@@ -7,10 +7,24 @@ from django.views.generic import View, TemplateView, DetailView
 from content.models import Contenido
 
 class CrearCategoriaView(View):
+    """
+    Vista para crear una nueva categoría.
+
+    Esta vista maneja la creación de una nueva categoría. En el método `GET`, muestra un formulario vacío para la creación de una nueva categoría. En el método `POST`, procesa la creación de la categoría y valida si se excede el límite de categorías con prioridad.
+
+    :cvar form_class: CategoriaForm - El formulario usado para crear una categoría.
+    :cvar template_name: str - Nombre de la plantilla utilizada para el formulario de creación.
+    """
     form_class = CategoriaForm
     template_name = 'categories/new_category.html'
 
     def get(self, request):
+        """
+        Muestra el formulario para la creación de una nueva categoría.
+
+        :param request: HttpRequest - La solicitud HTTP GET.
+        :return: HttpResponse - Respuesta renderizada con el formulario de creación y la lista de categorías.
+        """
         form = self.form_class()
         categorias = Categorias.objects.all().order_by('-prioridad','pk')
         return render(request, self.template_name, {
@@ -20,6 +34,14 @@ class CrearCategoriaView(View):
         })
 
     def post(self, request):
+        """
+        Procesa el formulario para crear una nueva categoría.
+
+        Valida el formulario y crea la categoría si los datos son válidos. También valida si se ha alcanzado el límite de categorías con prioridad.
+
+        :param request: HttpRequest - La solicitud HTTP POST con los datos del formulario.
+        :return: HttpResponse - Redirección a la vista de gestión de categorías con un mensaje de éxito o error.
+        """
         form = self.form_class(request.POST)
         if form.is_valid():
             # Validar límite de categorías con prioridad
@@ -44,10 +66,25 @@ class CrearCategoriaView(View):
 
 
 class ModificarCategoriaView(View):
+    """
+    Vista para modificar una categoría existente.
+
+    Esta vista maneja la modificación de una categoría existente. En el método `GET`, muestra un formulario con los datos de la categoría a modificar. En el método `POST`, procesa la modificación de la categoría y valida si se excede el límite de categorías con prioridad.
+
+    :cvar form_class: CategoriaForm - El formulario usado para modificar una categoría.
+    :cvar template_name: str - Nombre de la plantilla utilizada para el formulario de modificación.
+    """
     form_class = CategoriaForm
     template_name = 'categories/new_category.html'
 
     def get(self, request, pk):
+        """
+        Muestra el formulario para la modificación de una categoría existente.
+
+        :param request: HttpRequest - La solicitud HTTP GET.
+        :param pk: int - El identificador primario de la categoría a modificar.
+        :return: HttpResponse - Respuesta renderizada con el formulario de modificación y la lista de categorías.
+        """
         categoria = get_object_or_404(Categorias, pk=pk)
         form = self.form_class(instance=categoria)
         categorias = Categorias.objects.all().order_by('-prioridad','pk')
@@ -58,6 +95,15 @@ class ModificarCategoriaView(View):
         })
 
     def post(self, request, pk):
+        """
+        Procesa el formulario para modificar una categoría existente.
+
+        Valida el formulario y modifica la categoría si los datos son válidos. También valida si se ha alcanzado el límite de categorías con prioridad.
+
+        :param request: HttpRequest - La solicitud HTTP POST con los datos del formulario.
+        :param pk: int - El identificador primario de la categoría a modificar.
+        :return: HttpResponse - Redirección a la vista de gestión de categorías con un mensaje de éxito o error.
+        """
         categoria = get_object_or_404(Categorias, pk=pk)
         form = self.form_class(request.POST, instance=categoria)
         if form.is_valid():
@@ -85,11 +131,9 @@ class EliminarCategoriaView(View):
     """
     Vista para eliminar una categoría existente.
 
-    Este `View` maneja la eliminación de una categoría. Muestra una confirmación en el método `GET`
-    y procesa la eliminación en el método `POST`.
+    Esta vista maneja la eliminación de una categoría. Muestra una confirmación en el método `GET` y procesa la eliminación en el método `POST`.
 
-    Atributos:
-        template_name (str): Nombre de la plantilla utilizada para confirmar la eliminación.
+    :cvar template_name: str - Nombre de la plantilla utilizada para confirmar la eliminación.
     """
     template_name = 'categories/delete_category.html'
 
@@ -99,12 +143,9 @@ class EliminarCategoriaView(View):
 
         Obtiene la categoría especificada por `pk` y muestra una plantilla de confirmación de eliminación.
 
-        Args:
-            request (HttpRequest): La solicitud HTTP GET.
-            pk (int): El identificador primario de la categoría a eliminar.
-
-        Returns:
-            HttpResponse: Respuesta renderizada con la plantilla de confirmación de eliminación.
+        :param request: HttpRequest - La solicitud HTTP GET.
+        :param pk: int - El identificador primario de la categoría a eliminar.
+        :return: HttpResponse - Respuesta renderizada con la plantilla de confirmación de eliminación.
         """
         categoria = get_object_or_404(Categorias, pk=pk)
         return render(request, self.template_name, {'categoria': categoria})
@@ -113,15 +154,11 @@ class EliminarCategoriaView(View):
         """
         Procesa la eliminación de una categoría existente.
 
-        Elimina la categoría especificada por `pk` y muestra un mensaje de éxito. Redirige al
-        usuario a la vista de gestión de categorías.
+        Elimina la categoría especificada por `pk` y muestra un mensaje de éxito. Redirige al usuario a la vista de gestión de categorías.
 
-        Args:
-            request (HttpRequest): La solicitud HTTP POST para confirmar la eliminación.
-            pk (int): El identificador primario de la categoría a eliminar.
-
-        Returns:
-            HttpResponse: Redirección a la vista de gestión de categorías con un mensaje de éxito.
+        :param request: HttpRequest - La solicitud HTTP POST para confirmar la eliminación.
+        :param pk: int - El identificador primario de la categoría a eliminar.
+        :return: HttpResponse - Redirección a la vista de gestión de categorías con un mensaje de éxito.
         """
         categoria = get_object_or_404(Categorias, pk=pk)
         nombre_categoria = categoria.nombre_categoria
@@ -133,10 +170,22 @@ class EliminarCategoriaView(View):
 class ListarCategoriasView(TemplateView):
     """
     Vista para mostrar una lista de categorías y un modal si es necesario.
+
+    Esta vista renderiza una plantilla con una lista de todas las categorías y, opcionalmente, muestra un modal si se solicita mediante parámetros en la solicitud.
+
+    :cvar template_name: str - Nombre de la plantilla utilizada para mostrar la lista de categorías.
     """
     template_name = 'categories/listar_categorias.html'
 
     def get_context_data(self, **kwargs):
+        """
+        Proporciona el contexto para la plantilla de lista de categorías.
+
+        Incluye una lista de categorías y verifica si se debe mostrar un modal.
+
+        :param \**kwargs: Parámetros adicionales que se pasan al método.
+        :return: dict - Contexto para la plantilla, incluyendo la lista de categorías, el estado del modal y la categoría específica si se solicita.
+        """
         context = super().get_context_data(**kwargs)
         categorias = Categorias.objects.all().order_by('id')
         categorias_list = list(categorias.values('id', 'descripcion', 'nombre_categoria', 'tipo_categoria', 'precio'))
@@ -162,14 +211,25 @@ class DetalleCategoriaView(DetailView):
     """
     Vista para mostrar los detalles de una categoría.
 
-    Esta vista renderiza una plantilla que muestra los detalles de una categoría
-    específica, incluyendo todos los contenidos asociados a ella.
+    Esta vista renderiza una plantilla que muestra los detalles de una categoría específica, incluyendo todos los contenidos asociados a ella.
+
+    :cvar model: Categorias - El modelo de la categoría que se muestra.
+    :cvar template_name: str - Nombre de la plantilla utilizada para mostrar los detalles de la categoría.
+    :cvar context_object_name: str - Nombre del contexto que contiene la categoría.
     """
     model = Categorias
     template_name = 'categories/detalle_categoria.html'
     context_object_name = 'categoria'
 
     def get_context_data(self, **kwargs):
+        """
+        Proporciona el contexto para la plantilla de detalles de una categoría.
+
+        Incluye todos los contenidos asociados a la categoría específica.
+
+        :param \**kwargs: Parámetros adicionales que se pasan al método.
+        :return: dict - Contexto para la plantilla, incluyendo los detalles de la categoría y los contenidos asociados.
+        """
         context = super().get_context_data(**kwargs)
         # Obtener todos los contenidos asociados a esta categoría
         contenidos = Contenido.objects.filter(categoria=self.object, estado='Publicado')

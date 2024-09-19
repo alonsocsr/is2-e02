@@ -86,26 +86,28 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Modelo que representa una categoría en el sistema.</span>
 
-<span class="sd">    Atributos:</span>
-<span class="sd">        :nombre_categoria (CharField): El nombre de la categoría, debe ser único y no puede estar en blanco.  </span>
-<span class="sd">        :descripcion (TextField): Una descripción detallada de la categoría.  </span>
-<span class="sd">        :descripcion_corta (CharField): Una descripción corta de la categoría.  </span>
-<span class="sd">        :estado (BooleanField): Estado de la categoría, por defecto es True.  </span>
-<span class="sd">        :moderada (BooleanField): Indica si la categoría está moderada, por defecto es True.  </span>
-<span class="sd">        :tipo_categoria (CharField): Tipo de la categoría, elige entre las opciones definidas en `TIPO_CATEGORIA_OPCIONES`, por defecto es &#39;PU&#39;.  </span>
-<span class="sd">        :precio (IntegerField): Precio asociado a la categoría, puede ser None.  </span>
-
+<span class="sd">    :cvar nombre_categoria(CharField): El nombre de la categoría, debe ser único y no puede estar en blanco.</span>
+<span class="sd">    :cvar descripcion(TextField): Una descripción detallada de la categoría.</span>
+<span class="sd">    :cvar descripcion_corta(CharField): Una descripción corta de la categoría.</span>
+<span class="sd">    :cvar estado(BooleanField): Estado de la categoría, por defecto es ``True``.</span>
+<span class="sd">    :cvar moderada(BooleanField): Indica si la categoría está moderada, por defecto es ``True``.</span>
+<span class="sd">    :cvar prioridad(BooleanField): Indica si la categoría tiene prioridad de visualización sobre otras categorías. Puede haber hasta 5 categorías con prioridad activa.</span>
+<span class="sd">    :cvar tipo_categoria(CharField): Tipo de la categoría, elige entre las opciones definidas en `TIPO_CATEGORIA_OPCIONES`, por defecto es &#39;PU&#39;.</span>
+<span class="sd">    :cvar precio(IntegerField): Precio asociado a la categoría, puede ser `None`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">nombre_categoria</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">descripcion</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">descripcion_corta</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">estado</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">moderada</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Valor por defecto</span>
+    <span class="n">prioridad</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">tipo_categoria</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span>
         <span class="n">max_length</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
         <span class="n">choices</span><span class="o">=</span><span class="n">TIPO_CATEGORIA_OPCIONES</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;PU&#39;</span><span class="p">)</span>
+        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;PU&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
     <span class="n">precio</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
 
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
         <span class="n">default_permissions</span> <span class="o">=</span> <span class="p">()</span>

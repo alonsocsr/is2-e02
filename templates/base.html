@@ -10,38 +10,65 @@
   <link href="{% static 'css/output.css' %}" rel="stylesheet">
   <script src="{% static 'js/categorias.js' %}"></script>
   <script src="{% static 'js/intereses.js' %}"></script>
+  <script src="{% static 'js/kanban.js' %}"></script>
 </head>
 
 <body>
-  
-    
+
   <div class="flex h-screen">
-    <!-- sidebar -->
+    <!-- sidebar oculto por defecto en pantallas pequeñas -->
     {% if user.is_authenticated %}
-    {% include 'includes/sidebar.html' %}
+    <aside id="sidebar"
+      class="fixed z-20 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col min-w-[12rem] max-w-[15rem] w-full h-screen px-5 py-8 overflow-y-auto bg-white border-r">
+      {% include 'includes/sidebar.html' %}
+    </aside>
     {% endif %}
 
     <div class="flex flex-col flex-1 w-full">
+      {% if user.is_authenticated %}
+        <!-- botón para mostrar/ocultar el sidebar en pantallas pequeñas -->
+        <div class="fixed top-3 left-16 z-30 md:hidden">
+          <button id="toggleSidebar" class="p-3 bg-pink-700 text-white rounded-full shadow-md">
+            <!-- Botón redondeado -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      {% endif %}
+
       <!-- navbar -->
-       <div>
-      {% include "includes/navbar.html" %}
-      {% if messages %}
-    <div class="messages">
-      {% for message in messages %}
-      <div class="alert alert-{{ message.tags }}">
-        {{ message }}
+      <div>
+        {% include "includes/navbar.html" %}
+        {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
       </div>
-      {% endfor %}
-    </div>
-    {% endif %}
-  </div>
+
       <!-- contenido -->
       <main class="flex-1 overflow-y-auto mt-8 px-6 py-4 bg-gray-100">
         {% block content %} {% endblock %}
       </main>
-    </div>
 
-  </div> 
+    </div>
+  </div>
+
+  <!-- Script para el comportamiento del sidebar en pantallas pequeñas -->
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const toggleSidebarButton = document.getElementById('toggleSidebar');
+
+    toggleSidebarButton.addEventListener('click', function () {
+      sidebar.classList.toggle('-translate-x-full');
+    });
+  </script>
+
 </body>
 
 </html>

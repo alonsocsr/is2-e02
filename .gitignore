@@ -153,6 +153,6 @@ desktop.ini
 
 uploads/
 
-#static/css/output.css
+static/css/output.css
 staticfiles/
 .history/

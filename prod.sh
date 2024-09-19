@@ -21,6 +21,7 @@ pip install -r $PROJECT_DIR/requirements.txt
 # Aplicar migraciones y colectar archivos estáticos
 echo "Aplicando migraciones y colectando archivos estáticos..."
 python manage.py migrate --settings=$DJANGO_SETTINGS_MODULE
+python3 manage.py collectstatic --settings=$DJANGO_SETTINGS_MODULE
 
 #Copiamos los archivos estaticos generado en el paso anterior a la carpeta static para que nginx pueda servirlos
 
@@ -35,5 +36,5 @@ sudo systemctl enable gunicorn
 
 sudo systemctl restart nginx
 
-#gunicorn --workers 3 --bind 0.0.0.0:8000 cms.wsgi:application
+# gunicorn --workers 3 --bind 0.0.0.0:8000 cms.wsgi:application
 

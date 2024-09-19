@@ -4,7 +4,7 @@
 
 
 {% block title %}
-   {{ contenido.titulo }} | Stark Blog
+{{ contenido.titulo }} | Stark Blog
 {% endblock %}
 
 {% block content %}
@@ -12,106 +12,195 @@
 <div class="mx-1 mb-4">
     {% if messages %}
     <div class="space-y-3">
-      {% for message in messages %}
-      <div
-        class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
-        {{ message }}
-      </div>
-      {% endfor %}
+        {% for message in messages %}
+        <div
+            class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
     </div>
     {% endif %}
-  </div>
-    
-    <!-- Imagen con categoría -->
-    <section id="summary" class="bg-white rounded-xl overflow-hidden mb-4 mx-auto" style="max-width: 90%; height: auto;">
-        
-        <div class="p-6 ">
-            <!-- Información de la categoría -->
-            <a href="{% url 'categories:detalle' contenido.categoria.id %}"  class="leading-none font-semibold mb-2 text-pink-700 hover:underline hover:text-pink-700">
-                {{ contenido.categoria.nombre_categoria }}
-            </a>
-            
-            <!-- Título del contenido -->
-            <h1 class="text-3xl font-bold text-gray-900 mb-4 text-left break-words">{{ contenido.titulo }}</h1>
-
-            <!-- Resumen -->
-            {% if contenido.resumen %}
-            <div class="text-gray-700 mb-4 text-left">
-                <p>{{ contenido.resumen }}</p>
-            </div>
-            {% endif %}
-        </div>
-
-        <!-- Autor y Fecha -->
-<div class="ml-6 mt-4 mr-6 mb-6 flex items-center justify-between text-sm text-gray-500">
-    <div class="flex items-center">
-        <img class="w-10 h-10 rounded-full mr-4" src="{% if contenido.autor.profile.image %}{{ contenido.autor.profile.image.url }}{% else %}{% static 'default.png' %}{% endif %}" alt="{{ contenido.autor.username }}">
-        <div>
-            <p class="leading-none font-semibold">{{ contenido.autor.username }}</p>
-            <p>Publicado el <time datetime="{{ contenido.fecha_modificacion }}">{{ contenido.fecha_modificacion|date:"d M Y" }}</time></p>
-        </div>
-    </div>
-    <div>
-        <button onclick="openModal('{{ contenido.slug }}')" class="bg-red-500 text-white py-2 px-4 rounded-lg">
-            Reportar
-        </button>
-    </div>
-</div>
-        <div class="relative aspect-[4/3]">
-            <img src="{{ contenido.imagen.url }}" alt="{{ contenido.titulo }}" class="w-full h-full object-cover">
-        </div>
-
-        <!-- Botones de inactivar y estadísticas alineados a la derecha -->
-        <div class="flex justify-end space-x-4 p-6">
-            {% if perms.permissions.inactivar_contenido %}
-                {% if contenido.autor == request.user %}
-                <form action="{% url 'inactivar_contenido' contenido.id %}" method="POST">
-                    {% csrf_token %}
-                    {% if contenido.activo %}
-                    <button type="submit" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">
-                        Inactivar Contenido
-                    </button>
-                    {% else %}
-                    <button type="submit" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">
-                        Activar Contenido
-                    </button>
-                    {% endif %}
-                </form>
-                {%else%}
-                <form action="{% url 'inactivar_contenido' contenido.id %}" method="POST">
-                    {% csrf_token %}
-                    {% if contenido.activo %}
-                    <button type="submit" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">
-                        Inactivar Contenido
-                    </button>
-                    {% else %}
-                    <button type="submit" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">
-                        Activar Contenido
-                    </button>
-                {% endif %}
-            {% endif %}
-            {% endif %}
-        </div>
-    </section>
-
-    <!-- Cuerpo del Contenido -->
-    <main class="bg-white shadow-md rounded-xl p-6 text-gray-800 leading-relaxed mx-auto pb-5 mb-5" style="max-width: 90%; height: auto;margin-bottom:5rem;">
-        <div class="prose max-w-none" style="word-break: break-word; overflow-wrap: break-word;">
-            {{ contenido.cuerpo|safe|linebreaks }}
-        </div>
-    </main>
-    {%if user.is_authenticated%}
-        <div class="bg-white shadow-md rounded-xl p-6 text-gray-800 leading-relaxed mx-auto pt-5" style="max-width: 90%; height: auto;">
-            <div class="container mx-auto text-center">
-                {% include 'content/comments.html' %}
-            </div>
-        </div>
-        {%endif%}
 </div>
 
+<!-- Imagen con categoría -->
+<section id="summary" class="bg-white rounded-xl overflow-hidden mb-4 mx-auto" style="max-width: 90%; height: auto;">
 
-    
-    <!-- Modal para el reporte -->
+    <div class="p-6 ">
+        <!-- Información de la categoría -->
+        <a href="{% url 'categories:detalle' contenido.categoria.id %}"
+            class="leading-none font-semibold mb-2 text-pink-700 hover:underline hover:text-pink-700">
+            {{ contenido.categoria.nombre_categoria }}
+        </a>
+
+        <!-- Título del contenido -->
+        <h1 class="text-3xl font-bold text-gray-900 mb-4 text-left break-words">{{ contenido.titulo }}</h1>
+
+        <!-- Resumen -->
+        {% if contenido.resumen %}
+        <div class="text-gray-700 mb-4 text-left">
+            <p>{{ contenido.resumen }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Autor y Fecha -->
+    <div class="ml-6 mt-4 mr-6 mb-6 flex items-center justify-between text-sm text-gray-500">
+        <div class="flex items-center">
+            <img class="w-10 h-10 rounded-full mr-4"
+                src="{% if contenido.autor.profile.image %}{{ contenido.autor.profile.image.url }}{% else %}{% static 'default.png' %}{% endif %}"
+                alt="{{ contenido.autor.username }}">
+            <div>
+                <p class="leading-none font-semibold">{{ contenido.autor.username }}</p>
+                <p>Publicado el <time datetime="{{ contenido.fecha_modificacion }}">{{
+                        contenido.fecha_modificacion|date:"d M Y" }}</time></p>
+            </div>
+        </div>
+        <div class="flex space-x-4 items-center">
+            <!-- Estrellas y puntuación -->
+            <div class="flex items-center space-x-1 text-gray-500">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#ec4899" class="w-6 h-6">
+                    <path fill-rule="evenodd"
+                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                        clip-rule="evenodd" />
+                </svg>
+                <span class="text-pink-700 font-bold">0/5</span>
+            </div>
+
+            <!-- Botón de Reportar -->
+            <button onclick="openModal('{{ contenido.slug }}')" class="bg-red-500 text-white py-2 px-4 rounded-lg">
+                Reportar
+            </button>
+        </div>
+    </div>
+
+    <div class="relative aspect-[4/3]">
+        <img src="{{ contenido.imagen.url }}" alt="{{ contenido.titulo }}" class="w-full h-full object-cover">
+    </div>
+    <!-- Botones de inactivar y estadísticas alineados a la derecha -->
+    <div class="flex justify-end space-x-4 p-6">
+        {% if perms.permissions.inactivar_contenido %}
+        {% if contenido.autor == request.user %}
+        <form id="inactivateForm-{{ contenido.id }}" action="{% url 'inactivar_contenido' contenido.id %}"
+            method="POST">
+            {% csrf_token %}
+            {% if contenido.activo %}
+            <button type="button" onclick="openInactivateModal('inactivateForm-{{ contenido.id }}')"
+                class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">
+                Inactivar Contenido
+            </button>
+            {% else %}
+            <button type="button" onclick="openInactivateModal('inactivateForm-{{ contenido.id }}')"
+                class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">
+                Activar Contenido
+            </button>
+            {% endif %}
+        </form>
+        {% else %}
+        <form id="inactivateForm-{{ contenido.id }}" action="{% url 'inactivar_contenido' contenido.id %}"
+            method="POST">
+            {% csrf_token %}
+            {% if contenido.activo %}
+            <button type="button" onclick="openInactivateModal('inactivateForm-{{ contenido.id }}')"
+                class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">
+                Inactivar Contenido
+            </button>
+            {% else %}
+            <button type="button" onclick="openInactivateModal('inactivateForm-{{ contenido.id }}')"
+                class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">
+                Activar Contenido
+            </button>
+            {% endif %}
+        </form>
+        {% endif %}
+        {% endif %}
+    </div>
+
+
+</section>
+
+<!-- Interacciones de usuario: Me gusta, No me gusta, Compartir, Estrellas -->
+<section id="user-interactions"
+    class="bg-white rounded-xl overflow-hidden mb-4 mx-auto p-4 flex justify-around items-center space-x-8"
+    style="max-width: 90%; height: auto;">
+    <!-- Me gusta -->
+    <button class="flex items-center space-x-1 text-gray-500 hover:text-pink-500">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
+            <path
+                d="M1 8.25a1.25 1.25 0 1 1 2.5 0v7.5a1.25 1.25 0 1 1-2.5 0v-7.5ZM11 3V1.7c0-.268.14-.526.395-.607A2 2 0 0 1 14 3c0 .995-.182 1.948-.514 2.826-.204.54.166 1.174.744 1.174h2.52c1.243 0 2.261 1.01 2.146 2.247a23.864 23.864 0 0 1-1.341 5.974C17.153 16.323 16.072 17 14.9 17h-3.192a3 3 0 0 1-1.341-.317l-2.734-1.366A3 3 0 0 0 6.292 15H5V8h.963c.685 0 1.258-.483 1.612-1.068a4.011 4.011 0 0 1 2.166-1.73c.432-.143.853-.386 1.011-.814.16-.432.248-.9.248-1.388Z" />
+        </svg>
+        <span>Me gusta</span>
+    </button>
+
+    <!-- No me gusta -->
+    <button class="flex items-center space-x-1 text-gray-500 hover:text-pink-500">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
+            <path
+                d="M18.905 12.75a1.25 1.25 0 1 1-2.5 0v-7.5a1.25 1.25 0 0 1 2.5 0v7.5ZM8.905 17v1.3c0 .268-.14.526-.395.607A2 2 0 0 1 5.905 17c0-.995.182-1.948.514-2.826.204-.54-.166-1.174-.744-1.174h-2.52c-1.243 0-2.261-1.01-2.146-2.247.193-2.08.651-4.082 1.341-5.974C2.752 3.678 3.833 3 5.005 3h3.192a3 3 0 0 1 1.341.317l2.734 1.366A3 3 0 0 0 13.613 5h1.292v7h-.963c-.685 0-1.258.482-1.612 1.068a4.01 4.01 0 0 1-2.166 1.73c-.432.143-.853.386-1.011.814-.16.432-.248.9-.248 1.388Z" />
+        </svg>
+        <span>No me gusta</span>
+    </button>
+
+    <!-- Compartir -->
+    <button class="flex items-center space-x-1 text-gray-500 hover:text-pink-500">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
+            <path fill-rule="evenodd"
+                d="M13.75 7h-3V3.66l1.95 2.1a.75.75 0 1 0 1.1-1.02l-3.25-3.5a.75.75 0 0 0-1.1 0L6.2 4.74a.75.75 0 0 0 1.1 1.02l1.95-2.1V7h-3A2.25 2.25 0 0 0 4 9.25v7.5A2.25 2.25 0 0 0 6.25 19h7.5A2.25 2.25 0 0 0 16 16.75v-7.5A2.25 2.25 0 0 0 13.75 7Zm-3 0h-1.5v5.25a.75.75 0 0 0 1.5 0V7Z"
+                clip-rule="evenodd" />
+        </svg>
+        <span>Compartir</span>
+    </button>
+
+    <!-- Estrellas de Valoración (falsas por ahora, sin funcionalidad) -->
+    <div class="flex space-x-1 text-pink-500">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
+            <path fill-rule="evenodd"
+                d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                clip-rule="evenodd" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
+            <path fill-rule="evenodd"
+                d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                clip-rule="evenodd" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
+            <path fill-rule="evenodd"
+                d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                clip-rule="evenodd" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
+            <path fill-rule="evenodd"
+                d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                clip-rule="evenodd" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
+            <path fill-rule="evenodd"
+                d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                clip-rule="evenodd" />
+        </svg>
+    </div>
+</section>
+
+<!-- Cuerpo del Contenido -->
+<main class="bg-white shadow-md rounded-xl p-6 text-gray-800 leading-relaxed mx-auto pb-5 mb-5"
+    style="max-width: 90%; height: auto;margin-bottom:5rem;">
+    <div class="prose max-w-none" style="word-break: break-word; overflow-wrap: break-word;">
+        {{ contenido.cuerpo|safe|linebreaks }}
+    </div>
+</main>
+{%if user.is_authenticated%}
+<div class="bg-white shadow-md rounded-xl p-6 text-gray-800 leading-relaxed mx-auto pt-5"
+    style="max-width: 90%; height: auto;">
+    <div class="container mx-auto text-center">
+        {% include 'content/comments.html' %}
+    </div>
+</div>
+{%endif%}
+</div>
+
+
+
+
+<!-- Modal para el reporte -->
 <div id="reportModal" class="hs-overlay hidden fixed top-0 start-0 z-50 w-full h-full bg-gray-500 bg-opacity-75">
     <div class="flex justify-center items-center h-full">
         <div class="bg-white rounded-lg shadow-md w-full max-w-md p-4">
@@ -121,16 +210,34 @@
                 {{ form.as_p }}
                 {% if not user.is_authenticated %}
                 <!-- <div class="mb-4">
-                    <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
-                    <input type="email" name="email" id="email" required
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                </div> -->
+                        <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
+                        <input type="email" name="email" id="email" required
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div> -->
                 {% endif %}
                 <div class="flex justify-end mt-4 space-x-2">
-                    <button type="button" onclick="closeModal()" class="bg-gray-400 text-white hover:bg-gray-500 py-2 px-4 rounded-lg">Cancelar</button>
+                    <button type="button" onclick="closeModal()"
+                        class="bg-gray-400 text-white hover:bg-gray-500 py-2 px-4 rounded-lg">Cancelar</button>
                     <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-lg">Reportar</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmación para Inactivar Contenido -->
+<div id="confirmInactivateModal"
+    class="hs-overlay hidden fixed top-0 start-0 z-50 w-full h-full bg-gray-500 bg-opacity-75">
+    <div class="flex justify-center items-center h-full">
+        <div class="bg-white rounded-lg shadow-md w-full max-w-md p-4">
+            <h3 class="text-lg font-semibold text-gray-800 mb-3">Confirmación</h3>
+            <p class="text-gray-600">¿Estás seguro de que deseas inactivar este contenido?</p>
+            <div class="flex justify-end mt-4 space-x-2">
+                <button type="button" onclick="closeInactivateModal()"
+                    class="bg-gray-400 text-white hover:bg-gray-500 py-2 px-4 rounded-lg">Cancelar</button>
+                <button id="confirmInactivateButton" type="button"
+                    class="bg-pink-800 text-white hover:bg-pink-700 py-2 px-4 rounded-lg">Confirmar</button>
+            </div>
         </div>
     </div>
 </div>
@@ -139,14 +246,30 @@
 
 
 <script>
-function openModal(slug) {
-    document.getElementById('reportModal').classList.remove('hidden');
-    document.getElementById('reportForm').action = "{% url 'detalle_contenido' slug='slug_placeholder' %}".replace('slug_placeholder', slug);
-}
+    function openModal(slug) {
+        document.getElementById('reportModal').classList.remove('hidden');
+        document.getElementById('reportForm').action = "{% url 'detalle_contenido' slug='slug_placeholder' %}".replace('slug_placeholder', slug);
+    }
 
-function closeModal() {
-    document.getElementById('reportModal').classList.add('hidden');
-}
+    function closeModal() {
+        document.getElementById('reportModal').classList.add('hidden');
+    }
+
+    // Función para abrir el modal de confirmación para inactivar
+    function openInactivateModal(formId) {
+        document.getElementById('confirmInactivateModal').classList.remove('hidden');
+        const confirmInactivateButton = document.getElementById('confirmInactivateButton');
+
+        // Cuando el usuario haga clic en "Confirmar", enviar el formulario
+        confirmInactivateButton.onclick = function () {
+            document.getElementById(formId).submit();
+        };
+    }
+
+    // Función para cerrar el modal de confirmación para inactivar
+    function closeInactivateModal() {
+        document.getElementById('confirmInactivateModal').classList.add('hidden');
+    }
 </script>
 
 

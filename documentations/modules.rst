@@ -10,3 +10,4 @@ is2-e02
    manage
    permissions
    profiles
+   content
