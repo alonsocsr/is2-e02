@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+
 {% block title %}Categorías{% endblock title %}
 
 {% block content %}
@@ -44,15 +45,9 @@
 
                     <!-- Enlace de lectura más -->
                     <div class="mt-auto">
-                        {% if categoria.tipo_categoria == 'PA' and categoria.id not in categorias_suscritas_ids%}
-                        <a href="?modal=true&categoria_id={{ categoria.id }}" class="bg-pink-800 hover:bg-pink-700 text-pink-100 p-2 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500 mt-4">
-                            Ver Contenidos
-                        </a>
-                        {% else %}
                         <a href="{% url "categories:detalle" categoria.id %}" class="bg-pink-800 hover:bg-pink-700 text-pink-100 p-2 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500 mt-4">
                             Ver Contenidos
                         </a>
-                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -62,9 +57,6 @@
         </div>
     </div>
 </div>
-
-<!-- Incluir el modal -->
-{% include 'includes/pago_categoria.html' %}
 {% endblock content %}
 
 <style>

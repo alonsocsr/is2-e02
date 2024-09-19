@@ -22,17 +22,48 @@
                     <span>{{ categoria.precio }}</span><span class="ml-3 text-xl font-medium text-white">GS</span>
                 </div>
                 <div class="mt-6">
-                    <div class="rounded-md shadow">
-                        <a href="{% url 'registrar_suscripcion' categoria.id%}" class="flex items-center justify-center px-5 py-3 bg-pink-100 hover:bg-pink-900 hover:text-pink-200 text-pink-800 p-2 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500 mt-4">Suscribirse</a>
+                    <div class="rounded-md shadow flex items-center justify-center">
+                        <button id="checkout-button" onclick="procesarPago()" class="flex items-center justify-center py-5 px-12 bg-pink-100 hover:bg-pink-900 hover:text-pink-200 text-pink-800 p-2 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500 mt-4">Suscribirse</button>
                     </div>
                     <p class="text-gray-800 text-sm mt-3">100% real no fake</p>
                 </div>
             </div>
             <!-- Botón de cierre del modal -->
-            <button onclick="window.location.href='{% url 'categories:listar' %}'" class="absolute top-0 right-0 mt-4 mr-4 text-gray-800 text-2xl">
+            <button onclick="window.history.back();" class="absolute top-0 right-0 mt-4 mr-4 text-gray-800 text-2xl">
                 &times;
             </button>
         </div>
     </div>
 </div>
+
+
+
+<script src="https://js.stripe.com/v3/"></script>
+
+<script>
+    var categoria_id = {{ categoria.id }};
+    var stripe = Stripe('{{ STRIPE_PUBLIC_KEY }}');
+
+    function procesarPago() {
+        var url = '/categorias/' + categoria_id + '/';
+
+        fetch(url, {  
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+        }).then(function (response) {
+            return response.json();
+        }).then(function (session) {
+            return stripe.redirectToCheckout({ sessionId: session.id });
+        }).then(function (result) {
+            if (result.error) {
+                alert(result.error.message);
+            }
+        }).catch(function (error) {
+            console.error('Error:', error);
+        });
+    };
+</script>
 {% endif %}

@@ -8,12 +8,13 @@ Django==4.2.15
 django-allauth==64.1.0
 django-ckeditor==6.5.0
 django-cloudinary-storage==0.3.0
+django-filebrowser==4.0.3
+django-grappelli==3.0.9
 django-haystack==3.3.0
 django-js-asset==2.2.0
 django-sphinxdoc==2.0.0
 docutils==0.20.1
 exceptiongroup==1.2.2
-django-filebrowser==4.0.3
 gunicorn==23.0.0
 idna==3.8
 imagesize==1.4.1
@@ -44,6 +45,7 @@ sphinxcontrib-jsmath==1.0.1
 sphinxcontrib-qthelp==2.0.0
 sphinxcontrib-serializinghtml==2.0.0
 sqlparse==0.5.1
+stripe==10.11.0
 tomli==2.0.1
 typing_extensions==4.12.2
 urllib3==2.2.2
