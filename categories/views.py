@@ -6,7 +6,16 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.views.generic import View, TemplateView, DetailView
 from content.models import Contenido
 
-class CrearCategoriaView(View):
+class CustomPermissionRequiredMixin(PermissionRequiredMixin):
+    """
+    Mixin personalizado para manejar permisos denegados y redirigir al home.
+    """
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            return redirect('home')
+        return super().handle_no_permission()
+    
+class CrearCategoriaView(LoginRequiredMixin, CustomPermissionRequiredMixin, View):
     """
     Vista para crear una nueva categoría.
 
@@ -15,6 +24,7 @@ class CrearCategoriaView(View):
     :cvar form_class: CategoriaForm - El formulario usado para crear una categoría.
     :cvar template_name: str - Nombre de la plantilla utilizada para el formulario de creación.
     """
+    permission_required = 'permissions.crear_categoria'
     form_class = CategoriaForm
     template_name = 'categories/new_category.html'
 
@@ -65,7 +75,7 @@ class CrearCategoriaView(View):
         })
 
 
-class ModificarCategoriaView(View):
+class ModificarCategoriaView(LoginRequiredMixin, CustomPermissionRequiredMixin, View):
     """
     Vista para modificar una categoría existente.
 
@@ -74,6 +84,7 @@ class ModificarCategoriaView(View):
     :cvar form_class: CategoriaForm - El formulario usado para modificar una categoría.
     :cvar template_name: str - Nombre de la plantilla utilizada para el formulario de modificación.
     """
+    permission_required = 'permissions.modificar_categoria'
     form_class = CategoriaForm
     template_name = 'categories/new_category.html'
 
@@ -127,7 +138,7 @@ class ModificarCategoriaView(View):
             'categorias': categorias
         })
 
-class EliminarCategoriaView(View):
+class EliminarCategoriaView(LoginRequiredMixin, CustomPermissionRequiredMixin, View):
     """
     Vista para eliminar una categoría existente.
 
@@ -135,6 +146,7 @@ class EliminarCategoriaView(View):
 
     :cvar template_name: str - Nombre de la plantilla utilizada para confirmar la eliminación.
     """
+    permission_required = 'permissions.eliminar_categoria'
     template_name = 'categories/delete_category.html'
 
     def get(self, request, pk):
