@@ -1,10 +1,11 @@
-from django.views.generic import FormView
+from django.views.generic import FormView, View
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 from .forms import ProfileForm
 from .models import Profile
 from django.contrib import messages
 from categories.models import Categorias
+from content.models import Contenido
 from django.shortcuts import reverse, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -131,3 +132,61 @@ def registrar_suscripcion(request, categoria_id):
     perfil = request.user.profile
     perfil.suscripciones.add(categoria)
     return redirect('categories:detalle', pk=categoria_id)
+
+class LikeView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        contenido_id = self.kwargs.get('id')
+        content = get_object_or_404(Contenido, id=contenido_id)
+        profile = request.user.profile
+
+        liked = content in profile.contenidos_like.all()
+        disliked = content in profile.contenidos_dislike.all()
+
+        if liked:
+            profile.contenidos_like.remove(content)  # Si ya tenía like, quitar
+            content.cantidad_likes -= 1
+        else:
+            profile.contenidos_like.add(content)  # Si no tenía like, agregar
+            content.cantidad_likes += 1
+            if disliked:
+                profile.contenidos_dislike.remove(content)  # Si tenía dislike, quitar
+                content.cantidad_dislikes -= 1
+
+        content.save()
+
+        return JsonResponse({
+            'success': True,
+            'liked': content in profile.contenidos_like.all(),
+            'disliked': content in profile.contenidos_dislike.all(),
+            'like_count': content.cantidad_likes,
+            'dislike_count': content.cantidad_dislikes
+        })
+
+class DislikeView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        contenido_id = self.kwargs.get('id')
+        content = get_object_or_404(Contenido, id=contenido_id)
+        profile = request.user.profile  
+
+        liked = content in profile.contenidos_like.all()
+        disliked = content in profile.contenidos_dislike.all()
+
+        if disliked:
+            profile.contenidos_dislike.remove(content)  # Si ya tenía dislike, quitar
+            content.cantidad_dislikes -= 1
+        else:
+            profile.contenidos_dislike.add(content)  # Si no tenía dislike, agregar
+            content.cantidad_dislikes += 1
+            if liked:
+                profile.contenidos_like.remove(content)  # Si tenía like, quitar
+                content.cantidad_likes -= 1
+
+        content.save()
+
+        return JsonResponse({
+            'success': True,
+            'liked': content in profile.contenidos_like.all(),
+            'disliked': content in profile.contenidos_dislike.all(),
+            'like_count': content.cantidad_likes,
+            'dislike_count': content.cantidad_dislikes
+        })
