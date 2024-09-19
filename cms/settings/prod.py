@@ -4,7 +4,7 @@ from .base import *
 SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = False
-
+DISQUS_DEVELOPER = False
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.now.sh']
 
 STATICFILES_STORAGES = "whitenoise.storage.CompressedManifestStaticFilesStorage"
