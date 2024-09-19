@@ -9,7 +9,7 @@ from .forms import ContenidoForm, EditarContenidoForm, RechazarContenidoForm, Co
 from .models import Version, Contenido, ContenidoReportado   
 import re
 from django.utils.safestring import mark_safe
-
+from django.conf import settings
 
 class VistaAllContenidos(ListView):
     template_name="content/ver_contenidos.html"
@@ -35,6 +35,15 @@ class VistaContenido(FormMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['contenido'].cuerpo = replace_pdf_image_with_link(context['contenido'].cuerpo)
+        
+        disqus_shortname = settings.DISQUS_WEBSITE_SHORTNAME
+        disqus_identifier = context['contenido'].slug  
+        disqus_url = self.request.build_absolute_uri()  
+
+       
+        context['disqus_shortname'] = disqus_shortname
+        context['disqus_identifier'] = disqus_identifier
+        context['disqus_url'] = disqus_url
         return context
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

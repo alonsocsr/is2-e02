@@ -32,11 +32,20 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     # 'allauth.socialaccount',
-
     # requeridos para subir media files a cloudinary
     'cloudinary_storage',
     'cloudinary',
 ]
+
+DISQUS_WEBSITE_SHORTNAME = 'cmsis2'
+SESSION_COOKIE_SECURE = True
+
+
+CSRF_COOKIE_SECURE = True  
+
+
+SESSION_COOKIE_SAMESITE = 'None'  
+CSRF_COOKIE_SAMESITE = 'None'  
 
 # configuracion de ckeditor
 CKEDITOR_UPLOAD_PATH = 'content/ckeditor'
