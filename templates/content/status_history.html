@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load static %}
+
+{% block title %}Historial | Stark {% endblock title %}
+
+{% block content %}
+
+    <div class="mt-8">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+        <h2 class="text-2xl font-bold mx-6 ">Historial de cambios</h2>
+            <div class="overflow-x-auto relative"> 
+                {% for log in status_logs %}
+                    <div class="py-4 px-6 flex">
+                        <div class="flex">
+                            <!-- perfil del usuario -->
+                            <div class="w-20 h-20 flex-shrink-0">
+                                {% if log.modificado_por.profile.image %}
+                                    {% thumbnail log.modificado_por.profile.image "80x80" crop="center" as im %}
+                                        <img class="rounded-full border-4 border-white shadow-md" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                                    {% endthumbnail %}
+                                {% else %}
+                                    <img src="{% static 'default.png' %}" alt="Default Profile Picture" class="w-20 h-20 rounded-full border-4 border-white shadow-md">
+                                {% endif %}
+                            </div>
+                            
+                            <div class="flex-col p-2 m-auto">
+                                <!-- cambio de estado -->
+                                <div class="px-2">
+                                    {% if log.modificado_por %}
+                                        <span class="font-medium text-gray-900">{{ log.modificado_por.username }}</span>
+                                    {% else %}
+                                        <span class="text-red-500">Unknown</span>
+                                    {% endif %}
+                                    <span class="text-gray-500">ha modificado</span>
+                                    <span class="font-medium text-gray-900">"{{log.contenido.titulo}}"</span>
+                                    <span class="text-gray-500">de {{ log.anterior_estado }} a </span>
+                                    <span class="font-semibold text-gray-900">{{ log.nuevo_estado }}</span>
+                                </div>
+                                <!-- fecha del cambio -->
+                                <div class="px-2">
+                                    <span class="text-gray-600">{{ log.fecha|date:"M d, Y H:i" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                <div>
+                    <p colspan="3" class="py-4 px-6 text-center text-gray-500">
+                        No existen cambios de estado
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination Controls -->
+            {% if is_paginated %}
+                <div class="mt-6 flex justify-center rounded-sm">
+                    <nav class="relative z-0 inline-flex shadow-sm -space-x-px" aria-label="Pagination">
+                        {% if page_obj.has_previous %}
+                            <a href="?page=1" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                &laquo; Primera
+                            </a>
+                            <a href="?page={{ page_obj.previous_page_number }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                Anterior
+                            </a>
+                        {% endif %}
+                        <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                            Pág {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                        </span>
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                Siguiente
+                            </a>
+                            <a href="?page={{ page_obj.paginator.num_pages }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                Última &raquo;
+                            </a>
+                        {% endif %}
+                    </nav>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+
+{% endblock content %}
