@@ -49,6 +49,9 @@
                                             {% if post.categoria.moderada == False %}
                                                 <p><strong class="text-pink-500">No Moderada</strong></p>
                                             {% endif %}
+                                            {% if post.fecha_publicacion > fecha_actual %}
+                                                <p>A publicar el: <strong class="text-pink-500">{{ post.fecha_publicacion|date:"d M Y" }}</strong></p>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
@@ -72,6 +75,9 @@
                                             <p>{{ post.fecha_creacion|date:"d M Y" }}</p>
                                             {% if post.categoria.moderada == False %}
                                                 <p><strong class="text-pink-500"> No Moderada</strong></p>
+                                            {% endif %}
+                                            {% if post.fecha_publicacion > fecha_actual %}
+                                                <p>A publicar el: <strong class="text-pink-500">{{ post.fecha_publicacion|date:"d M Y" }}</strong></p>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -108,6 +114,9 @@
                                             {% if post.usuario_editor == request.user %}
                                                 <p><strong> Editando </strong></p>
                                             {% endif %}
+                                            {% if post.fecha_publicacion > fecha_actual %}
+                                                <p>A publicar el: <strong class="text-pink-500">{{ post.fecha_publicacion|date:"d M Y" }}</strong></p>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
@@ -129,6 +138,9 @@
                                                 <p>Por <strong>{{ post.autor }}</strong></p>
                                                 <p>{{ post.fecha_creacion|date:"d M Y" }}</p>
                                                 <p>Editando: <strong>{{ post.usuario_editor }}</strong></p>
+                                                {% if post.fecha_publicacion > fecha_actual %}
+                                                    <p>A publicar el: <strong class="text-pink-500">{{ post.fecha_publicacion|date:"d M Y" }}</strong></p>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
@@ -152,7 +164,10 @@
                                             <p>{{ post.fecha_creacion|date:"d M Y" }}</p>
                                             {% if post.usuario_editor != None %}
                                                 <p>Editando: <strong>{{ post.usuario_editor }}</strong></p>
-                                        {% endif %}
+                                            {% endif %}
+                                            {% if post.fecha_publicacion > fecha_actual %}
+                                                <p>A publicar el: <strong class="text-pink-500">{{ post.fecha_publicacion|date:"d M Y" }}</strong></p>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
@@ -176,6 +191,9 @@
                                                 <p>{{ post.fecha_creacion|date:"d M Y" }}</p>
                                                 {% if post.usuario_editor != None %}
                                                     <p>Editando: <strong>{{ post.usuario_editor }}</strong></p>
+                                                {% endif %}
+                                                {% if post.fecha_publicacion > fecha_actual %}
+                                                    <p>A publicar el: <strong class="text-pink-500">{{ post.fecha_publicacion|date:"d M Y" }}</strong></p>
                                                 {% endif %}
                                             </div>
                                         </div>
@@ -211,6 +229,9 @@
                                             {% if post.usuario_editor != None %}
                                                 <p>Editado por: <strong>{{ post.usuario_editor }}</strong></p>
                                             {% endif %}
+                                            {% if post.fecha_publicacion > fecha_actual %}
+                                                <p>A publicar el: <strong class="text-pink-500">{{ post.fecha_publicacion|date:"d M Y" }}</strong></p>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
@@ -234,6 +255,9 @@
                                             <p>{{ post.fecha_creacion|date:"d M Y" }}</p>
                                             {% if post.usuario_editor != None %}
                                                 <p>Editado por: <strong>{{ post.usuario_editor }}</strong></p>
+                                            {% endif %}
+                                            {% if post.fecha_publicacion > fecha_actual %}
+                                                <p>A publicar el: <strong class="text-pink-500">{{ post.fecha_publicacion|date:"d M Y" }}</strong></p>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -266,6 +290,9 @@
                                         <div class="text-sm text-gray-400 mt-2">
                                             <p>Por <strong>{{ post.autor }}</strong></p>
                                             <p>{{ post.fecha_creacion|date:"d M Y" }}</p>
+                                            {% if post.fecha_publicacion > fecha_actual%}
+                                                <p>A publicar el: <strong class="text-pink-500">{{ post.fecha_publicacion|date:"d M Y" }}</strong></p>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
@@ -287,6 +314,9 @@
                                         <div class="text-sm text-gray-400 mt-2">
                                             <p>Por <strong>{{ post.autor }}</strong></p>
                                             <p>{{ post.fecha_creacion|date:"d M Y" }}</p>
+                                            {% if post.fecha_publicacion > fecha_actual %}
+                                                <p>A publicar el: <strong class="text-pink-500">{{ post.fecha_publicacion|date:"d M Y" }}</strong></p>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>

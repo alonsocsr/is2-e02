@@ -1169,7 +1169,7 @@ video {
   flex-shrink: 0;
 }
 
-.grow{
+.flex-grow{
   flex-grow: 1;
 }
 
@@ -1240,6 +1240,10 @@ video {
 
 .grid-rows-1{
   grid-template-rows: repeat(1, minmax(0, 1fr));
+}
+
+.flex-row{
+  flex-direction: row;
 }
 
 .flex-col{

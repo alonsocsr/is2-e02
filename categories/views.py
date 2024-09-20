@@ -252,8 +252,9 @@ class DetalleCategoriaView(DetailView):
                         el estado del modal y la clave pública de Stripe.
         """
         context = super().get_context_data(**kwargs)
+
         # Obtener todos los contenidos asociados a esta categoría
-        contenidos = Contenido.objects.filter(categoria=self.object, estado='Publicado')
+        contenidos = Contenido.objects.filter(categoria=self.object, estado='Publicado', activo=True)
         context['contenidos'] = contenidos
         
         if self.request.GET.get('modal') == 'true':
@@ -261,7 +262,7 @@ class DetalleCategoriaView(DetailView):
             context['categoria_id'] = self.request.GET.get('categoria_id')
         else:
             context['mostrar_modal'] = False
-
+        context['categorias_restringidas'] = ['GR', 'PA']
         context['STRIPE_PUBLIC_KEY'] = config('STRIPE_PUBLIC_KEY')
             
         return context
