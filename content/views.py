@@ -11,7 +11,7 @@ from .models import Version, Contenido, ContenidoReportado
 import re, json
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from django.conf import settings
+from .models import StatusChangeLog
 from django.utils import timezone
 
 
@@ -239,12 +239,18 @@ class CambiarEstadoView(UpdateView):
     template_name = "content/cambiar_estado.html"
 
     def form_valid(self, form):
-        contenido = form.instance
-        categoria=contenido.categoria
-        fecha_actual=timezone.now().date()
+        contenido = form.save(commit=False)
 
+        #obtener el estado anterior del signal
+        anterior = getattr(contenido, '_estado_anterior', contenido.estado)
+        usuario = self.request.user
+
+        categoria = contenido.categoria
+        fecha_actual=timezone.now().date()
         if categoria.moderada is False:
             contenido.estado = 'Publicado'
+            #Se utiliza la función que crea el historial de cambio
+            log_status_change(contenido, anterior, 'Publicado', usuario)
             if contenido.fecha_publicacion is not None and contenido.fecha_publicacion > fecha_actual:
                 contenido.activo=False
                 messages.info(self.request, f"El contenido se publicará el {contenido.fecha_publicacion}.")
@@ -255,15 +261,22 @@ class CambiarEstadoView(UpdateView):
         else:
             if contenido.estado == 'Borrador':
                 contenido.estado = 'Edicion'
+                #Se utiliza la función que crea el historial de cambio
+                log_status_change(contenido, anterior, 'Edicion', usuario)
                 contenido.mensaje_rechazo = ''
                 messages.success(self.request, "El contenido ha sido enviado a Edición.")
             elif contenido.estado == 'Edicion':
                 contenido.estado = 'Publicar'
+                #Se utiliza la función que crea el historial de cambio
+                log_status_change(contenido, anterior, 'Publicar', usuario)
                 contenido.mensaje_rechazo = ''
                 messages.success(self.request, "El contenido ha sido enviado a publicacion")
 
             elif contenido.estado == 'Publicar':
                 contenido.estado = 'Publicado'
+
+                #Se utiliza la función que crea el historial de cambio
+                log_status_change(contenido, anterior, 'Publicado', usuario)
 
                 if contenido.fecha_publicacion is not None and contenido.fecha_publicacion > fecha_actual:
                     contenido.activo=False
@@ -275,6 +288,9 @@ class CambiarEstadoView(UpdateView):
             elif contenido.estado=='Publicado':
                 contenido.estado='Inactivo'
                 contenido.activo=False
+
+                #Se utiliza la función que crea el historial de cambio
+                log_status_change(contenido, anterior, 'Inactivo', usuario)
                 messages.success(self.request, "El contenido ha sido inactivado")
             else:
                 messages.error(self.request, "No se pudo cambiar el estado del contenido")
@@ -427,9 +443,13 @@ class RechazarContenido(LoginRequiredMixin, UpdateView, PermissionRequiredMixin)
         contenido = form.save(commit=False)
         if contenido.estado == 'Publicar':
             contenido.estado = 'Edicion'
+            #Se utiliza la función que crea el historial de cambio
+            log_status_change(contenido, 'Publicar', 'Edicion', self.request.user)
             messages.success(self.request, "El contenido ha sido enviado a Edicion.")
         elif contenido.estado == 'Edicion':
             contenido.estado = 'Borrador'
+            #Se utiliza la función que crea el historial de cambio
+            log_status_change(contenido, 'Edicion', 'Borrador', self.request.user)
             messages.success(self.request, "El contenido ha sido enviado a Borrador.")
         else:
             messages.error(self.request, "Se produjo un error")
@@ -463,10 +483,14 @@ class InactivarContenido(LoginRequiredMixin, UpdateView, PermissionRequiredMixin
         if contenido.activo:
             contenido.estado = 'Inactivo'
             contenido.activo = False
+            #Se utiliza la función que crea el historial de cambio
+            log_status_change(contenido, 'Publicado', 'Inactivo', self.request.user)
             messages.success(self.request, "El contenido ha sido Inactivado.")
         else:
             contenido.estado = 'Publicado'
             contenido.activo = True
+            #Se utiliza la función que crea el historial de cambio
+            log_status_change(contenido, 'Inactivo', 'Publicado', self.request.user)
             messages.success(self.request, "El contenido ha sido Activado.")
         contenido.save()
 
@@ -501,7 +525,7 @@ def replace_pdf_image_with_link(content):
 class VistaContenidosReportados(LoginRequiredMixin, ListView, PermissionRequiredMixin):
     """
     Vista que muestra los contenidos reportados en el sitio web
-    cvar model: ContenidoReportado - El modelo de los contenidos reportados.
+    :cvar model: ContenidoReportado - El modelo de los contenidos reportados.
     :cvar template_name: str - Nombre de la plantilla utilizada para mostrar la lista de contenidos reportados.
     :cvar context_object_name: str - Nombre del contexto que contiene la lista de contenidos reportados.
     :cvar permission_required: str - Permiso requerido para acceder a esta vista.
@@ -580,16 +604,22 @@ class UpdatePostStatusView(LoginRequiredMixin, View):
 
             # Obtener el contenido y actualizar su estado
             post = Contenido.objects.get(id=post_id)
+            estado_anterior = post.estado
 
             if new_status == 'Borrador':
                 post.estado = 'Borrador'
+                #Se utiliza la función que crea el historial de cambio
+                log_status_change(post, estado_anterior, 'Borrador', self.request.user)
             elif new_status == 'Edicion':
                 post.estado = 'Edicion'
+                log_status_change(post, estado_anterior, 'Edicion', self.request.user)
             elif new_status == 'Publicacion':
                 post.estado = 'Publicar'
-
+                log_status_change(post, estado_anterior, 'Publicar', self.request.user)
             elif new_status == 'Publicado':
                 post.estado = 'Publicado'
+                post.mensaje_rechazo = ''
+                log_status_change(post, estado_anterior, 'Publicado', self.request.user)
                 if post.fecha_publicacion is not None and post.fecha_publicacion > timezone.now().date():
                     post.activo = False
                 else:
@@ -598,11 +628,47 @@ class UpdatePostStatusView(LoginRequiredMixin, View):
             elif new_status == 'Inactivo':
                 post.estado = 'Inactivo'
                 post.activo = False
+                log_status_change(post, estado_anterior, 'Inactivo', self.request.user)
 
             post.save()
 
         messages.success(self.request, "Se ha actualizado el tablero kanban con éxito.")
 
 
+def log_status_change(contenido, anterior, nuevo, user=None):
+    """
+    Función utilitaria que se encarga de guardar el historial de cambio de estado
+    
+    Parametros:
+    :param contenido: The content object whose status is changing.
+    :param anterior: The previous status of the content.
+    :param nuevo: The new status of the content.
+    :param user: The user responsible for the status change (can be None for anonymous or system actions).
+    """
+    if anterior != nuevo:
+        StatusChangeLog.objects.create(
+            contenido=contenido,
+            anterior_estado=anterior,
+            nuevo_estado=nuevo,
+            modificado_por=user
+        )
 
+class ContentStatusHistoryView(LoginRequiredMixin,ListView):
+    model = StatusChangeLog
+    template_name = 'content/status_history.html'
+    context_object_name = 'status_logs'
+    paginate_by = 10  # Opcional: Paginar si es necesario
 
+    def get_queryset(self):
+        user = self.request.user
+
+        return StatusChangeLog.objects.filter(
+            contenido__autor=user
+        ) | StatusChangeLog.objects.filter(
+            contenido__usuario_editor=user
+        ).order_by('-fecha')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = self.request.user
+        return context

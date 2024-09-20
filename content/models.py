@@ -1,12 +1,12 @@
-from distutils.version import Version
-from django.contrib.admin.models import LogEntry
-from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from categories.models import Categorias
 from django.utils import timezone
 from datetime import date
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.contrib.auth.models import User
+
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 class Contenido(models.Model):
     
@@ -74,7 +74,6 @@ class Contenido(models.Model):
         blank=True,
         related_name='contenidos_editados'
     )
-    cambios = GenericRelation(LogEntry)
 
     def save_version(self, user):
         """
@@ -197,4 +196,30 @@ class ContenidoReportado(models.Model):
         default='spam',
         )
     fecha = models.DateTimeField(auto_now_add=True)
-    
+
+class StatusChangeLog(models.Model):
+    """
+    Modelo para registrar un historial de cambio del estado del contenido.
+
+    :cvar contenido: ForeignKey - El contenido que se modifica.
+    :cvar anterior_estado: CharField - Estado anterior en el que se encontraba el contenido.
+    :cvar nuevo_estado: CharField - Nuevo estado al que pasa el contenido.
+    :cvar fecha: DateTimeField - Fecha y hora en que se realiza la modificación.
+    :cvar modificado_por: ForeignKey - El usuario que realiza la modificación.
+    """
+    contenido = models.ForeignKey(Contenido, on_delete=models.SET_NULL, null=True)
+    anterior_estado = models.CharField(max_length=10)
+    nuevo_estado = models.CharField(max_length=10)
+    fecha = models.DateTimeField(auto_now=True)
+    modificado_por = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+
+
+@receiver(pre_save, sender=Contenido)
+def track_status_change(sender, instance, **kwargs):
+    """
+    Signal que guarda el estado del contenido antes de que se actualice para uso posterior en la view donde se crea el historia.
+
+    """
+    if instance.pk:
+        previous_instance = Contenido.objects.get(pk=instance.pk)
+        instance._estado_anterior = previous_instance.estado
