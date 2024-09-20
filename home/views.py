@@ -6,6 +6,7 @@ from content.views import replace_pdf_image_with_link
 from django.db.models import Q
 from django.contrib.auth.models import User
 from decouple import config
+from django.utils import timezone
 
 class HomeView(ListView):
     """
@@ -23,12 +24,44 @@ class HomeView(ListView):
     template_name = 'home/contenido_home.html'
     context_object_name = 'contenidos'
 
+    def verificar_estados_contenidos(self):
+        """
+        Verifica y actualiza los estados de los contenidos basados en la fecha de publicación y vigencia.
+        """
+        fecha_actual = timezone.now().date()
+        
+        # Publicar contenidos cuya fecha de publicación haya llegado y aún no estén activos
+        contenidos_a_publicar = Contenido.objects.filter(
+            estado='Publicado',
+            activo=False,
+            fecha_publicacion__lte=fecha_actual
+        )
+        for contenido in contenidos_a_publicar:
+            contenido.activo = True
+            contenido.save()
+
+        # Inactivar contenidos cuya fecha de vigencia haya pasado
+        contenidos_a_inactivar = Contenido.objects.filter(
+            estado='Publicado',
+            activo=True,
+            vigencia__lte=fecha_actual
+        )
+        for contenido in contenidos_a_inactivar:
+            contenido.estado = 'Inactivo'
+            contenido.activo = False
+            contenido.save()
+
+
     def get_queryset(self):
         """
         Filtra los contenidos por estado 'Publicado' y los ordena por la fecha de publicación.
         También reemplaza imágenes en archivos PDF con enlaces en el cuerpo del contenido.
         """
-        queryset = Contenido.objects.filter(estado="Publicado").order_by("fecha_publicacion")
+
+        # Verificar y actualizar los estados de los contenidos
+        self.verificar_estados_contenidos()
+
+        queryset = Contenido.objects.filter(estado="Publicado", activo=True).order_by("fecha_publicacion")
         # Reemplazar imágenes en archivos PDF con enlaces
         for c in queryset:
             c.cuerpo = replace_pdf_image_with_link(c.cuerpo)
@@ -53,7 +86,7 @@ class HomeView(ListView):
                 categoria = Categorias.objects.filter(id=categoria_id).first()
                 if categoria:
                     context['categoria'] = categoria
-                    context['contenidos'] = Contenido.objects.filter(categoria=categoria, estado='Publicado')
+                    context['contenidos'] = Contenido.objects.filter(categoria=categoria, estado='Publicado', activo=True)
             context['categoria_id'] = categoria_id
         else:
             context['mostrar_modal'] = False
@@ -95,7 +128,7 @@ class BuscarContenidoView(ListView):
         autores = self.request.GET.getlist('autores')
 
         # Filtrar por estado 'Publicado'
-        resultados = Contenido.objects.filter(estado='Publicado')
+        resultados = Contenido.objects.filter(estado='Publicado', activo=True)
 
         # Filtrar por la query
         if query:
@@ -127,7 +160,7 @@ class BuscarContenidoView(ListView):
 
         # Si no hay resultados, agregar sugerencias
         if not context['resultados'].exists():
-            context['sugerencias'] = Contenido.objects.filter(estado='Publicado')[:5]
+            context['sugerencias'] = Contenido.objects.filter(estado='Publicado', activo=True)[:5]
         else:
             context['sugerencias'] = []
 

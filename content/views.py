@@ -11,6 +11,8 @@ from .models import Version, Contenido, ContenidoReportado
 import re, json
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+from django.utils import timezone
 
 
 class VistaAllContenidos(ListView):
@@ -28,7 +30,7 @@ class VistaAllContenidos(ListView):
     context_object_name="all_contenidos"
     
     def get_queryset(self):
-        return Contenido.objects.filter(estado="Publicado").order_by("fecha_publicacion")
+        return Contenido.objects.filter(estado="Publicado", activo=True).order_by("fecha_publicacion")
     
 class VistaContenido(FormMixin, DetailView):
     """
@@ -239,12 +241,17 @@ class CambiarEstadoView(UpdateView):
     def form_valid(self, form):
         contenido = form.instance
         categoria=contenido.categoria
+        fecha_actual=timezone.now().date()
+
         if categoria.moderada is False:
             contenido.estado = 'Publicado'
-            contenido.activo=True
-            contenido.mensaje_rechazo = ''
-            """ chequear la fecha de publicacion del contenido """
-            messages.success(self.request, "El contenido ha sido publicado.")
+            if contenido.fecha_publicacion is not None and contenido.fecha_publicacion > fecha_actual:
+                contenido.activo=False
+                messages.info(self.request, f"El contenido se publicará el {contenido.fecha_publicacion}.")
+            else:
+                contenido.activo=True
+                messages.success(self.request, "El contenido ha sido publicado.")
+
         else:
             if contenido.estado == 'Borrador':
                 contenido.estado = 'Edicion'
@@ -254,11 +261,16 @@ class CambiarEstadoView(UpdateView):
                 contenido.estado = 'Publicar'
                 contenido.mensaje_rechazo = ''
                 messages.success(self.request, "El contenido ha sido enviado a publicacion")
+
             elif contenido.estado == 'Publicar':
                 contenido.estado = 'Publicado'
-                contenido.activo=True
-                """ chequear la fecha de publicacion del contenido """
-                messages.success(self.request, "El contenido ha sido publicado.")
+
+                if contenido.fecha_publicacion is not None and contenido.fecha_publicacion > fecha_actual:
+                    contenido.activo=False
+                    messages.info(self.request, f"El contenido se publicará el {contenido.fecha_publicacion}.")
+                else:
+                    contenido.activo=True
+                    messages.success(self.request, "El contenido ha sido publicado.")
 
             elif contenido.estado=='Publicado':
                 contenido.estado='Inactivo'
@@ -267,7 +279,12 @@ class CambiarEstadoView(UpdateView):
             else:
                 messages.error(self.request, "No se pudo cambiar el estado del contenido")
 
+            if contenido.vigencia and contenido.vigencia <= fecha_actual:
+                contenido.estado = 'Inactivo'
+                contenido.activo = False
+
         contenido.save()
+
         referer = self.request.META.get('HTTP_REFERER')
         if referer:
             return redirect(referer)
@@ -528,17 +545,18 @@ class TableroKanbanView(LoginRequiredMixin, TemplateView, PermissionRequiredMixi
         context = super().get_context_data(**kwargs)
         # Obtener las publicaciones y agruparlas por estado
         contenido = Contenido.objects.all()
-        context['borrador'] = contenido.filter(estado='Borrador')
-        context['edicion'] = contenido.filter(estado='Edicion')
-        context['publicacion'] = contenido.filter(estado='Publicar')
-        context['publicado'] = contenido.filter(estado='Publicado')
-        context['inactivo'] = contenido.filter(estado='Inactivo')
+        context['borrador'] = contenido.filter(estado='Borrador').order_by('fecha_creacion')
+        context['edicion'] = contenido.filter(estado='Edicion').order_by('fecha_creacion')
+        context['publicacion'] = contenido.filter(estado='Publicar').order_by('fecha_creacion')
+        context['publicado'] = contenido.filter(estado='Publicado').order_by('fecha_creacion')
+        context['inactivo'] = contenido.filter(estado='Inactivo').order_by('fecha_creacion')
         # Obtener los permisos necesarios para mover los contenidos
         context['crear_perm'] = self.request.user.has_perm('permissions.crear_contenido')
         context['editar_perm'] = self.request.user.has_perm('permissions.editar_contenido')
         context['publicar_perm'] = self.request.user.has_perm('permissions.publicar_contenido')
         context['inactivar_perm'] = self.request.user.has_perm('permissions.inactivar_contenido')
-        # context['activar_contenido'] = self.request.user.has_perm('permissions.modificar_tablero_kanban')
+
+        context['fecha_actual']=timezone.now().date()
         return context
 
 
@@ -569,10 +587,14 @@ class UpdatePostStatusView(LoginRequiredMixin, View):
                 post.estado = 'Edicion'
             elif new_status == 'Publicacion':
                 post.estado = 'Publicar'
+
             elif new_status == 'Publicado':
                 post.estado = 'Publicado'
-                post.activo = True
-                post.mensaje_rechazo = ''
+                if post.fecha_publicacion is not None and post.fecha_publicacion > timezone.now().date():
+                    post.activo = False
+                else:
+                    post.activo = True
+
             elif new_status == 'Inactivo':
                 post.estado = 'Inactivo'
                 post.activo = False
