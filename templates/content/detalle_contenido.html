@@ -51,8 +51,7 @@
                 alt="{{ contenido.autor.username }}">
             <div>
                 <p class="leading-none font-semibold">{{ contenido.autor.username }}</p>
-                <p>Publicado el <time datetime="{{ contenido.fecha_modificacion }}">{{
-                        contenido.fecha_modificacion|date:"d M Y" }}</time></p>
+                <p>Publicado el <time datetime="{{ contenido.fecha_modificacion }}">{{ contenido.fecha_modificacion|date:"d M Y" }}</time></p>
             </div>
         </div>
         <div class="flex space-x-4 items-center">

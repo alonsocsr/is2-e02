@@ -45,7 +45,8 @@
             "descripcion_corta": "FP",
             "estado":true,
             "moderada":true,
-            "tipo_categoria":"PA"
+            "tipo_categoria":"PA",
+            "precio": 20000
 		}
     }
 ]
