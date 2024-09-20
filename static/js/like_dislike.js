@@ -2,15 +2,29 @@ document.addEventListener('DOMContentLoaded', function() {
     const likeButton = document.getElementById('like-button');
     const dislikeButton = document.getElementById('dislike-button');
 
-    likeButton.addEventListener('click', function() {
-        const actionUrl = likeButton.getAttribute('data-action-url');
-        sendAjaxRequest(actionUrl, 'like');
+    likeButton.addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent default action
+        if (!isUserAuthenticated()) {
+            window.location.href = `/login/?next=${encodeURIComponent(window.location.href)}`;
+        } else {
+            const actionUrl = likeButton.getAttribute('data-action-url');
+            sendAjaxRequest(actionUrl, 'like');
+        }
     });
 
-    dislikeButton.addEventListener('click', function() {
-        const actionUrl = dislikeButton.getAttribute('data-action-url');
-        sendAjaxRequest(actionUrl, 'dislike');
+    dislikeButton.addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent default action
+        if (!isUserAuthenticated()) {
+            window.location.href = `/login/?next=${encodeURIComponent(window.location.href)}`;
+        } else {
+            const actionUrl = dislikeButton.getAttribute('data-action-url');
+            sendAjaxRequest(actionUrl, 'dislike');
+        }
     });
+
+    function isUserAuthenticated() {
+        return document.body.classList.contains('authenticated'); // Asegúrate de que esta clase esté presente en el cuerpo si el usuario está autenticado
+    }
 
     function sendAjaxRequest(url, action) {
         fetch(url, {
@@ -35,19 +49,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateButtonStyles(action, liked, disliked, likeCount, dislikeCount) {
-        if (action === 'like') {
-            likeButton.querySelector('svg').setAttribute('fill', liked ? '#ec4899' : 'none');
-            likeButton.querySelector('svg').setAttribute('stroke', liked ? '#ec4899' : 'currentColor');
-            dislikeButton.querySelector('svg').setAttribute('fill', 'none');
-            dislikeButton.querySelector('svg').setAttribute('stroke', 'currentColor');
-        } else if (action === 'dislike') {
-            dislikeButton.querySelector('svg').setAttribute('fill', disliked ? '#ec4899' : 'none');
-            dislikeButton.querySelector('svg').setAttribute('stroke', disliked ? '#ec4899' : 'currentColor');
-            likeButton.querySelector('svg').setAttribute('fill', 'none');
-            likeButton.querySelector('svg').setAttribute('stroke', 'currentColor');
-        }
-    
-        // Actualiza los contadores en el DOM
+        // Actualiza estilos de botones
+        likeButton.querySelector('svg').setAttribute('fill', liked ? '#ec4899' : 'none');
+        likeButton.querySelector('svg').setAttribute('stroke', liked ? '#ec4899' : 'currentColor');
+        dislikeButton.querySelector('svg').setAttribute('fill', disliked ? '#ec4899' : 'none');
+        dislikeButton.querySelector('svg').setAttribute('stroke', disliked ? '#ec4899' : 'currentColor');
+        
+        // Actualiza contadores
         document.getElementById('like-count').textContent = likeCount;
         document.getElementById('dislike-count').textContent = dislikeCount;
     }
