@@ -3,8 +3,8 @@
 {% block title %}Gestión de Categorías{% endblock title %}
 
 {% block content %}
-<div class="flex justify-center self-center z-10">
-    <div class="p-6 bg-gray-200 mx-auto w-full lg:w-full min-h-screen flex flex-col">
+<div class="flex justify-center self-center z-10 h-full">
+    <div class="p-6 bg-gray-200 mx-auto w-full lg:w-full flex flex-col">
         <div class="header my-3 h-5  px-2 lg:px-6 flex items-center justify-between">
             <h2 class="font-semibold text-2xl text-gray-800">Gestión de Categorías</h2>
         </div>
@@ -23,7 +23,7 @@
             {% endif %}
         </div>
 
-        <div class="flex flex-col lg:flex-row space-y-6 lg:space-y-0 lg:space-x-4 h-[calc(100vh-6rem)]">
+        <div class="flex flex-col lg:flex-row space-y-6 lg:space-y-0 lg:space-x-4 h-full">
             <div class="w-full lg:w-1/4 bg-gray-100 shadow-md p-5 rounded-md">
                 <form method="post" class="flex flex-col h-full w-full">
                     {% csrf_token %}
