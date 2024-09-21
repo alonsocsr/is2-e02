@@ -62,7 +62,7 @@
                         d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
                         clip-rule="evenodd" />
                 </svg>
-                <span class="text-pink-700 font-bold">0/5</span>
+                <span id="averageRating" class="text-pink-700 font-bold">{{ contenido.puntuacion|default:"0.0" }}/5</span>
             </div>
 
             <!-- Botón de Reportar -->
@@ -130,7 +130,7 @@
         >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" 
                 class="w-6 h-6 like-icon" 
-                fill="{% if liked %}#ec4899{% else %}none{% endif %}" 
+                fill="{% if liked %}#ec4899{% else %}currentColor{% endif %}" 
                 stroke="{% if liked %}#ec4899{% else %}currentColor{% endif %}">
                 <path d="M1 8.25a1.25 1.25 0 1 1 2.5 0v7.5a1.25 1.25 0 1 1-2.5 0v-7.5ZM11 3V1.7c0-.268.14-.526.395-.607A2 2 0 0 1 14 3c0 .995-.182 1.948-.514 2.826-.204.54.166 1.174.744 1.174h2.52c1.243 0 2.261 1.01 2.146 2.247a23.864 23.864 0 0 1-1.341 5.974C17.153 16.323 16.072 17 14.9 17h-3.192a3 3 0 0 1-1.341-.317l-2.734-1.366A3 3 0 0 0 6.292 15H5V8h.963c.685 0 1.258-.483 1.612-1.068a4.011 4.011 0 0 1 2.166-1.73c.432-.143.853-.386 1.011-.814.16-.432.248-.9.248-1.388Z" />
             </svg>
@@ -147,7 +147,7 @@
             data-action-url="{% url 'dislike' contenido.id %}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" 
                 class="w-6 h-6 dislike-icon" 
-                fill="{% if disliked %}#ec4899{% else %}none{% endif %}" 
+                fill="{% if disliked %}#ec4899{% else %}currentColor{% endif %}" 
                 stroke="{% if disliked %}#ec4899{% else %}currentColor{% endif %}">
                 <path d="M18.905 12.75a1.25 1.25 0 1 1-2.5 0v-7.5a1.25 1.25 0 0 1 2.5 0v7.5ZM8.905 17v1.3c0 .268-.14.526-.395.607A2 2 0 0 1 5.905 17c0-.995.182-1.948.514-2.826.204-.54-.166-1.174-.744-1.174h-2.52c-1.243 0-2.261-1.01-2.146-2.247.193-2.08.651-4.082 1.341-5.974C2.752 3.678 3.833 3 5.005 3h3.192a3 3 0 0 1 1.341.317l2.734 1.366A3 3 0 0 0 13.613 5h1.292v7h-.963c-.685 0-1.258.482-1.612 1.068a4.01 4.01 0 0 1-2.166 1.73c-.432.143-.853.386-1.011.814-.16.432-.248.9-.248 1.388Z" />
             </svg>
@@ -166,34 +166,43 @@
         <span>Compartir</span>
     </button>
 
-    <!-- Estrellas de Valoración (falsas por ahora, sin funcionalidad) -->
-    <div class="flex space-x-1 text-pink-500">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
-            <path fill-rule="evenodd"
-                d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
-                clip-rule="evenodd" />
-        </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
-            <path fill-rule="evenodd"
-                d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
-                clip-rule="evenodd" />
-        </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
-            <path fill-rule="evenodd"
-                d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
-                clip-rule="evenodd" />
-        </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
-            <path fill-rule="evenodd"
-                d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
-                clip-rule="evenodd" />
-        </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
-            <path fill-rule="evenodd"
-                d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
-                clip-rule="evenodd" />
-        </svg>
+    <!-- Estrellas de Valoración -->
+    <div class="flex flex-col items-center">
+        <div id="rating" data-contenido-id="{{ contenido.id }}" class="flex space-x-1 cursor-pointer text-gray-500">
+            <svg id="star1" data-value="1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                fill="{% if user_rating|default:0 >= 1 %}#ec4899{% else %}currentColor{% endif %}" class="w-6 h-6 star">
+                <path fill-rule="evenodd"
+                    d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                    clip-rule="evenodd" />
+            </svg>
+            <svg id="star2" data-value="2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                fill="{% if user_rating|default:0 >= 2 %}#ec4899{% else %}currentColor{% endif %}" class="w-6 h-6 star">
+                <path fill-rule="evenodd"
+                    d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                    clip-rule="evenodd" />
+            </svg>
+            <svg id="star3" data-value="3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                fill="{% if user_rating|default:0 >= 3 %}#ec4899{% else %}currentColor{% endif %}" class="w-6 h-6 star">
+                <path fill-rule="evenodd"
+                    d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                    clip-rule="evenodd" />
+            </svg>
+            <svg id="star4" data-value="4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                fill="{% if user_rating|default:0 >= 4 %}#ec4899{% else %}currentColor{% endif %}" class="w-6 h-6 star">
+                <path fill-rule="evenodd"
+                    d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                    clip-rule="evenodd" />
+            </svg>
+            <svg id="star5" data-value="5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                fill="{% if user_rating|default:0 >= 5 %}#ec4899{% else %}currentColor{% endif %}" class="w-6 h-6 star">
+                <path fill-rule="evenodd"
+                    d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                    clip-rule="evenodd" />
+            </svg>
+        </div>
+        <p class="mt-2 text-gray-500">Tu calificación: <span id="userRating">{{ user_rating|default:0 }}</span>/5</p>
     </div>
+
 </section>
 
 <!-- Cuerpo del Contenido -->
