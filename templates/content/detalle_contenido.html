@@ -2,7 +2,6 @@
 
 {% load static %}
 
-
 {% block title %}
 {{ contenido.titulo }} | Stark Blog
 {% endblock %}
@@ -51,7 +50,7 @@
                 alt="{{ contenido.autor.username }}">
             <div>
                 <p class="leading-none font-semibold">{{ contenido.autor.username }}</p>
-                <p>Publicado el <time datetime="{{ contenido.fecha_modificacion }}">{{ contenido.fecha_modificacion|date:"d M Y" }}</time></p>
+                <p>Publicado el <time datetime="{{ contenido.fecha_modificacion }}">{{contenido.fecha_modificacion|date:"d M Y"}}</time></p>
             </div>
         </div>
         <div class="flex space-x-4 items-center">
@@ -69,18 +68,28 @@
             <button onclick="openModal('{{ contenido.slug }}')" class="bg-red-500 text-white py-2 px-4 rounded-lg">
                 Reportar
             </button>
+
+            {% if is_admin %}
+            <form method="post" action="{% url 'contenido_seleccionado' contenido.slug %}">
+                {% csrf_token %}
+                {% if not seleccionado %}
+                <button type="submit" name="select_content">Seleccionar Contenido</button>
+                {% else %}
+                <p>Este contenido ya ha sido seleccionado.</p>
+                {% endif %}
+            </form>
+            {% endif %}
         </div>
     </div>
 
     <div class="relative aspect-[4/3]">
         <img src="{{ contenido.imagen.url }}" alt="{{ contenido.titulo }}" class="w-full h-full object-cover">
     </div>
+    
     <!-- Botones de inactivar y estadísticas alineados a la derecha -->
     <div class="flex justify-end space-x-4 p-6">
         {% if perms.permissions.inactivar_contenido %}
-        {% if contenido.autor == request.user %}
-        <form id="inactivateForm-{{ contenido.id }}" action="{% url 'inactivar_contenido' contenido.id %}"
-            method="POST">
+        <form id="inactivateForm-{{ contenido.id }}" action="{% url 'inactivar_contenido' contenido.id %}" method="POST">
             {% csrf_token %}
             {% if contenido.activo %}
             <button type="button" onclick="openInactivateModal('inactivateForm-{{ contenido.id }}')"
@@ -94,23 +103,6 @@
             </button>
             {% endif %}
         </form>
-        {% else %}
-        <form id="inactivateForm-{{ contenido.id }}" action="{% url 'inactivar_contenido' contenido.id %}"
-            method="POST">
-            {% csrf_token %}
-            {% if contenido.activo %}
-            <button type="button" onclick="openInactivateModal('inactivateForm-{{ contenido.id }}')"
-                class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">
-                Inactivar Contenido
-            </button>
-            {% else %}
-            <button type="button" onclick="openInactivateModal('inactivateForm-{{ contenido.id }}')"
-                class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">
-                Activar Contenido
-            </button>
-            {% endif %}
-        </form>
-        {% endif %}
         {% endif %}
     </div>
 
@@ -232,13 +224,6 @@
             <form id="reportForm" method="post" action="">
                 {% csrf_token %}
                 {{ form.as_p }}
-                {% if not user.is_authenticated %}
-                <!-- <div class="mb-4">
-                        <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
-                        <input type="email" name="email" id="email" required
-                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                    </div> -->
-                {% endif %}
                 <div class="flex justify-end mt-4 space-x-2">
                     <button type="button" onclick="closeModal()"
                         class="bg-gray-400 text-white hover:bg-gray-500 py-2 px-4 rounded-lg">Cancelar</button>
@@ -249,7 +234,7 @@
     </div>
 </div>
 
-<!-- Modal de confirmación para Inactivar Contenido -->
+
 <div id="confirmInactivateModal"
     class="hs-overlay hidden fixed top-0 start-0 z-50 w-full h-full bg-gray-500 bg-opacity-75">
     <div class="flex justify-center items-center h-full">
@@ -266,36 +251,31 @@
     </div>
 </div>
 
-
-
-
 <script>
+
     function openModal(slug) {
         document.getElementById('reportModal').classList.remove('hidden');
         document.getElementById('reportForm').action = "{% url 'detalle_contenido' slug='slug_placeholder' %}".replace('slug_placeholder', slug);
     }
 
+    
     function closeModal() {
         document.getElementById('reportModal').classList.add('hidden');
     }
 
-    // Función para abrir el modal de confirmación para inactivar
+  
     function openInactivateModal(formId) {
         document.getElementById('confirmInactivateModal').classList.remove('hidden');
         const confirmInactivateButton = document.getElementById('confirmInactivateButton');
 
-        // Cuando el usuario haga clic en "Confirmar", enviar el formulario
         confirmInactivateButton.onclick = function () {
             document.getElementById(formId).submit();
         };
     }
 
-    // Función para cerrar el modal de confirmación para inactivar
+
     function closeInactivateModal() {
         document.getElementById('confirmInactivateModal').classList.add('hidden');
     }
 </script>
-
-
-
 {% endblock %}

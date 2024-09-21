@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db.models import Case, When, IntegerField
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
@@ -7,7 +8,7 @@ from django.db.models import Q
 from django.views.generic import ListView, DetailView, TemplateView, View
 from django.views.generic.edit import FormView, FormMixin, UpdateView
 from .forms import ContenidoForm, EditarContenidoForm, RechazarContenidoForm, ContenidoReportadoForm
-from .models import Version, Contenido, ContenidoReportado, Valoracion
+from .models import ContenidoSeleccionado, Version, Contenido, ContenidoReportado,Valoracion   
 import re, json
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -29,11 +30,38 @@ class VistaAllContenidos(ListView):
     """
     template_name="content/ver_contenidos.html"
     model=Contenido
-    ordering=["fecha_publicacion"]
     context_object_name="all_contenidos"
     
     def get_queryset(self):
-        return Contenido.objects.filter(estado="Publicado", activo=True).order_by("fecha_publicacion")
+        queryset = Contenido.objects.filter(estado="Publicado")
+        if self.request.user.is_authenticated:
+            user = self.request.user
+            categorias_favoritas = user.profile.categorias_interes.values_list('id', flat=True)
+            
+            queryset = queryset.filter(categoria__id__in=categorias_favoritas)
+
+            queryset = queryset.annotate(
+            favoritos_usuario=Case( 
+                When(categoria__id__in=categorias_favoritas, then=1), 
+                default=0,
+                output_field=IntegerField(),
+            )
+        )
+            queryset = queryset.order_by('-favoritos_usuario', 'fecha_publicacion')
+
+            
+        for c in queryset:
+            c.cuerpo = replace_pdf_image_with_link(c.cuerpo)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+       
+        context['is_suscr'] = self.request.user.is_authenticated and self.request.user.groups.filter(name="Suscriptor").exists()
+        
+        return context
     
 class VistaContenido(FormMixin, DetailView):
     """
@@ -70,6 +98,10 @@ class VistaContenido(FormMixin, DetailView):
         context['disqus_shortname'] = disqus_shortname
         context['disqus_identifier'] = disqus_identifier
         context['disqus_url'] = disqus_url
+        
+        #ver si es un contenido seleccionado
+        context['is_admin'] = self.request.user.is_authenticated and self.request.user.groups.filter(name="Admin").exists()
+        context['seleccionado']=ContenidoSeleccionado.objects.filter(contenido=self.object, id=self.object.id).exists()
 
         # Likes dislikes
         user = self.request.user
@@ -82,7 +114,7 @@ class VistaContenido(FormMixin, DetailView):
         else:
             context['liked'] = False
             context['disliked'] = False
-
+            
         return context
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -94,6 +126,7 @@ class VistaContenido(FormMixin, DetailView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
+            
         form = self.get_form()
         if form.is_valid():
             return self.form_valid(form)
@@ -111,8 +144,11 @@ class VistaContenido(FormMixin, DetailView):
             contenido_reportado.usuario = None 
             contenido_reportado.email=email
             
-        contenido_reportado.save()
-        messages.success(self.request, "Se ha reportado el contenido con éxito.")
+        try:
+            contenido_reportado.save()
+            messages.success(self.request, "Se ha reportado el contenido con éxito.")
+        except Exception as e:
+            messages.error(self.request, f"Error al reportar el contenido: {str(e)}")
         return redirect(self.get_success_url())
     
 
@@ -554,8 +590,19 @@ class VistaContenidosReportados(LoginRequiredMixin, ListView, PermissionRequired
             return ContenidoReportado.objects.filter(contenido__autor=user)
         else:
             return ContenidoReportado.objects.none()
+        
 
+class SeleccionarContenido(View):
+    def post(self, request, *args, **kwargs):
+        contenido_slug = kwargs.get('slug')
+        contenido = get_object_or_404(Contenido, slug=contenido_slug)
 
+    
+        if request.user.is_authenticated and request.user.groups.filter(name="Admin").exists():
+            ContenidoSeleccionado.objects.create(contenido=contenido, usuario=request.user)
+            messages.success(request, "El contenido ha sido seleccionado.")
+
+        return redirect('detalle_contenido', slug=contenido_slug)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
