@@ -4,6 +4,7 @@ from django.utils import timezone
 from datetime import date
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
@@ -93,8 +94,15 @@ class Contenido(models.Model):
         )
 
 
-    def __str__(self):
-        return f"{self.titulo} - {self.autor.first_name} {self.autor.last_name}"
+    # def clean(self):
+    #     super().clean()
+    #     max_size = 3*1024*1024 #3MB
+    #     if self.imagen and self.imagen.size > max_size:
+    #         raise ValidationError("El tamaño de imagen no debe exceder 5MB")
+
+    # def save(self, *args, **kwargs):
+    #     self.clean()
+    #     super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Contenido"

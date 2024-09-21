@@ -221,6 +221,10 @@ class CrearContenido(LoginRequiredMixin, FormView, PermissionRequiredMixin):
         self.object = contenido
         return super().form_valid(form)
     
+    def form_invalid(self, form):
+        messages.error(self.request, "Por favor, corrige los errores en el formulario.")
+        return self.render_to_response(self.get_context_data(form=form))
+
     def get_success_url(self):
         return reverse('crear_contenido', kwargs={'contenido_id': self.object.id})
 
