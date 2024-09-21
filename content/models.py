@@ -169,7 +169,7 @@ class ContenidoSeleccionado(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     fecha = models.DateTimeField(auto_now_add=True)
     class Meta:
-        ordering = ['-fecha']
+        ordering = ['fecha']
 
 REPORTE_OPCIONES = [
     ('odio', 'Mensaje de Odio'),

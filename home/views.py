@@ -1,7 +1,9 @@
 
+from django.db.models import Case, When, IntegerField
 from django.views.generic import ListView
+from stripe import CustomerCashBalanceService
 from categories.models import Categorias
-from content.models import Contenido
+from content.models import Contenido, ContenidoSeleccionado
 from content.views import replace_pdf_image_with_link
 from django.db.models import Q
 from django.contrib.auth.models import User
@@ -26,18 +28,54 @@ class HomeView(ListView):
     def get_queryset(self):
         """
         Filtra los contenidos por estado 'Publicado' y los ordena por la fecha de publicación.
+        Ademas, utiliza annotate y el condicional case/when para dar un valor de prioridad a los contenidos favoritos del usuario y elegidos por el administrador dentro del queryset de contenidos publicados.
         También reemplaza imágenes en archivos PDF con enlaces en el cuerpo del contenido.
+    
         """
-        queryset = Contenido.objects.filter(estado="Publicado").order_by("fecha_publicacion")
-        # Reemplazar imágenes en archivos PDF con enlaces
+        
+        queryset = Contenido.objects.filter(estado="Publicado")
+    
+        contenidos_seleccionados = ContenidoSeleccionado.objects.filter(usuario__groups__name='Admin').values_list('contenido_id', flat=True)
+        """ contenidos_admin = queryset.filter(id__in=contenidos_seleccionados) """
+        
+        queryset = queryset.annotate(
+        seleccionados_admin=Case( 
+            When(id__in=contenidos_seleccionados, then=1), 
+            default=0,
+            output_field=IntegerField(),
+        )
+    )
+        
+        if self.request.user.is_authenticated:
+            user = self.request.user
+            categorias_favoritas = user.profile.categorias_interes.values_list('id', flat=True)
+            """ contenidos_favoritos = queryset.filter(categoria__id__in=categorias_favoritas)
+            contenidos_fav = queryset.filter(id__in=contenidos_favoritos) """
+
+            queryset = queryset.annotate(
+            favoritos_usuario=Case( 
+                When(categoria__id__in=categorias_favoritas, then=1), 
+                default=0,
+                output_field=IntegerField(),
+            )
+        )
+            queryset = queryset.order_by('-favoritos_usuario', '-seleccionados_admin', 'fecha_publicacion')
+
+
+        else:
+             queryset = queryset.order_by('-seleccionados_admin', 'fecha_publicacion')
+
+            
         for c in queryset:
             c.cuerpo = replace_pdf_image_with_link(c.cuerpo)
+
         return queryset
     
     def get_context_data(self, **kwargs):
         """
         Agrega 'categorias_restringidas', 'mostrar_modal' y otras variables al contexto de la plantilla.
         """
+        
         context = super().get_context_data(**kwargs)
 
         # Añadir categorías restringidas
