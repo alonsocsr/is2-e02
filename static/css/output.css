@@ -988,10 +988,6 @@ video {
   height: 24rem;
 }
 
-.h-\[calc\(100vh-6rem\)\]{
-  height: calc(100vh - 6rem);
-}
-
 .h-auto{
   height: auto;
 }
