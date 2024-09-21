@@ -7,12 +7,15 @@ from django.db.models import Q
 from django.views.generic import ListView, DetailView, TemplateView, View
 from django.views.generic.edit import FormView, FormMixin, UpdateView
 from .forms import ContenidoForm, EditarContenidoForm, RechazarContenidoForm, ContenidoReportadoForm
-from .models import Version, Contenido, ContenidoReportado   
+from .models import Version, Contenido, ContenidoReportado, Valoracion
 import re, json
 from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from .models import StatusChangeLog
 from django.utils import timezone
+from django.db.models import Avg
+from django.http import JsonResponse
 
 
 class VistaAllContenidos(ListView):
@@ -74,6 +77,8 @@ class VistaContenido(FormMixin, DetailView):
             profile = user.profile
             context['liked'] = contenido in profile.contenidos_like.all()
             context['disliked'] = contenido in profile.contenidos_dislike.all()
+            valoracion = Valoracion.objects.filter(contenido=contenido, usuario=user).first()
+            context['user_rating'] = valoracion.puntuacion if valoracion else 0
         else:
             context['liked'] = False
             context['disliked'] = False
@@ -672,3 +677,38 @@ class ContentStatusHistoryView(LoginRequiredMixin,ListView):
         context = super().get_context_data(**kwargs)
         context['user'] = self.request.user
         return context
+
+class CalificarContenidoView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        contenido_id = self.kwargs.get('contenido_id')
+        puntuacion = request.POST.get('puntuacion')
+
+        contenido = get_object_or_404(Contenido, id=contenido_id)
+
+        if puntuacion and 1 <= int(puntuacion) <= 5:
+            puntuacion = int(puntuacion)
+
+            # Crear o actualizar la valoración del usuario
+            valoracion, created = Valoracion.objects.update_or_create(
+                contenido=contenido,
+                usuario=request.user,
+                defaults={'puntuacion': puntuacion}
+            )
+
+            # Calcular el promedio y la cantidad de valoraciones
+            valoraciones = Valoracion.objects.filter(contenido=contenido)
+            promedio_puntuacion = valoraciones.aggregate(Avg('puntuacion'))['puntuacion__avg']
+            cantidad_valoraciones = valoraciones.count()
+
+            # Actualizar el contenido
+            contenido.puntuacion = promedio_puntuacion
+            contenido.cantidad_valoraciones = cantidad_valoraciones
+            contenido.save()
+
+            return JsonResponse({
+                'success': True,
+                'puntuacion': promedio_puntuacion,
+                'cantidad_valoraciones': cantidad_valoraciones
+            })
+
+        return JsonResponse({'success': False, 'error': 'Puntuación inválida.'})
