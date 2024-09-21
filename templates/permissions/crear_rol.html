@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="flex justify-center self-center z-10 min-h-screen bg-gray-200">
+<div class="flex justify-center self-center z-10 max-h-screen bg-gray-200">
     <div class="p-6 max-w-full lg:w-full w-full flex flex-col max-h-screen overflow-y-auto">
         <div class="header my-3 h-7 px-2 lg:px-6 flex items-center justify-between">
             <h2 class="font-semibold text-2xl text-gray-800">Gestión de Roles</h2>
@@ -50,7 +50,7 @@
                         </div>
 
                         <h3 class="font-medium">Permisos: </h3>
-                        <div style="max-height: 150px; overflow-y: auto;">
+                        <div style="max-height: 340px; overflow-y: auto;">
                             <label for="id_permisos" class="sr-only">Permisos del rol</label>
                             <div class="space-y-4 w-full text-sm px-4 py-3 rounded-lg">
                                 {% for permission in form.permisos.field.queryset %}

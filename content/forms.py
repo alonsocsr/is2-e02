@@ -1,8 +1,8 @@
 from django import forms
-from django.shortcuts import render
 from .models import Contenido, ContenidoReportado
 from categories.models import Categorias
 from django.utils.text import slugify
+from django.core.exceptions import ValidationError
 
 class ContenidoForm(forms.ModelForm):
     class Meta:
@@ -48,13 +48,21 @@ class ContenidoForm(forms.ModelForm):
         if autor is not None:
             self.initial['autor'] = autor
     
+    def clean_imagen(self):
+        imagen = self.cleaned_data.get('imagen', False)
+        max_size = 2 * 1024 * 1024  # 2MB
+        if imagen and imagen.size > max_size:
+            raise ValidationError("El tamaño de la imagen no debe exceder los 2MB.")
+        return imagen
+
     def clean_slug(self):
         instance = self.instance
         slug = slugify(self.cleaned_data['titulo'])
         if instance.pk and instance.slug == slug:
             return slug
         if Contenido.objects.filter(slug=slug).exists():
-            raise forms.ValidationError('Este Título ya está en uso. Elige otro.')
+            self.add_error('titulo', 'Este Título ya está en uso. Elige otro.')
+            return slug
         return slug
 
     def save(self, commit=True):
