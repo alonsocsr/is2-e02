@@ -61,14 +61,18 @@
             <div class="mb-4">
                 <label for="titulo" class="block text-sm font-medium text-gray-700">Título del Post</label>
                 <input type="text" name="titulo" id="titulo" class="block w-full border-gray-300 rounded-md shadow-sm bg-gray-200 focus:ring-pink-500 focus:border-pink-500" value="{{ form.titulo.value|default_if_none:'' }}">
-                {{ form.titulo.errors }}
+                <div class="text-red-600 text-sm mt-1">
+                    {{ form.titulo.errors }}
+                </div>
             </div>
 
             <!-- Resumen -->
             <div class="mb-4">
                 <label for="resumen" class="block text-sm font-medium text-gray-700">Resumen</label>
                 <textarea name="resumen" id="resumen" class="block w-full border-gray-300 rounded-md shadow-sm bg-gray-200 focus:ring-pink-500 focus:border-pink-500">{{ form.resumen.value|default_if_none:'' }}</textarea>
-                {{ form.resumen.errors }}
+                <div class="text-red-600 text-sm mt-1">
+                    {{ form.resumen.errors }}
+                </div>                
             </div>
             <!-- Imagen Principal y Categoría -->
             <div class="flex flex-col md:flex-row gap-4 mb-6">

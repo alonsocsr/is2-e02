@@ -18,8 +18,8 @@
     {% endif %}
 </div>
 
-<div class="flex justify-center mt-10">
-    <div class="flex w-full max-w-5xl bg-gray-100 p-8 rounded-lg shadow-md">
+<div class="flex justify-center mt-10" style="height: 95%">
+    <div class="flex w-full bg-gray-200 p-6 rounded-lg shadow-md">
         
         <!-- Formulario de modificación de roles (lado izquierdo) -->
         <div class="w-1/3 pr-4">
@@ -30,7 +30,7 @@
                 
                 <!-- Checkboxes para seleccionar roles -->
                 <div class="space-y-6">
-                    <div style="max-height: 200px; overflow-y: scroll;">
+                    <div style="max-height: 400px; overflow-y: scroll;">
                         <label for="id_roles" class="sr-only">Roles</label>
                         <div class="space-y-4">
                             {% for rol in roles %}
@@ -57,10 +57,9 @@
         </div>
         
         <!-- Tabla de usuarios (lado derecho) -->
-        <div class="w-2/3 pl-4">
-            <h2 class="font-bold mb-4">Usuarios</h2>
-            <table class="min-w-full bg-white shadow-md rounded-lg">
-                <thead class="bg-pink-800 text-white">
+        <div class="w-2/3 bg-gray-100 shadow-md rounded-lg">
+            <table class="min-w-full ">
+                <thead class="bg-pink-700 text-white">
                     <tr>
                         <th class="px-4 py-2">Usuario</th>
                         <th class="px-4 py-2">Email</th>

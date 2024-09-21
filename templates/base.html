@@ -12,11 +12,17 @@
   <script src="{% static 'js/categorias.js' %}"></script>
   <script src="{% static 'js/intereses.js' %}"></script>
   <script src="{% static 'js/kanban.js' %}"></script>
+  <script src="{% static 'js/calificacion.js' %}"></script>
+  <script defer src="{% static 'js/like_dislike.js' %}"></script>
 </head>
 
-<body class="flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen {% if user.is_authenticated %}authenticated{% endif %}">
   
-  <div class="flex flex-1">
+  {% if user.is_authenticated %}
+    <div class="flex flex-1 flex-row">
+  {% else %}
+  <div class="flex flex-1 flex-col">
+  {% endif %}
     <!-- Sidebar oculto por defecto en pantallas pequeñas -->
     {% if user.is_authenticated %}
     <aside id="sidebar"

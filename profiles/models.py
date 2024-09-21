@@ -4,6 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from sorl.thumbnail import ImageField
 from categories.models import Categorias
+from content.models import Contenido
 
 
 class Profile(models.Model):
@@ -17,6 +18,8 @@ class Profile(models.Model):
     :cvar image(ImageField): Campo de imagen que almacena la foto de perfil del usuario. Las imágenes se suben al directorio 'profiles'.
     :cvar categorias_interes(ManyToManyField): Campo de relación de muchos a muchos con el modelo `Categorias`, que almacena las categorías de interés del usuario. Es opcional.
     :cvar suscripciones(ManyToManyField): Campo de relación de muchos a muchos con el modelo `Categorias`, que almacena las categorías a las que el usuario está suscrito. Es opcional.
+    :cvar contenidos_like(ManyToManyField): Campo de relación de muchos a muchos con el modelo `Contenido`, que almacena los contenidos a los que el usuario ha dado "like". Es opcional.
+    :cvar contenidos_dislike(ManyToManyField): Campo de relación de muchos a muchos con el modelo `Contenido`, que almacena los contenidos a los que el usuario ha dado "dislike". Es opcional.
 
     """
     user = models.OneToOneField(
@@ -27,7 +30,8 @@ class Profile(models.Model):
     image = ImageField(upload_to='profiles')
     categorias_interes = models.ManyToManyField(Categorias, blank=True, related_name='categorias_interes')
     suscripciones = models.ManyToManyField(Categorias, blank=True, related_name='suscripciones')
-
+    contenidos_like = models.ManyToManyField(Contenido, blank=True, related_name='contenidos_like')
+    contenidos_dislike = models.ManyToManyField(Contenido, blank=True, related_name='contenidos_dislike')
     class Meta:
         default_permissions = ()
 

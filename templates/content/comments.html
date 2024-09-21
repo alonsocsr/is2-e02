@@ -1,5 +1,6 @@
-<div id="disqus_thread">
+<div id="disqus_thread" class="min-h-[300px] max-w-full mx-auto p-2 border border-gray-300 rounded-lg bg-white">
 </div>
+
 <script>
 var disqus_config = function () {
     this.page.url = '{{ disqus_url }}';  
@@ -13,20 +14,9 @@ var disqus_config = function () {
     (d.head || d.body).appendChild(s);
 })();
 </script>
-<noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
-<style>
-    #disqus_thread {
-        max-width: auto;
-        margin: 0 auto;
-        padding: 20px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        background-color: #f9f9f9;
-    }
-    
-    noscript {
-        display: block;
-        text-align: center;
-        padding: 10px;
-        color: #555;
-    }
+
+<noscript>
+  <div class="text-center py-4 text-gray-600">
+    Por favor habilita JavaScript para ver los comentarios proporcionados por Disqus.
+  </div>
+</noscript>
