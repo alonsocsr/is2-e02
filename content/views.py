@@ -101,7 +101,7 @@ class VistaContenido(FormMixin, DetailView):
         
         #ver si es un contenido seleccionado
         context['is_admin'] = self.request.user.is_authenticated and self.request.user.groups.filter(name="Admin").exists()
-        context['seleccionado']=ContenidoSeleccionado.objects.filter(contenido=self.object, id=self.object.id).exists()
+        context['seleccionado']=ContenidoSeleccionado.objects.filter(contenido=self.object).exists()
 
         # Likes dislikes
         user = self.request.user
@@ -592,17 +592,49 @@ class VistaContenidosReportados(LoginRequiredMixin, ListView, PermissionRequired
             return ContenidoReportado.objects.none()
         
 
-class SeleccionarContenido(View):
+class DestacarContenido(LoginRequiredMixin, View):    
     def post(self, request, *args, **kwargs):
         contenido_slug = kwargs.get('slug')
         contenido = get_object_or_404(Contenido, slug=contenido_slug)
 
-    
-        if request.user.is_authenticated and request.user.groups.filter(name="Admin").exists():
-            ContenidoSeleccionado.objects.create(contenido=contenido, usuario=request.user)
-            messages.success(request, "El contenido ha sido seleccionado.")
+        # verificar si ya está seleccionado
+        seleccionado = ContenidoSeleccionado.objects.filter(contenido=contenido, usuario=request.user).first()
 
-        return redirect('detalle_contenido', slug=contenido_slug)
+        if seleccionado:
+            seleccionado.delete()
+            messages.success(request, "El contenido ha sido eliminado de destacados.")
+        else:
+            ContenidoSeleccionado.objects.create(contenido=contenido, usuario=request.user)
+            messages.success(request, "El contenido ha sido destacado.")
+
+        referer = self.request.META.get('HTTP_REFERER')
+        if referer:
+            return redirect(referer)
+        else:
+            return redirect('/')
+    
+
+class VistaContenidosDestacados(LoginRequiredMixin, ListView, PermissionRequiredMixin):
+    """
+    Vista que muestra los contenidos seleccionados en el sitio web
+    :cvar model: ContenidoReportado - El modelo de los contenidos seleccionados.
+    :cvar template_name: str - Nombre de la plantilla utilizada para mostrar la lista de contenidos seleccionados.
+    :cvar context_object_name: str - Nombre del contexto que contiene la lista de contenidos seleccionados.
+    :cvar permission_required: str - Permiso requerido para acceder a esta vista.
+
+    :return: Respuesta HTTP que muestra la lista de contenidos seleccionados
+    """
+    model = ContenidoReportado
+    template_name = 'content/destacados.html'
+    context_object_name = 'contenidos'
+    permission_required = 'permissions.eliminar_rol'
+
+    def get_queryset(self):
+        user=self.request.user
+        if user.has_perm('permissions.eliminar_rol') or user.groups.filter(name="Admin"):
+            return ContenidoSeleccionado.objects.all()
+        else:
+            return ContenidoSeleccionado.objects.none()
 
 
 @method_decorator(csrf_exempt, name='dispatch')

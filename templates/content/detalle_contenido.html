@@ -70,7 +70,7 @@
             </div>
 
             <!-- Botón de Reportar -->
-            <button onclick="openModal('{{ contenido.slug }}')" class="bg-red-500 text-white py-2 px-4 rounded-lg">
+            <button onclick="openModal('{{ contenido.slug }}')" class="bg-red-500 text-white py-2 px-4 rounded-md">
                 Reportar
             </button>
 
@@ -78,9 +78,9 @@
             <form method="post" action="{% url 'contenido_seleccionado' contenido.slug %}">
                 {% csrf_token %}
                 {% if not seleccionado %}
-                <button type="submit" name="select_content">Seleccionar Contenido</button>
+                <button class="bg-gray-400 hover:bg-gray-500 text-white  py-2 px-4 rounded-md" type="submit" name="select_content">Destacar Contenido</button>
                 {% else %}
-                <p>Este contenido ya ha sido seleccionado.</p>
+                <p>Este contenido ya ha sido destacado.</p>
                 {% endif %}
             </form>
             {% endif %}
