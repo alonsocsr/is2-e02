@@ -48,6 +48,7 @@ def crear_permisos(apps, schema_editor):
         ('eliminar_estado_contenido', 'Eliminar Estado de Contenido'),
         ('visualizar_versiones_contenido', 'Visualizar versiones de Contenido'),
         ('restaurar_verisiones_contenido', 'Restaurar Versiones de Contenido'),
+        ('destacar_contenido', 'Destacar Contenido'),
     ]
 
     content_type = ContentType.objects.get_for_model(
@@ -82,7 +83,7 @@ def configurar_roles_predefinidos(apps, schema_editor):
             'nombre_rol': 'Admin',
             'descripcion': 'Administrador del sistema.',
             'rol_por_defecto': True,
-            'permisos': ['inactivar_contenido', 'crear_rol', 'modificar_rol', 'asignar_rol', 'remover_rol', 'eliminar_rol', 'crear_categoria', 'modificar_categoria', 'eliminar_categoria', 'inactivar_categoria', 'editar_perfil', 'suspender_cuenta', 'ver_tablero_kanban', 'modificar_tablero_kanban', 'ver_cantidad_likes', 'administrar_estado_contenido', 'visualizar_versiones_contenido', 'visualizar_contenido', 'ver_estadisticas_contenido', 'ver_reportes_contenido', 'ver_cantidad_dislikes', 'ver_cantidad_visualizaciones', 'ver_cantidad_compartidos', 'modificar_estado_contenido', 'eliminar_estado_contenido'],
+            'permisos': ['destacar_contenido','inactivar_contenido', 'crear_rol', 'modificar_rol', 'asignar_rol', 'remover_rol', 'eliminar_rol', 'crear_categoria', 'modificar_categoria', 'eliminar_categoria', 'inactivar_categoria', 'editar_perfil', 'suspender_cuenta', 'ver_tablero_kanban', 'modificar_tablero_kanban', 'ver_cantidad_likes', 'administrar_estado_contenido', 'visualizar_versiones_contenido', 'visualizar_contenido', 'ver_estadisticas_contenido', 'ver_reportes_contenido', 'ver_cantidad_dislikes', 'ver_cantidad_visualizaciones', 'ver_cantidad_compartidos', 'modificar_estado_contenido', 'eliminar_estado_contenido'],
         },
         {
             'nombre_rol': 'Editor',

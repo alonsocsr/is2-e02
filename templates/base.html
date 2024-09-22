@@ -14,6 +14,7 @@
   <script src="{% static 'js/kanban.js' %}"></script>
   <script src="{% static 'js/calificacion.js' %}"></script>
   <script defer src="{% static 'js/like_dislike.js' %}"></script>
+  {% block script %}{% endblock script %}
 </head>
 
 <body class="flex flex-col min-h-screen {% if user.is_authenticated %}authenticated{% endif %}">

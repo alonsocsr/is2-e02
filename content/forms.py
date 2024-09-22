@@ -57,7 +57,10 @@ class ContenidoForm(forms.ModelForm):
 
     def clean_slug(self):
         instance = self.instance
-        slug = slugify(self.cleaned_data['titulo'])
+        titulo = self.cleaned_data.get('titulo')
+        if not titulo:
+            return self.cleaned_data.get('slug', None)
+        slug = slugify(titulo)
         if instance.pk and instance.slug == slug:
             return slug
         if Contenido.objects.filter(slug=slug).exists():

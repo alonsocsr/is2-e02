@@ -119,6 +119,10 @@ class HomeView(ListView):
         # Verificar si el modal debe mostrarse
         mostrar_modal = self.request.GET.get('modal') == 'true'
         context['mostrar_modal'] = mostrar_modal
+
+        #Contenidos destacados por el admin
+        destacados = ContenidoSeleccionado.objects.select_related('contenido').all()
+        context['destacados'] = destacados
             
         if mostrar_modal:
             categoria_id = self.request.GET.get('categoria_id')

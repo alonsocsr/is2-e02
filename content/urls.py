@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CambiarEstadoView, ContenidoBorradorList, ContenidoInactivadoList, CrearContenido, ContenidoEdicionList, EditarContenido, ContenidoPublicarList, RechazarContenido, VistaAllContenidos, VistaContenido, InactivarContenido, VistaContenidosReportados, TableroKanbanView,  UpdatePostStatusView, ContentStatusHistoryView, CalificarContenidoView, SeleccionarContenido
+from .views import CambiarEstadoView, ContenidoBorradorList, ContenidoInactivadoList, CrearContenido, ContenidoEdicionList, EditarContenido, ContenidoPublicarList, RechazarContenido, VistaAllContenidos, VistaContenido, InactivarContenido, VistaContenidosReportados, TableroKanbanView,  UpdatePostStatusView, ContentStatusHistoryView, CalificarContenidoView, DestacarContenido, IncrementShareCountView, VistaContenidosDestacados
 from . import views
 urlpatterns = [
     #autor
@@ -25,7 +25,8 @@ urlpatterns = [
     path('rechazar-contenido/<int:pk>', RechazarContenido.as_view(), name='rechazar_contenido'),
     path('contenidos-reportados', VistaContenidosReportados.as_view(), name='contenidos_reportados'),
     path('contenidos-inactivos', ContenidoInactivadoList.as_view(), name='contenidos_inactivados'),
-    path('contenido/<slug:slug>/select/', SeleccionarContenido.as_view(), name='contenido_seleccionado'),
+    path('contenido/<slug:slug>/select/', DestacarContenido.as_view(), name='contenido_seleccionado'),
+    path('contenido-destacado', VistaContenidosDestacados.as_view(), name='lista_destacados'),
 
     #tablero kanban
     path('tablero-kanban/', TableroKanbanView.as_view(), name='tablero_kanban'),
@@ -37,4 +38,6 @@ urlpatterns = [
 
     #calificacion
     path('contenido/<int:contenido_id>/calificar/', CalificarContenidoView.as_view(), name='calificar_contenido'),
+    #compartidos
+    path('increment-share-count/', IncrementShareCountView.as_view(), name='increment_share_count'),
 ]
