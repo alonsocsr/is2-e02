@@ -763,3 +763,17 @@ class CalificarContenidoView(LoginRequiredMixin, View):
             })
 
         return JsonResponse({'success': False, 'error': 'Puntuación inválida.'})
+
+class IncrementShareCountView(View):
+    def post(self, request, *args, **kwargs):
+        contenido_id = request.POST.get('contenido_id')
+        contenido = get_object_or_404(Contenido, id=contenido_id)
+        
+        # Incrementar el contador de contenidos
+        contenido.cantidad_compartidos += 1
+        contenido.save()
+
+        return JsonResponse({
+            'status': 'ok',
+            'share_count': contenido.cantidad_compartidos
+        })

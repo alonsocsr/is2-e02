@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CambiarEstadoView, ContenidoBorradorList, ContenidoInactivadoList, CrearContenido, ContenidoEdicionList, EditarContenido, ContenidoPublicarList, RechazarContenido, VistaAllContenidos, VistaContenido, InactivarContenido, VistaContenidosReportados, TableroKanbanView,  UpdatePostStatusView, ContentStatusHistoryView, CalificarContenidoView, SeleccionarContenido
+from .views import CambiarEstadoView, ContenidoBorradorList, ContenidoInactivadoList, CrearContenido, ContenidoEdicionList, EditarContenido, ContenidoPublicarList, RechazarContenido, VistaAllContenidos, VistaContenido, InactivarContenido, VistaContenidosReportados, TableroKanbanView,  UpdatePostStatusView, ContentStatusHistoryView, CalificarContenidoView, SeleccionarContenido, IncrementShareCountView
 from . import views
 urlpatterns = [
     #autor
@@ -37,4 +37,6 @@ urlpatterns = [
 
     #calificacion
     path('contenido/<int:contenido_id>/calificar/', CalificarContenidoView.as_view(), name='calificar_contenido'),
+    #compartidos
+    path('increment-share-count/', IncrementShareCountView.as_view(), name='increment_share_count'),
 ]

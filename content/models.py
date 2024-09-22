@@ -31,6 +31,7 @@ class Contenido(models.Model):
     :cvar cantidad_dislikes: int - Número de "dislikes" del contenido.
     :cvar puntuacion: DecimalField - Puntuación promedio del contenido.
     :cvar cantidad_valoraciones: int - Número total de valoraciones del contenido.
+    :cvar cantidad_compartidos: int - Número total de compartidos del contenido.
     :cvar cantidad_vistas: int - Número total de vistas del contenido.
     :cvar fecha_modificacion: DateTimeField - Fecha de la última modificación del contenido.
     :cvar usuario_editor: User - Usuario que editó el contenido.
@@ -66,6 +67,7 @@ class Contenido(models.Model):
     cantidad_dislikes = models.PositiveIntegerField(default=0)
     puntuacion = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
     cantidad_valoraciones = models.PositiveIntegerField(default=0)
+    cantidad_compartidos = models.PositiveIntegerField(default=0)
     cantidad_vistas = models.PositiveIntegerField(default=0)
     fecha_modificacion = models.DateTimeField(auto_now=True)
     usuario_editor = models.ForeignKey(
@@ -92,17 +94,6 @@ class Contenido(models.Model):
             fecha_version=timezone.now(),
             editor=user,
         )
-
-
-    # def clean(self):
-    #     super().clean()
-    #     max_size = 3*1024*1024 #3MB
-    #     if self.imagen and self.imagen.size > max_size:
-    #         raise ValidationError("El tamaño de imagen no debe exceder 5MB")
-
-    # def save(self, *args, **kwargs):
-    #     self.clean()
-    #     super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Contenido"
@@ -176,7 +167,7 @@ class ContenidoSeleccionado(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     fecha = models.DateTimeField(auto_now_add=True)
     class Meta:
-        ordering = ['fecha']
+        ordering = ['-fecha']
 
 REPORTE_OPCIONES = [
     ('odio', 'Mensaje de Odio'),
