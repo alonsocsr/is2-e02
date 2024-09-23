@@ -525,18 +525,23 @@ class InactivarContenido(LoginRequiredMixin, UpdateView, PermissionRequiredMixin
     
     def form_valid(self, form):
         contenido = form.save(commit=False)
-        if contenido.activo:
+        if contenido.activo == True:
             contenido.estado = 'Inactivo'
             contenido.activo = False
             #Se utiliza la función que crea el historial de cambio
             log_status_change(contenido, 'Publicado', 'Inactivo', self.request.user)
             messages.success(self.request, "El contenido ha sido Inactivado.")
-        else:
-            contenido.estado = 'Publicado'
-            contenido.activo = True
-            #Se utiliza la función que crea el historial de cambio
-            log_status_change(contenido, 'Inactivo', 'Publicado', self.request.user)
-            messages.success(self.request, "El contenido ha sido Activado.")
+        elif contenido.activo == False:
+            if contenido.vigencia is not None and contenido.vigencia <= timezone.now().date():
+                contenido.estado = 'Inactivo'
+                contenido.activo = False
+                messages.error(self.request, f"El contenido no se puede publicar porque su vigencia expiró el {contenido.vigencia}.")
+            else:
+                contenido.estado = 'Publicado'
+                contenido.activo = True
+                #Se utiliza la función que crea el historial de cambio
+                log_status_change(contenido, 'Inactivo', 'Publicado', self.request.user)
+                messages.success(self.request, "El contenido ha sido Activado.")
         contenido.save()
 
         referer = self.request.META.get('HTTP_REFERER')

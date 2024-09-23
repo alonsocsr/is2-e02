@@ -1,5 +1,5 @@
 
-<div class="w-full bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl overflow-visible flex flex-col md:flex-row relative">
+<div class="w-full bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl overflow-hidden flex flex-col md:flex-row relative">
 
     {% if contenido.categoria.tipo_categoria in categorias_restringidas and not user.is_authenticated %}
     <a href="{% url 'account_login' %}">    
@@ -10,8 +10,8 @@
     {% endif %}    
 
         <!-- Imagen -->
-        <div class="h-32 md:h-48 lg:h-auto lg:w-36 flex-none bg-cover bg-center"> 
-            <img src="{{ contenido.imagen.url }}" alt="{{ contenido.titulo }}" class="block w-full h-full" style="object-fit: cover;"> 
+        <div class="h-48 md:h-48 lg:h-48 xl:h-36 lg:w-36 flex-none bg-gray-200 overflow-hidden">
+            <img src="{{ contenido.imagen.url }}" alt="{{ contenido.titulo }}" class="object-cover w-full h-full rounded-t-lg md:rounded-l-lg md:rounded-t-none">
         </div>
         <!-- Categoría -->
         <div class="absolute top-2 right-2 bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full" >
