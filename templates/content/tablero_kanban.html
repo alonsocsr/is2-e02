@@ -251,6 +251,48 @@
             <button id="guardarCambios" class="bg-pink-800 hover:bg-pink-700 active:bg-pink-900 hover:scale-105 text-white py-2 px-4 rounded-lg transition ease-in-out duration-300">
                 Guardar Cambios
             </button>
+            <button id="mostrarArchivados" class="bg-pink-800 hover:bg-pink-700 active:bg-pink-900 hover:scale-105 text-white py-2 px-4 rounded-lg transition ease-in-out duration-300">
+                Ver Archivados
+            </button>
+        </div>
+
+        <!-- Modal para los contenidos archivados -->
+        <div id="archivadoModal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-96 max-h-80 overflow-y-auto relative">
+                <h3 class="text-lg font-bold mb-4">Contenidos Archivados</h3>
+                <div class="space-y-4">
+                    {% for post in archivado %}
+                        <div class="bg-gray-50 px-4 pb-4 rounded-lg shadow-md flex flex-col space-y-2 contenido-item mb-2">
+                            <!-- Título del contenido -->
+                            <div class="mt-2">
+                                <h3 class="font-bold text-gray-800 break-words truncate" title="{{ post.titulo }}">{{ post.titulo|truncatechars:100 }}</h3>
+                            </div>
+                            
+                            <!-- Contenedor superior: Imagen + Información del autor y fecha -->
+                            <div class="flex items-center space-x-4">
+                                <!-- Imagen del contenido -->
+                                <div class="flex-shrink-0 w-12 h-12">
+                                    {% if post.imagen %}
+                                        <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}" class="w-full h-full object-cover rounded-lg">
+                                    {% else %}
+                                        <img src="https://via.placeholder.com/80x80" alt="No image" class="w-full h-full object-cover rounded-lg">
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Información del autor y fecha -->
+                                <div class="flex-1 overflow-hidden">
+                                    <p class="text-xs text-gray-500 ">Por <strong>{{ post.autor }}</strong></p>
+                                    <p class="text-xs text-gray-500 ">{{ post.fecha_creacion|date:"d M Y" }}</p>
+                                    <p class="text-xs text-gray-500 ">Vigencia hasta: <strong>{{ post.vigencia|date:"d M Y" }}</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="flex justify-end mt-4">
+                    <button id="cerrarArchivado" class="bg-gray-500 text-white px-4 py-2 rounded">Cerrar</button>
+                </div>
+            </div>
         </div>
 
         <!-- Modal para el rechazo -->
@@ -292,12 +334,34 @@
         }
         
         .kanban-column {
-            min-height: 300px;
-            width: 240px;
+            width: 250px; /* Ancho fijo para cada columna */
+            flex: 0 0 250px; /* No permitir que la columna crezca o se encoja */
+            max-height: 80vh; /* Altura máxima de la columna */
+            overflow-y: auto; /* Hacer scroll interno en la columna */
+            overflow-x: hidden;
         }
 
         .kanban-items {
+            max-height: 70vh; /* Limitar la altura del contenido de las tarjetas */
+            overflow-y: auto; /* Habilitar scroll interno en el contenedor de tarjetas */
             border: none;
+            overflow-x: hidden;
+        }
+
+        .contenido-item {
+            width: 100%; /* Asegura que las tarjetas no excedan el ancho de la columna */
+            max-width: 100%; /* Prevenir desbordamiento horizontal */
+        }
+        /* Scroll horizontal para la vista general en pantallas más pequeñas */
+        @media (max-width: 768px) {
+            .container {
+                overflow-x: auto; /* Habilitar scroll horizontal para toda la vista en pantallas pequeñas */
+            }
+
+            .grid {
+                width: max-content; /* Asegura que la cuadrícula no se ajuste al contenedor, permitiendo el scroll horizontal */
+                flex-wrap: nowrap; /* Evita que las columnas se apilen */
+            }
         }
         
         .kanban-column .contenido-item {
@@ -327,5 +391,4 @@
         const usuarioActualId = {{ request.user.id }};
     </script>
 
-    <script src="{% static 'js/kanban.js' %}"></script>
 {% endblock content %}

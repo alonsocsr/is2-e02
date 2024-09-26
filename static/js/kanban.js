@@ -196,7 +196,27 @@ document.addEventListener('DOMContentLoaded', function () {
             rechazosPendientes = rechazosPendientes.filter(cambio => cambio.id !== postId);
         });
     });
-    
+
+    const mostrarArchivadosBtn = document.getElementById('mostrarArchivados');
+    const archivadoModal = document.getElementById('archivadoModal');
+    const cerrarArchivadoBtn = document.getElementById('cerrarArchivado');
+
+    mostrarArchivadosBtn.addEventListener('click', () => {
+        archivadoModal.classList.remove('hidden');
+    });
+
+    cerrarArchivadoBtn.addEventListener('click', () => {
+        archivadoModal.classList.add('hidden');
+    });
+    // Cerrar el modal al hacer clic fuera
+    window.addEventListener('click', (e) => {
+        if (e.target === archivadoModal) {
+            archivadoModal.classList.add('hidden');
+        }
+    });
+
     setupDraggables();
     guardarEstadoInicial();
+
+
 });

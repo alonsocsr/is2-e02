@@ -666,7 +666,8 @@ class TableroKanbanView(LoginRequiredMixin, TemplateView, PermissionRequiredMixi
         context['edicion'] = contenido.filter(estado='Edicion').order_by('fecha_creacion')
         context['publicacion'] = contenido.filter(estado='Publicar').order_by('fecha_creacion')
         context['publicado'] = contenido.filter(estado='Publicado').order_by('fecha_creacion')
-        context['inactivo'] = contenido.filter(estado='Inactivo').order_by('fecha_creacion')
+        context['inactivo'] = contenido.exclude(vigencia__lt=timezone.now().date()).filter(estado='Inactivo').order_by('fecha_creacion')
+        context['archivado'] = contenido.filter(vigencia__lt=timezone.now().date()).order_by('vigencia')
         # Obtener los permisos necesarios para mover los contenidos
         context['crear_perm'] = self.request.user.has_perm('permissions.crear_contenido')
         context['editar_perm'] = self.request.user.has_perm('permissions.editar_contenido')
@@ -698,21 +699,32 @@ class UpdatePostStatusView(LoginRequiredMixin, View):
             # Obtener el contenido y actualizar su estado
             post = Contenido.objects.get(id=post_id)
             estado_anterior = post.estado
+            ban = 0
 
             if new_status == 'Borrador':
                 post.estado = 'Borrador'
                 #Se utiliza la función que crea el historial de cambio
-                log_status_change(post, estado_anterior, 'Borrador', self.request.user)
+                if ban == 0:
+                    log_status_change(post, estado_anterior, 'Borrador', self.request.user)
+                    ban = 1
+            
             elif new_status == 'Edicion':
                 post.estado = 'Edicion'
-                log_status_change(post, estado_anterior, 'Edicion', self.request.user)
+                if ban == 0:
+                    log_status_change(post, estado_anterior, 'Edicion', self.request.user)
+                    ban = 1
             elif new_status == 'Publicacion':
                 post.estado = 'Publicar'
-                log_status_change(post, estado_anterior, 'Publicar', self.request.user)
+                if ban == 0:
+                    log_status_change(post, estado_anterior, 'Publicar', self.request.user)
+                    ban = 1
             elif new_status == 'Publicado':
                 post.estado = 'Publicado'
                 post.mensaje_rechazo = ''
-                log_status_change(post, estado_anterior, 'Publicado', self.request.user)
+                if ban == 0:
+                    log_status_change(post, estado_anterior, 'Publicado', self.request.user)
+                    ban = 1
+                
                 if post.fecha_publicacion is not None and post.fecha_publicacion > timezone.now().date():
                     post.activo = False
                 else:
@@ -721,12 +733,14 @@ class UpdatePostStatusView(LoginRequiredMixin, View):
             elif new_status == 'Inactivo':
                 post.estado = 'Inactivo'
                 post.activo = False
-                log_status_change(post, estado_anterior, 'Inactivo', self.request.user)
+                if ban == 0:
+                    log_status_change(post, estado_anterior, 'Inactivo', self.request.user)
+                    ban = 1
 
             post.save()
 
         messages.success(self.request, "Se ha actualizado el tablero kanban con éxito.")
-
+        return JsonResponse({'success': True, 'message': 'Estado actualizado correctamente.'})
 
 def log_status_change(contenido, anterior, nuevo, user=None):
     """
