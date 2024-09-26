@@ -18,3 +18,6 @@ class ProfileForm(forms.Form):
     label= 'Foto de Perfil',
     required=False
   )
+
+class ConfirmDeleteAccountForm(forms.Form):
+  password = forms.CharField(widget=forms.PasswordInput, label="Confirma tu contraseña")
