@@ -59,7 +59,6 @@ class CrearCategoriaView(LoginRequiredMixin, CustomPermissionRequiredMixin, View
         """
         form = self.form_class(request.POST)
         if form.is_valid():
-            # Validar límite de categorías con prioridad
             if form.cleaned_data['prioridad']:
                 if Categorias.objects.filter(prioridad=True).count() >= 5:
                     messages.error(request, 'No se pueden crear más de 5 categorías con prioridad.', extra_tags='categoria')
@@ -123,7 +122,6 @@ class ModificarCategoriaView(LoginRequiredMixin, CustomPermissionRequiredMixin, 
         categoria = get_object_or_404(Categorias, pk=pk)
         form = self.form_class(request.POST, instance=categoria)
         if form.is_valid():
-            # Validar límite de categorías con prioridad
             if form.cleaned_data['prioridad']:
                 if Categorias.objects.filter(prioridad=True).exclude(pk=categoria.pk).count() >= 5:
                     messages.error(request, 'No se pueden tener más de 5 categorías con prioridad.', extra_tags='categoria')
@@ -278,7 +276,7 @@ class DetalleCategoriaView(DetailView):
         :param kwargs: dict - Diccionario de parámetros adicionales.
         :return: JsonResponse - Respuesta JSON con el ID de la sesión de Stripe o un mensaje de error en caso de fallo.
         """
-        categoria = self.get_object()  # Obtiene la categoría actual
+        categoria = self.get_object() 
         try:
             # Crear una sesión de pago con Stripe
             session = stripe.checkout.Session.create(

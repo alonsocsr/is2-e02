@@ -54,13 +54,12 @@ class Categorias(models.Model):
         :param args: Argumentos adicionales pasados al método `save` del modelo.
         :param kwargs: Palabras clave adicionales pasadas al método `save` del modelo.
         """
-        # Asignar el precio si la categoría es "Paga"
+        
         if self.tipo_categoria == 'PA':
             self.precio = 20000
         else:
-            self.precio = None  # Puedes definir un valor por defecto aquí si lo deseas
+            self.precio = None 
 
-        # Convertir la descripción corta a mayúsculas
         self.descripcion_corta = self.descripcion_corta.upper()
         
         super().save(*args, **kwargs)

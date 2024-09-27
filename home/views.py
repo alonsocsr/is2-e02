@@ -57,54 +57,59 @@ class HomeView(ListView):
     def get_queryset(self):
         """
         Filtra los contenidos por estado 'Publicado' y los ordena por la fecha de publicación.
-        Ademas, utiliza annotate y el condicional case/when para dar un valor de prioridad a los contenidos favoritos del usuario y elegidos por el administrador dentro del queryset de contenidos publicados.
-        También reemplaza imágenes en archivos PDF con enlaces en el cuerpo del contenido.
-    
+        Prioriza los contenidos favoritos del usuario, los seleccionados por el administrador y luego los demás contenidos.
+        La prioridad es: Favoritos del usuario > Seleccionados por el admin > Otros contenidos (ordenados por fecha de publicación).
         """
-        
-        queryset = Contenido.objects.filter(estado="Publicado")
-    
-        contenidos_seleccionados = ContenidoSeleccionado.objects.filter(usuario__groups__name='Admin').values_list('contenido_id', flat=True)
-        """ contenidos_admin = queryset.filter(id__in=contenidos_seleccionados) """
-        
-        queryset = queryset.annotate(
-        seleccionados_admin=Case( 
-            When(id__in=contenidos_seleccionados, then=1), 
-            default=0,
-            output_field=IntegerField(),
-        )
-    )
+
+        #obtener todos los contenidos publicados y activos en el sistema
+        queryset = Contenido.objects.filter(estado="Publicado", activo=True)
+
+        #obtener los contenidos seleccionados por el administrador si existiesen
+        contenidos_seleccionados = []
+        if ContenidoSeleccionado.objects.filter(usuario__groups__name='Admin').exists():
+            contenidos_seleccionados = ContenidoSeleccionado.objects.filter(usuario__groups__name='Admin').values_list('contenido_id', flat=True)
+            
+            #se le da prioridad a los seleccionados por el administrador
+            queryset = queryset.annotate(
+                seleccionados_admin=Case(
+                    When(id__in=contenidos_seleccionados, then=1),
+                    default=0,
+                    output_field=IntegerField(),
+                )
+            )
+
         
         if self.request.user.is_authenticated:
             user = self.request.user
-            categorias_favoritas = user.profile.categorias_interes.values_list('id', flat=True)
-            """ contenidos_favoritos = queryset.filter(categoria__id__in=categorias_favoritas)
-            contenidos_fav = queryset.filter(id__in=contenidos_favoritos) """
-
-            queryset = queryset.annotate(
-            favoritos_usuario=Case( 
-                When(categoria__id__in=categorias_favoritas, then=1), 
-                default=0,
-                output_field=IntegerField(),
-            )
-        )
-            queryset = queryset.order_by('-favoritos_usuario', '-seleccionados_admin', 'fecha_publicacion')
-
+            #si el usuario esta autenticado y tiene categorias favorias se obtiene los contenidos de estas categorias
+            if user.profile.categorias_interes.exists():
+                categorias_favoritas = user.profile.categorias_interes.values_list('id', flat=True)
+                #se le da prioridad a los favoritos
+                queryset = queryset.annotate(
+                    favoritos_usuario=Case(
+                        When(categoria__id__in=categorias_favoritas, then=1),
+                        default=0,
+                        output_field=IntegerField(),
+                    )
+                )
+                #se ordena por favoritos, seleccionados por el administrador y por fecha de publicacion
+                queryset = queryset.order_by('-favoritos_usuario', '-seleccionados_admin','-fecha_publicacion')
+            else:
+                # si no existen favoritos se muestra primeramente lo seleccionado por el administrador
+                queryset = queryset.order_by('-seleccionados_admin','-fecha_publicacion')
 
         else:
-             queryset = queryset.order_by('-seleccionados_admin', 'fecha_publicacion')
-
             
+            queryset = queryset.order_by('-seleccionados_admin','-fecha_publicacion')
 
-        # Verificar y actualizar los estados de los contenidos
+        
         self.verificar_estados_contenidos()
 
-        queryset = Contenido.objects.filter(estado="Publicado", activo=True).order_by("fecha_publicacion")
-        # Reemplazar imágenes en archivos PDF con enlaces
         for c in queryset:
             c.cuerpo = replace_pdf_image_with_link(c.cuerpo)
 
         return queryset
+
     
     def get_context_data(self, **kwargs):
         """
@@ -121,9 +126,10 @@ class HomeView(ListView):
         context['mostrar_modal'] = mostrar_modal
 
         #Contenidos destacados por el admin
-        destacados = ContenidoSeleccionado.objects.select_related('contenido').all()
+        self.verificar_estados_contenidos()
+        destacados = ContenidoSeleccionado.objects.select_related('contenido').filter(contenido__estado="Publicado",contenido__activo=True)
         context['destacados'] = destacados
-            
+        
         if mostrar_modal:
             categoria_id = self.request.GET.get('categoria_id')
             if categoria_id:
