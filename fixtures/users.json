@@ -10,7 +10,7 @@
             "is_superuser": false,
             "is_active": true,
             "date_joined": "2024-08-30T12:34:56.789Z",
-            "groups": [1, 5],  
+            "groups": [1],  
             "user_permissions": []
         }
     },
@@ -25,7 +25,7 @@
             "is_superuser": false,
             "is_active": true,
             "date_joined": "2024-08-30T12:34:56.789Z",
-            "groups": [3, 5], 
+            "groups": [3], 
             "user_permissions": []
         }
     },
@@ -40,7 +40,7 @@
             "is_superuser": false,
             "is_active": true,
             "date_joined": "2024-08-30T12:34:56.789Z",
-            "groups": [2, 5], 
+            "groups": [2], 
             "user_permissions": []
         }
     },
@@ -55,7 +55,7 @@
             "is_superuser": false,
             "is_active": true,
             "date_joined": "2024-08-30T12:34:56.789Z",
-            "groups": [4, 5], 
+            "groups": [4], 
             "user_permissions": []
         }
     }
