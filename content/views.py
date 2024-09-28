@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import StatusChangeLog
 from django.utils import timezone
 from django.db.models import Avg
-from django.http import JsonResponse
+from django.http import HttpResponseNotFound, JsonResponse
 
 
 class VistaAllContenidos(ListView):
@@ -153,7 +153,7 @@ class VistaContenido(FormMixin, DetailView):
     
 
      
-class ContenidoBorradorList(LoginRequiredMixin, ListView):
+class ContenidoBorradorList(LoginRequiredMixin,PermissionRequiredMixin,ListView):
     """
     Vista para listar los contenidos en estado de borrador del usuario actual.
 
@@ -164,11 +164,12 @@ class ContenidoBorradorList(LoginRequiredMixin, ListView):
     model = Contenido
     template_name = 'content/list_borrador.html'
     context_object_name = 'borradores'
+    permission_required='permissions.crear_contenido'
 
     def get_queryset(self):
         return Contenido.objects.filter(autor=self.request.user, estado='Borrador').order_by('fecha_modificacion')
      
-class ContenidoInactivadoList(LoginRequiredMixin, ListView, PermissionRequiredMixin):
+class ContenidoInactivadoList(LoginRequiredMixin, PermissionRequiredMixin,ListView):
     """
     Vista para listar los contenidos inactivados, con permisos de acceso requeridos.
 
@@ -191,7 +192,7 @@ class ContenidoInactivadoList(LoginRequiredMixin, ListView, PermissionRequiredMi
         else:
             return Contenido.objects.none()
 
-class CrearContenido(LoginRequiredMixin, FormView, PermissionRequiredMixin):
+class CrearContenido(LoginRequiredMixin,PermissionRequiredMixin, FormView ):
     """
     Vista para crear un nuevo contenido.
 
@@ -353,7 +354,7 @@ class CambiarEstadoView(UpdateView):
             return redirect('/')
 
 
-class ContenidoEdicionList(LoginRequiredMixin, ListView, PermissionRequiredMixin):
+class ContenidoEdicionList(LoginRequiredMixin, PermissionRequiredMixin,  ListView):
     """
     Vista que lista los contenidos de un editor
     :cvar model: Contenido - El modelo del contenido que se está listando.
@@ -375,7 +376,7 @@ class ContenidoEdicionList(LoginRequiredMixin, ListView, PermissionRequiredMixin
             ).order_by('fecha_modificacion')
 
 
-class EditarContenido(LoginRequiredMixin, FormView, PermissionRequiredMixin):
+class EditarContenido(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     """
     Vista para editar el contenido.
 
@@ -451,7 +452,7 @@ class EditarContenido(LoginRequiredMixin, FormView, PermissionRequiredMixin):
         return reverse('editar_contenido', kwargs={'contenido_id': self.object.id})
 
 
-class ContenidoPublicarList(LoginRequiredMixin, ListView, PermissionRequiredMixin):
+class ContenidoPublicarList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     """
     Vista que lista los contenidos de un editor
     :cvar model: Contenido - El modelo del contenido que se está listando.
@@ -470,7 +471,7 @@ class ContenidoPublicarList(LoginRequiredMixin, ListView, PermissionRequiredMixi
         return Contenido.objects.filter(estado='Publicar').order_by('fecha_modificacion')
 
 
-class RechazarContenido(LoginRequiredMixin, UpdateView, PermissionRequiredMixin):
+class RechazarContenido(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """
     Vista para rechazar un contenido.
 
@@ -509,7 +510,7 @@ class RechazarContenido(LoginRequiredMixin, UpdateView, PermissionRequiredMixin)
     
     
 
-class InactivarContenido(LoginRequiredMixin, UpdateView, PermissionRequiredMixin):
+class InactivarContenido(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """
     Vista para activar o inactivar un contenido.
 
@@ -572,7 +573,7 @@ def replace_pdf_image_with_link(content):
     
     return updated_content
 
-class VistaContenidosReportados(LoginRequiredMixin, ListView, PermissionRequiredMixin):
+class VistaContenidosReportados(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     """
     Vista que muestra los contenidos reportados en el sitio web
     :cvar model: ContenidoReportado - El modelo de los contenidos reportados.
@@ -597,7 +598,7 @@ class VistaContenidosReportados(LoginRequiredMixin, ListView, PermissionRequired
             return ContenidoReportado.objects.none()
         
 
-class DestacarContenido(LoginRequiredMixin, View):    
+class DestacarContenido(LoginRequiredMixin, PermissionRequiredMixin, View):    
     def post(self, request, *args, **kwargs):
         contenido_slug = kwargs.get('slug')
         contenido = get_object_or_404(Contenido, slug=contenido_slug)
@@ -619,7 +620,7 @@ class DestacarContenido(LoginRequiredMixin, View):
             return redirect('/')
     
 
-class VistaContenidosDestacados(LoginRequiredMixin, ListView, PermissionRequiredMixin):
+class VistaContenidosDestacados(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     """
     Vista que muestra los contenidos seleccionados en el sitio web
     :cvar model: ContenidoReportado - El modelo de los contenidos seleccionados.
@@ -643,7 +644,7 @@ class VistaContenidosDestacados(LoginRequiredMixin, ListView, PermissionRequired
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class TableroKanbanView(LoginRequiredMixin, TemplateView, PermissionRequiredMixin):
+class TableroKanbanView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
     """
     Vista para mostrar el Tablero Kanban.
 
@@ -679,7 +680,7 @@ class TableroKanbanView(LoginRequiredMixin, TemplateView, PermissionRequiredMixi
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class UpdatePostStatusView(LoginRequiredMixin, View):
+class UpdatePostStatusView(LoginRequiredMixin, PermissionRequiredMixin, View):
     """
     Vista para actualizar el estado de un contenido en el tablero Kanban.
 
@@ -688,6 +689,7 @@ class UpdatePostStatusView(LoginRequiredMixin, View):
 
     :return: Redirige a la página anterior o al tablero Kanban después de actualizar el estado.
     """
+    permission_required="permissions.modificar_tablero_kanban"
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
         cambios = data.get('cambios', [])
@@ -760,10 +762,11 @@ def log_status_change(contenido, anterior, nuevo, user=None):
             modificado_por=user
         )
 
-class ContentStatusHistoryView(LoginRequiredMixin,ListView):
+class ContentStatusHistoryView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = StatusChangeLog
     template_name = 'content/status_history.html'
     context_object_name = 'status_logs'
+    permission_required= 'permissions.ver_reportes_contenido'
     paginate_by = 10  # Opcional: Paginar si es necesario
 
     def get_queryset(self):

@@ -21,7 +21,6 @@ urlpatterns = [
     #vista de contenidos
     path('contenidos/', VistaAllContenidos.as_view(), name='vista_all_contenidos'),
     path('detalle-contenido/<slug:slug>/', VistaContenido.as_view(), name='detalle_contenido'),
-    
     path('rechazar-contenido/<int:pk>', RechazarContenido.as_view(), name='rechazar_contenido'),
     path('contenidos-reportados', VistaContenidosReportados.as_view(), name='contenidos_reportados'),
     path('contenidos-inactivos', ContenidoInactivadoList.as_view(), name='contenidos_inactivados'),

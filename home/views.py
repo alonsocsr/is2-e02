@@ -52,8 +52,7 @@ class HomeView(ListView):
             contenido.estado = 'Inactivo'
             contenido.activo = False
             contenido.save()
-
-
+        
     def get_queryset(self):
         """
         Filtra los contenidos por estado 'Publicado' y los ordena por la fecha de publicación.
@@ -66,6 +65,7 @@ class HomeView(ListView):
 
         #obtener los contenidos seleccionados por el administrador si existiesen
         contenidos_seleccionados = []
+        seleccionados=False
         if ContenidoSeleccionado.objects.filter(usuario__groups__name='Admin').exists():
             contenidos_seleccionados = ContenidoSeleccionado.objects.filter(usuario__groups__name='Admin').values_list('contenido_id', flat=True)
             
@@ -77,6 +77,7 @@ class HomeView(ListView):
                     output_field=IntegerField(),
                 )
             )
+            seleccionados=True
 
         
         if self.request.user.is_authenticated:
@@ -92,17 +93,13 @@ class HomeView(ListView):
                         output_field=IntegerField(),
                     )
                 )
-                #se ordena por favoritos, seleccionados por el administrador y por fecha de publicacion
-                queryset = queryset.order_by('-favoritos_usuario', '-seleccionados_admin','-fecha_publicacion')
+                queryset=ordenar_contenidos(queryset,seleccionado=seleccionados,favorito=True)
             else:
-                # si no existen favoritos se muestra primeramente lo seleccionado por el administrador
-                queryset = queryset.order_by('-seleccionados_admin','-fecha_publicacion')
-
+                queryset=ordenar_contenidos(queryset,seleccionado=seleccionados,favorito=False)
         else:
+            queryset=ordenar_contenidos(queryset,seleccionado=seleccionados,favorito=False)
             
-            queryset = queryset.order_by('-seleccionados_admin','-fecha_publicacion')
-
-        
+                
         self.verificar_estados_contenidos()
 
         for c in queryset:
@@ -220,3 +217,15 @@ class BuscarContenidoView(ListView):
         context['autores'] = User.objects.filter(contenido__isnull=False).distinct()
 
         return context
+
+
+def ordenar_contenidos(queryset, seleccionado=False,favorito=False):
+    #se ordena por favoritos, seleccionados por el administrador y por fecha de publicacion
+    if seleccionado and favorito:
+        return queryset.order_by('-favoritos_usuario', '-seleccionados_admin','-fecha_publicacion')
+    elif seleccionado:
+        return queryset.order_by('-seleccionados_admin','-fecha_publicacion')
+    elif favorito:
+        return queryset.order_by('-favoritos_usuario','-fecha_publicacion')
+    else:
+        return queryset.order_by('-fecha_publicacion')
