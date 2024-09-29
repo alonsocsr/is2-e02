@@ -10,11 +10,8 @@
   <link href="{% static 'css/output.css' %}" rel="stylesheet">
   <link href="{% static 'css/animate.css' %}" rel="stylesheet">
   <script src="{% static 'js/categorias.js' %}"></script>
-  <script src="{% static 'js/intereses.js' %}"></script>
   <script src="{% static 'js/kanban.js' %}"></script>
-  <script src="{% static 'js/calificacion.js' %}"></script>
-  <script defer src="{% static 'js/like_dislike.js' %}"></script>
-  {% block script %}{% endblock script %}
+  {% block script %}{% endblock %}
 </head>
 
 <body class="flex flex-col min-h-screen {% if user.is_authenticated %}authenticated{% endif %}">
@@ -86,7 +83,7 @@
       sidebar.classList.toggle('-translate-x-full');
     });
   </script>
-
+  
 </body>
 
 </html>
