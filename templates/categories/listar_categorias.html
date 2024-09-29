@@ -1,8 +1,15 @@
 {% extends "base.html" %}
 
+{% load static %}
+
+{% block script %}<script defer src="{% static 'js/intereses.js' %}"></script>{% endblock script %}
+
 {% block title %}Categorías{% endblock title %}
 
 {% block content %}
+<div style="display:none;">
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+</div>
 <div class="flex justify-center z-10 py-6">
     <div class="p-6 bg-gray-200 mx-auto w-full max-w-6xl">
         <div class="header my-3 h-7 px-2 lg:px-6 flex items-center justify-between mb-6">
@@ -15,29 +22,28 @@
             <div class="bg-white shadow-md rounded-xl flex flex-col duration-500 hover:scale-105 hover:shadow-xl overflow-hidden">
                 <div class="relative flex-1 p-8 flex flex-col justify-between">
                     <!-- Título y botón de favorito en la misma línea -->
-                    <div class="absolute top-2 right-2 bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full">
+                    <div class="absolute top-2 right-3 bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full">
                         {% if categoria.tipo_categoria == 'PU' %}Pública {% elif  categoria.tipo_categoria == 'GR'%}Gratis {% else %}Paga{% endif %}
                     </div>
                     <div class="flex items-center justify-between">
                         <h5 class="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-800">{{ categoria.nombre_categoria }}</h5>
                         
                         <!-- Botón para marcar/desmarcar categoría como favorita -->
-                        <form method="POST" action="{% url 'categoria_interes' categoria.id %}" class="ml-4">
-                            {% csrf_token %}
-                            <button type="submit" class="star-button" aria-label="Marcar como favorito">
-                                {% if categoria.id in categorias_interes_ids %}
-                                <!-- Estrella rellena -->
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="star-icon">
-                                    <path fill="#FF1493" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                                </svg>
-                                {% else %}
-                                <!-- Estrella vacía -->
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="star-icon">
-                                    <path fill="#b3b3b3" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                                </svg>
-                                {% endif %}
-                            </button>
-                        </form>
+                        <button type="submit" class="circle-button" aria-label="Marcar como favorito" data-categoria-id="{{ categoria.id }}" data-action-url="{% url 'categoria_interes' categoria.id %}">
+                            {% if categoria.id in categorias_interes_ids %}
+                            <!-- Ícono de favorito (relleno) -->   
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ec4899" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                            {% else %}
+                            <!-- Ícono de no favorito (vacío) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#6b7280" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                            {% endif %}
+                        </button>
+                        
+                        
                     </div>
 
                     <!-- Descripción -->
@@ -58,28 +64,3 @@
     </div>
 </div>
 {% endblock content %}
-
-<style>
-    .star-button {
-        background: none;
-        border: none;
-        cursor: pointer;
-        outline: none;
-        padding: 0;
-    }
-    
-    .star-icon {
-        width: 24px;
-        height: 24px;
-        fill: #b3b3b3;
-        transition: fill 0.3s ease;
-    }
-    
-    .star-button:hover .star-icon {
-        fill: #FF1493;
-    }
-    
-    .star-button:focus .star-icon {
-        fill: #FF1493;
-    }
-</style>

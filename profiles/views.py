@@ -107,18 +107,25 @@ def categoria_interes(request, categoria_id):
 
     :return: JsonResponse - Respuesta en formato JSON indicando si la categoría está en los intereses o no.
     """
-    if request.method == "POST" and request.user.is_authenticated:
+    if request.method == 'POST':
         categoria = get_object_or_404(Categorias, id=categoria_id)
-        user_profile = request.user.profile  # Asumiendo que hay un perfil de usuario relacionado
-        if categoria in user_profile.categorias_interes.all():
-            user_profile.categorias_interes.remove(categoria)
+        profile = request.user.profile 
+
+        if categoria in profile.categorias_interes.all():
+            profile.categorias_interes.remove(categoria)
             is_interes = False
         else:
-            user_profile.categorias_interes.add(categoria)
+            profile.categorias_interes.add(categoria)
             is_interes = True
 
-        return JsonResponse({'is_interes': is_interes})
-    return JsonResponse({'error': 'Invalid request'}, status=400)
+    
+        return JsonResponse({
+            'success': True,
+            'is_interes': is_interes,
+        })
+
+    return JsonResponse({'success': False, 'error': 'Request invalidop.'})
+
 
 @login_required
 def registrar_suscripcion(request, categoria_id):
