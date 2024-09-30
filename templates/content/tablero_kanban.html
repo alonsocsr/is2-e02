@@ -9,7 +9,7 @@
 {% block content %}
 
     <!-- Mensajes de avisos/exitos -->
-    <div class="mx-1 mb-1">
+    <div id="mensaje_box" class="mx-1 mb-1">
         {% if messages %}
             <div class="space-y-4">
                 {% for message in messages %}
@@ -389,6 +389,12 @@
         const moverAPublicado = {{ publicar_perm|yesno:"true,false" }};
         const moverAInactivo = {{ inactivar_perm|yesno:"true,false" }};
         const usuarioActualId = {{ request.user.id }};
+        setTimeout(function() {
+            var mensajeBox = document.getElementById('mensaje_box');
+            if (mensajeBox) {
+                mensajeBox.style.display = 'none';
+            }
+        }, 4000);
     </script>
 
 {% endblock content %}

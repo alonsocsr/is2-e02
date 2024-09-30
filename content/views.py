@@ -51,7 +51,7 @@ class VistaAllContenidos(ListView):
 
             
         for c in queryset:
-            c.cuerpo = replace_pdf_image_with_link(c.cuerpo)
+            c.cuerpo = replace_image_with_link(c.cuerpo)
 
         return queryset
 
@@ -88,7 +88,7 @@ class VistaContenido(FormMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         contenido = context['contenido']
-        contenido.cuerpo = replace_pdf_image_with_link(contenido.cuerpo)
+        contenido.cuerpo = replace_image_with_link(contenido.cuerpo)
         
         disqus_shortname = settings.DISQUS_WEBSITE_SHORTNAME
         disqus_identifier = contenido.slug 
@@ -553,21 +553,23 @@ class InactivarContenido(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
 
 
 
-def replace_pdf_image_with_link(content):
+def replace_image_with_link(content):
     """
-    Reemplaza imágenes en el contenido con enlaces a archivos PDF.
+    Reemplaza imágenes en el contenido con enlaces a archivos (PDF, DOCX, PPT, etc.).
 
-    Esta función busca imágenes que enlazan a archivos PDF y las reemplaza con un enlace al archivo PDF.
+    Esta función busca imágenes que enlazan a archivos de diversos tipos y las reemplaza con un enlace al archivo.
 
     :param content: str - Contenido HTML con imágenes.
-    :return: str - Contenido HTML con imágenes reemplazadas por enlaces.
+    :return: str - Contenido HTML con imágenes reemplazadas por enlaces a archivos.
     """
-    pattern = r'<img[^>]+src="([^"]+\.pdf)"[^>]*>'
+    # Extensiones de archivo que quieres manejar
+    extensions = ['pdf', 'docx', 'ppt', 'pptx', 'xlsx', 'odt']
+    pattern = rf'<img[^>]+src="([^"]+\.({"|".join(extensions)}))"[^>]*>'
     
     def replace_match(match):
-        pdf_url = match.group(1)
-        archivo = pdf_url.split('/')[-1]
-        return f'<a href="{pdf_url}" target="_blank">{archivo}</a>'
+        file_url = match.group(1)
+        archivo = file_url.split('/')[-1]
+        return f'<a href="{file_url}" target="_blank">{archivo}</a>'
    
     updated_content = re.sub(pattern, replace_match, content)
     
@@ -598,7 +600,9 @@ class VistaContenidosReportados(LoginRequiredMixin, PermissionRequiredMixin, Lis
             return ContenidoReportado.objects.none()
         
 
-class DestacarContenido(LoginRequiredMixin, PermissionRequiredMixin, View):    
+class DestacarContenido(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required='permissions.suspender_cuenta'
+        
     def post(self, request, *args, **kwargs):
         contenido_slug = kwargs.get('slug')
         contenido = get_object_or_404(Contenido, slug=contenido_slug)

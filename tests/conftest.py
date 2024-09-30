@@ -1,8 +1,9 @@
 import pytest
 from django.urls import reverse
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import User, Permission,Group
+from content.models import ContenidoReportado
 from permissions.models import Roles
-
+from django.contrib.contenttypes.models import ContentType
 
 @pytest.fixture(scope='function')
 def setup(client, monkeypatch):

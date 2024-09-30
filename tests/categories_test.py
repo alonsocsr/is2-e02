@@ -2,6 +2,7 @@ import pytest
 from django.urls import reverse
 from categories.models import Categorias
 from django.contrib.messages import get_messages
+from django.contrib.auth.models import Permission,Group,User
 
 
 @pytest.mark.django_db
@@ -9,7 +10,10 @@ def test_crear_categoria(client, setup):
     """
     Test para verificar que se puede crear una categoría.
     """
-
+    
+    user, rol_creado = setup
+    permiso_crear = Permission.objects.get(codename='crear_categoria')
+    user.user_permissions.add(permiso_crear)
     data = {
         'nombre_categoria': 'Categoría de prueba',
         'descripcion': 'Descripción de prueba',
@@ -31,6 +35,10 @@ def test_limite_categorias_con_prioridad(client, setup):
     """
     Test para verificar que no pueden haber más de 5 categorías con prioridad.
     """
+    
+    user, rol_creado = setup
+    permiso_crear = Permission.objects.get(codename='crear_categoria')
+    user.user_permissions.add(permiso_crear)
 
     for i in range(5):
         Categorias.objects.create(nombre_categoria=f'CatP {i+1}', prioridad=True)
@@ -62,6 +70,10 @@ def test_modificar_categoria(client, setup):
     """
     Test para verificar que se puede modificar una categoría existente.
     """
+    
+    user, rol_creado = setup
+    permiso_modificar = Permission.objects.get(codename='modificar_categoria')
+    user.user_permissions.add(permiso_modificar)
 
     categoria = Categorias.objects.create(nombre_categoria='Categoría inicial')
     
@@ -92,7 +104,10 @@ def test_eliminar_categoria(client, setup):
     """
     Test para verificar que se puede eliminar una categoría existente.
     """
-
+    
+    user, rol_creado = setup
+    permiso_eliminar = Permission.objects.get(codename='eliminar_categoria')
+    user.user_permissions.add(permiso_eliminar)
     categoria = Categorias.objects.create(nombre_categoria='Categoría a eliminar', prioridad=False)
 
     print(f"\n\nProbando la eliminación de la categoría.")
