@@ -109,6 +109,12 @@ def configurar_roles_predefinidos(apps, schema_editor):
             'rol_por_defecto': True,
             'permisos': ['visualizar_contenido', 'acceder_a_categoria_free', 'editar_perfil', 'ver_cantidad_likes', 'ver_cantidad_dislikes', 'ver_cantidad_visualizaciones', 'ver_cantidad_compartidos', 'comentar_contenido', 'eliminar_contenido', 'reportar_contenido', 'compartir_contenido', 'filtrar_por_categoria', 'filtrar_por_autor', 'filtrar_por_tags'],
         },
+        {
+            'nombre_rol': 'AutorSuper',
+            'descripcion': 'Puede crear contenido no moderado',
+            'rol_por_defecto': True,
+            'permisos': ['crear_contenido', 'visualizar_contenido', 'rechazar_contenido', 'editar_perfil', 'inactivar_contenido', 'cambiar_estado_contenido', 'ver_tablero_kanban', 'ver_reportes_contenido', 'ver_estadisticas_contenido', 'ver_cantidad_likes', 'ver_cantidad_dislikes', 'ver_cantidad_visualizaciones', 'ver_cantidad_compartidos', 'modificar_estado_contenido', 'visualizar_versiones_contenido', 'restaurar_verisiones_contenido', 'publicar_contenido', 'categoria_no_moderada'],
+        },
 
     ]
 

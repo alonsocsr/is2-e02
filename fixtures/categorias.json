@@ -48,5 +48,41 @@
             "tipo_categoria":"PA",
             "precio": 20000
 		}
+    },
+    {
+        "model": "categories.Categorias",
+        "pk": 5,
+        "fields": {
+            "nombre_categoria": "Cine",
+            "descripcion": "Noticias, receñas, debates y más",
+            "descripcion_corta": "CN",
+            "estado":true,
+            "moderada":true,
+            "tipo_categoria":"PU"
+		}
+    },
+    {
+        "model": "categories.Categorias",
+        "pk": 6,
+        "fields": {
+            "nombre_categoria": "Música",
+            "descripcion": "Noticias, receñas, debates y más",
+            "descripcion_corta": "MS",
+            "estado":true,
+            "moderada":true,
+            "tipo_categoria":"GR"
+		}
+    },
+    {
+        "model": "categories.Categorias",
+        "pk": 7,
+        "fields": {
+            "nombre_categoria": "Nacionales",
+            "descripcion": "Noticias, Actualidad",
+            "descripcion_corta": "NC",
+            "estado":true,
+            "moderada":true,
+            "tipo_categoria":"PU"
+		}
     }
 ]
