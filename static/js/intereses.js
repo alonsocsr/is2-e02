@@ -1,36 +1,65 @@
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".star-button").forEach(button => {
-        button.addEventListener("click", function (event) {
-            event.preventDefault();
+const categoryButtons = document.querySelectorAll('.circle-button');
 
-            let form = this.closest("form");
-            let url = form.action;
-
-            fetch(url, {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": form.querySelector('[name=csrfmiddlewaretoken]').value,
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.is_interes) {
-                    // Actualiza la estrella a rellena (dorado)
-                    this.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="star-icon">
-                            <path fill="#FF1493" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                        </svg>
-                    `;
-                } else {
-                    // Actualiza la estrella a vacía (gris)
-                    this.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="star-icon">
-                            <path fill="#b3b3b3" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                        </svg>
-                    `;
-                }
-            })
-            .catch(error => console.error("Error:", error));
-        });
+categoryButtons.forEach(button => {
+    button.addEventListener('click', function (event) {
+        event.preventDefault();
+        if (!isUserAuthenticated()) {
+            window.location.href = `/login/?next=${encodeURIComponent(window.location.href)}`;
+        } else {
+            const actionUrl = button.getAttribute('data-action-url');
+            console.log(actionUrl); // Para depuración
+            sendAjaxRequest(actionUrl, button);
+        }
     });
 });
+
+function isUserAuthenticated() {
+    return document.body.classList.contains('authenticated');
+}
+
+function sendAjaxRequest(url, button) {
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCSRFToken(),
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+        if (data.success) {
+            updateButtonStyles(button, data.is_interes);
+        } else {
+            console.log('Error processing the action.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function updateButtonStyles(button, is_interes) {
+    if (is_interes) {
+        button.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ec4899" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+        `;
+    } else {
+        button.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#6b7280" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+        `;
+    }
+}
+
+function getCSRFToken() {
+    const tokenInput = document.querySelector('[name=csrfmiddlewaretoken]');
+    if (tokenInput) {
+        return tokenInput.value;
+    } else {
+        console.error('CSRF token not found');
+        return null; // Manejo del error
+    }
+}
