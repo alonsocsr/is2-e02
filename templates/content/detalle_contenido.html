@@ -7,18 +7,17 @@
 {% endblock %}
 
 {% block script %}
-    <script defer src="{% static 'js/compartir_modal.js' %}"></script>
-    <script defer src="{% static 'js/compartir_action.js' %}"></script>
+<script defer src="{% static 'js/compartir_modal.js' %}"></script>
+<script defer src="{% static 'js/compartir_action.js' %}"></script>
 {% endblock %}
 
 {% block content %}
 <!-- Mensajes de avisos/exitos -->
-<div class="mx-1 mb-4">
+<div id="mensaje_box" class="mx-2 mb-4">
     {% if messages %}
     <div class="space-y-3">
         {% for message in messages %}
-        <div
-            class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
+        <div class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
             {{ message }}
         </div>
         {% endfor %}
@@ -27,41 +26,40 @@
 </div>
 
 <!-- Imagen con categoría -->
-<section id="summary" class="bg-white rounded-xl overflow-hidden mb-4 mx-auto" style="max-width: 90%; height: auto;">
+<section id="summary" class="bg-white rounded-xl shadow-md mb-4 mx-auto mt-4" style="max-width: 700px;">
 
-    <div class="p-6 ">
+    <div class="p-4 mt-5">
         <!-- Información de la categoría -->
-        <a href="{% url 'categories:detalle' contenido.categoria.id %}"
-            class="leading-none font-semibold mb-2 text-pink-700 hover:underline hover:text-pink-700">
+        <a href="{% url 'categories:detalle' contenido.categoria.id %}" class="text-pink-700 font-semibold mb-2 inline-block hover:underline">
             {{ contenido.categoria.nombre_categoria }}
         </a>
 
         <!-- Título del contenido -->
-        <h1 class="text-3xl font-bold text-gray-900 mb-4 text-left break-words">{{ contenido.titulo }}</h1>
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ contenido.titulo }}</h1>
 
         <!-- Resumen -->
         {% if contenido.resumen %}
-        <div class="text-gray-700 mb-4 text-left">
+        <div class="text-gray-700 mb-2">
             <p>{{ contenido.resumen }}</p>
         </div>
         {% endif %}
     </div>
 
     <!-- Autor y Fecha -->
-    <div class="ml-6 mt-4 mr-6 mb-6 flex items-center justify-between text-sm text-gray-500">
+    <div class="flex items-center justify-between px-4 py-2 text-sm text-gray-500">
         <div class="flex items-center">
-            <img class="w-10 h-10 rounded-full mr-4"
+            <img class="w-10 h-10 rounded-full mr-3"
                 src="{% if contenido.autor.profile.image %}{{ contenido.autor.profile.image.url }}{% else %}{% static 'default.png' %}{% endif %}"
                 alt="{{ contenido.autor.username }}">
             <div>
-                <p class="leading-none font-semibold">{{ contenido.autor.username }}</p>
-                <p>Publicado el <time datetime="{{ contenido.fecha_modificacion }}">{{contenido.fecha_modificacion|date:"d M Y"}}</time></p>
+                <p class="font-semibold ml-3">{{ contenido.autor.username }}</p>
+                <p class="ml-3">Publicado el <time datetime="{{ contenido.fecha_modificacion }}">{{contenido.fecha_modificacion|date:"d M Y"}}</time></p>
             </div>
         </div>
-        <div class="flex space-x-4 items-center">
+        <div class="flex items-center space-x-4">
             <!-- Estrellas y puntuación -->
-            <div class="flex items-center space-x-1 text-gray-500">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#ec4899" class="w-6 h-6">
+            <div class="flex items-center text-gray-500">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#ec4899" class="w-5 h-5">
                     <path fill-rule="evenodd"
                         d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
                         clip-rule="evenodd" />
@@ -70,7 +68,7 @@
             </div>
 
             <!-- Botón de Reportar -->
-            <button onclick="openModal('{{ contenido.slug }}')" class="bg-red-500 text-white py-2 px-4 rounded-md">
+            <button onclick="openModal('{{ contenido.slug }}')" class="bg-red-500 text-white py-1 px-3 rounded-md text-xs">
                 Reportar
             </button>
 
@@ -78,32 +76,30 @@
             <form method="post" action="{% url 'contenido_seleccionado' contenido.slug %}">
                 {% csrf_token %}
                 {% if not seleccionado %}
-                <button class="bg-gray-400 hover:bg-gray-500 text-white  py-2 px-4 rounded-md" type="submit" name="select_content">Destacar Contenido</button>
+                <button class="bg-gray-400 hover:bg-gray-500 text-white py-1 px-3 rounded-md text-xs" type="submit" name="select_content">Destacar Contenido</button>
                 {% else %}
-                <p>Este contenido ya ha sido destacado.</p>
+                <p class="text-sm text-gray-500">Este contenido ya ha sido destacado.</p>
                 {% endif %}
             </form>
             {% endif %}
         </div>
     </div>
 
-    <div class="relative aspect-[4/3]">
+    <div class="relative aspect-[1/1]">
         <img src="{{ contenido.imagen.url }}" alt="{{ contenido.titulo }}" class="w-full h-full object-cover">
     </div>
-    
+
     <!-- Botones de inactivar y estadísticas alineados a la derecha -->
-    <div class="flex justify-end space-x-4 p-6">
+    <div class="flex justify-end space-x-4 p-4">
         {% if perms.permissions.inactivar_contenido %}
         <form id="inactivateForm-{{ contenido.id }}" action="{% url 'inactivar_contenido' contenido.id %}" method="POST">
             {% csrf_token %}
             {% if contenido.activo %}
-            <button type="button" onclick="openInactivateModal('inactivateForm-{{ contenido.id }}')"
-                class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">
+            <button type="button" onclick="openInactivateModal('inactivateForm-{{ contenido.id }}')" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-3 rounded-md">
                 Inactivar Contenido
             </button>
             {% else %}
-            <button type="button" onclick="openInactivateModal('inactivateForm-{{ contenido.id }}')"
-                class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md">
+            <button type="button" onclick="openInactivateModal('inactivateForm-{{ contenido.id }}')" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-3 rounded-md">
                 Activar Contenido
             </button>
             {% endif %}
@@ -111,27 +107,33 @@
         {% endif %}
     </div>
 
-
 </section>
 
+<!-- Cuerpo del Contenido -->
+<div class="bg-white shadow-md rounded-xl mx-auto mb-5" style="max-width: 700px;">
+    <main class="p-6 text-gray-800 leading-relaxed" style="height: auto;">
+        <div class="prose max-w-none" style="word-break: break-word; overflow-wrap: break-word;">
+            {{ contenido.cuerpo|safe|linebreaks }}
+        </div>
+    </main>
+</div>
+
 <!-- Interacciones de usuario: Me gusta, No me gusta, Compartir, Estrellas -->
-<section id="user-interactions"
-    class="bg-white rounded-xl overflow-hidden mb-4 mx-auto p-4 flex justify-around items-center space-x-8"
-    style="max-width: 90%; height: auto;">
+<div class="bg-white shadow-md rounded-xl mx-auto mb-5" style="max-width: 700px;margin-top: 0;">
+<section id="user-interactions" class="bg-white rounded-xl shadow-md mb-4 mx-auto p-4 flex justify-around items-center" style="max-width: 700px;">
     <!-- Me gusta -->
     <div class="flex flex-col items-center">
         <button 
             class="flex items-center space-x-1 text-gray-500 hover:text-pink-500 rounded-md transition duration-300 ease-in-out like-button"
             id="like-button"
-            data-action-url="{% url 'like' contenido.id %}"
-        >
+            data-action-url="{% url 'like' contenido.id %}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" 
-                class="w-6 h-6 like-icon" 
+                class="w-5 h-5 like-icon" 
                 fill="{% if liked %}#ec4899{% else %}currentColor{% endif %}" 
                 stroke="{% if liked %}#ec4899{% else %}currentColor{% endif %}">
                 <path d="M1 8.25a1.25 1.25 0 1 1 2.5 0v7.5a1.25 1.25 0 1 1-2.5 0v-7.5ZM11 3V1.7c0-.268.14-.526.395-.607A2 2 0 0 1 14 3c0 .995-.182 1.948-.514 2.826-.204.54.166 1.174.744 1.174h2.52c1.243 0 2.261 1.01 2.146 2.247a23.864 23.864 0 0 1-1.341 5.974C17.153 16.323 16.072 17 14.9 17h-3.192a3 3 0 0 1-1.341-.317l-2.734-1.366A3 3 0 0 0 6.292 15H5V8h.963c.685 0 1.258-.483 1.612-1.068a4.011 4.011 0 0 1 2.166-1.73c.432-.143.853-.386 1.011-.814.16-.432.248-.9.248-1.388Z" />
             </svg>
-            <span>Me gusta</span>
+            <span class="text-xs">Me gusta</span>
         </button>
         <span id="like-count" class="text-gray-500 text-sm">{{ contenido.cantidad_likes }}</span>
     </div>
@@ -143,12 +145,12 @@
             id="dislike-button"
             data-action-url="{% url 'dislike' contenido.id %}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" 
-                class="w-6 h-6 dislike-icon" 
+                class="w-5 h-5 dislike-icon" 
                 fill="{% if disliked %}#ec4899{% else %}currentColor{% endif %}" 
                 stroke="{% if disliked %}#ec4899{% else %}currentColor{% endif %}">
-                <path d="M18.905 12.75a1.25 1.25 0 1 1-2.5 0v-7.5a1.25 1.25 0 0 1 2.5 0v7.5ZM8.905 17v1.3c0 .268-.14.526-.395.607A2 2 0 0 1 5.905 17c0-.995.182-1.948.514-2.826.204-.54-.166-1.174-.744-1.174h-2.52c-1.243 0-2.261-1.01-2.146-2.247.193-2.08.651-4.082 1.341-5.974C2.752 3.678 3.833 3 5.005 3h3.192a3 3 0 0 1 1.341.317l2.734 1.366A3 3 0 0 0 13.613 5h1.292v7h-.963c-.685 0-1.258.482-1.612 1.068a4.01 4.01 0 0 1-2.166 1.73c-.432.143-.853.386-1.011.814-.16.432-.248.9-.248 1.388Z" />
+                <path d="M19 11.75a1.25 1.25 0 1 0-2.5 0v7.5a1.25 1.25 0 1 0 2.5 0v-7.5ZM9 17v1.3c0 .268-.14.526-.395.607A2 2 0 0 1 6 17c0-.995.182-1.948.514-2.826.204-.54-.166-1.174-.744-1.174h-2.52c-1.243 0-2.261-1.01-2.146-2.247a23.864 23.864 0 0 1 1.341-5.974C2.847 3.677 3.928 3 5.1 3h3.192a3 3 0 0 1 1.341.317l2.734 1.366A3 3 0 0 0 13.708 5H15v7h-.963c-.685 0-1.258.483-1.612 1.068a4.011 4.011 0 0 1-2.166 1.73c-.432.143-.853.386-1.011.814-.16.432-.248.9-.248 1.388Z" />
             </svg>
-            <span>No me gusta</span>
+            <span class="text-xs">No me gusta</span>
         </button>
         <span id="dislike-count" class="text-gray-500 text-sm">{{ contenido.cantidad_dislikes }}</span>
     </div>
@@ -245,22 +247,16 @@
     </div>
 
 </section>
-
-<!-- Cuerpo del Contenido -->
-<main class="bg-white shadow-md rounded-xl p-6 text-gray-800 leading-relaxed mx-auto pb-5 mb-5"
-    style="max-width: 90%; height: auto;margin-bottom:5rem;">
-    <div class="prose max-w-none" style="word-break: break-word; overflow-wrap: break-word;">
-        {{ contenido.cuerpo|safe|linebreaks }}
-    </div>
-</main>
-{%if user.is_authenticated%}
+</div>
+{% if user.is_authenticated %}
 <div class="bg-white shadow-md rounded-xl p-6 text-gray-800 leading-relaxed mx-auto pt-5"
-    style="max-width: 90%; height: auto;">
+    style="max-width: 700px; height: auto;">
     <div class="container mx-auto text-center">
         {% include 'content/comments.html' %}
     </div>
 </div>
-{%endif%}
+{% endif %}
+
 
 
 
@@ -326,5 +322,11 @@
     function closeInactivateModal() {
         document.getElementById('confirmInactivateModal').classList.add('hidden');
     }
+    setTimeout(function() {
+        var mensajeBox = document.getElementById('mensaje_box');
+        if (mensajeBox) {
+            mensajeBox.style.display = 'none';
+        }
+    }, 4000);
 </script>
 {% endblock %}
