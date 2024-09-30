@@ -11,12 +11,11 @@ from .forms import ContenidoForm, EditarContenidoForm, RechazarContenidoForm, Co
 from .models import ContenidoSeleccionado, Version, Contenido, ContenidoReportado,Valoracion   
 import re, json
 from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from .models import StatusChangeLog
 from django.utils import timezone
 from django.db.models import Avg
-from django.http import HttpResponseNotFound, JsonResponse
+from django.http import JsonResponse
 
 
 class VistaAllContenidos(ListView):
@@ -601,8 +600,9 @@ class VistaContenidosReportados(LoginRequiredMixin, PermissionRequiredMixin, Lis
         
 
 class DestacarContenido(LoginRequiredMixin, PermissionRequiredMixin, View):
-    permission_required='permissions.suspender_cuenta'
-        
+
+    permission_required = 'permissions.destacar_contenido'
+    
     def post(self, request, *args, **kwargs):
         contenido_slug = kwargs.get('slug')
         contenido = get_object_or_404(Contenido, slug=contenido_slug)
@@ -637,11 +637,11 @@ class VistaContenidosDestacados(LoginRequiredMixin, PermissionRequiredMixin, Lis
     model = ContenidoReportado
     template_name = 'content/destacados.html'
     context_object_name = 'contenidos'
-    permission_required = 'permissions.eliminar_rol'
+    permission_required = 'permissions.destacar_contenido'
 
     def get_queryset(self):
         user=self.request.user
-        if user.has_perm('permissions.eliminar_rol') or user.groups.filter(name="Admin"):
+        if user.has_perm('permissions.destacar_contenido') or user.groups.filter(name="Admin"):
             return ContenidoSeleccionado.objects.all()
         else:
             return ContenidoSeleccionado.objects.none()
@@ -671,8 +671,8 @@ class TableroKanbanView(LoginRequiredMixin, PermissionRequiredMixin, TemplateVie
         context['edicion'] = contenido.filter(estado='Edicion').order_by('fecha_creacion')
         context['publicacion'] = contenido.filter(estado='Publicar').order_by('fecha_creacion')
         context['publicado'] = contenido.filter(estado='Publicado').order_by('fecha_creacion')
-        context['inactivo'] = contenido.exclude(vigencia__lt=timezone.now().date()).filter(estado='Inactivo').order_by('fecha_creacion')
-        context['archivado'] = contenido.filter(vigencia__lt=timezone.now().date()).order_by('vigencia')
+        context['inactivo'] = contenido.exclude(vigencia__lte=timezone.now().date()).filter(estado='Inactivo').order_by('fecha_creacion')
+        context['archivado'] = contenido.filter(vigencia__lte=timezone.now().date()).order_by('vigencia')
         # Obtener los permisos necesarios para mover los contenidos
         context['crear_perm'] = self.request.user.has_perm('permissions.crear_contenido')
         context['editar_perm'] = self.request.user.has_perm('permissions.editar_contenido')
@@ -770,8 +770,8 @@ class ContentStatusHistoryView(LoginRequiredMixin, PermissionRequiredMixin, List
     model = StatusChangeLog
     template_name = 'content/status_history.html'
     context_object_name = 'status_logs'
-    permission_required= 'permissions.ver_reportes_contenido'
-    paginate_by = 10  # Opcional: Paginar si es necesario
+    permission_required= 'permissions.cambiar_estado_contenido'
+    paginate_by = 6  # Opcional: Paginar si es necesario
 
     def get_queryset(self):
         user = self.request.user

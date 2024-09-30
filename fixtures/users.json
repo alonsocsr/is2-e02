@@ -58,5 +58,35 @@
             "groups": [4], 
             "user_permissions": []
         }
+    },
+    {
+        "model": "auth.user",
+        "pk": 5,
+        "fields": {
+            "username": "suscriptor",
+            "password": "pbkdf2_sha256$600000$9hzNFn51opScwX1zBCj5CE$0aoVp/+uqOSZIJrhDN8DaBltM5+iySVPeFnzkKbrLaM=",
+            "email": "sub@gmail.com",
+            "is_staff": true,
+            "is_superuser": false,
+            "is_active": true,
+            "date_joined": "2024-08-30T12:34:56.789Z",
+            "groups": [5], 
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 6,
+        "fields": {
+            "username": "autorSuper",
+            "password": "pbkdf2_sha256$870000$krHKuNtYaWhmAXqYGxvVN2$uEPfNHfVdI/nnKYPlmV5UrVzAGZFhpbG8oaBeenhu64=",
+            "email": "autor@gmail.com",
+            "is_staff": true,
+            "is_superuser": false,
+            "is_active": true,
+            "date_joined": "2024-08-30T12:34:56.789Z",
+            "groups": [6], 
+            "user_permissions": []
+        }
     }
 ]
