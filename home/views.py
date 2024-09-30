@@ -4,7 +4,7 @@ from django.views.generic import ListView
 from stripe import CustomerCashBalanceService
 from categories.models import Categorias
 from content.models import Contenido, ContenidoSeleccionado
-from content.views import replace_pdf_image_with_link
+from content.views import replace_image_with_link
 from django.db.models import Q
 from django.contrib.auth.models import User
 from decouple import config
@@ -103,7 +103,7 @@ class HomeView(ListView):
         self.verificar_estados_contenidos()
 
         for c in queryset:
-            c.cuerpo = replace_pdf_image_with_link(c.cuerpo)
+            c.cuerpo = replace_image_with_link(c.cuerpo)
 
         return queryset
 

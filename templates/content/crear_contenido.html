@@ -10,7 +10,7 @@
 
 {% block content %}
     <!-- Mensajes de avisos/exitos -->
-    <div class="mx-1 mb-4">
+    <div id="mensaje_box" class="mx-1 mb-4">
         {% if messages %}
             <div class="space-y-3">
                 {% for message in messages %}
@@ -152,6 +152,12 @@
         document.getElementById('version-select').addEventListener('change', function() {
             document.getElementById('version-select-form').submit();
         });
+        setTimeout(function() {
+            var mensajeBox = document.getElementById('mensaje_box');
+            if (mensajeBox) {
+                mensajeBox.style.display = 'none';
+            }
+        }, 4000);
     </script>
 
     {% endif %}

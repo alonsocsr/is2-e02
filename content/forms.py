@@ -1,4 +1,8 @@
+import sys
 from django import forms
+from PIL import Image
+from io import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from .models import Contenido, ContenidoReportado
 from categories.models import Categorias
 from django.utils.text import slugify
@@ -50,9 +54,30 @@ class ContenidoForm(forms.ModelForm):
     
     def clean_imagen(self):
         imagen = self.cleaned_data.get('imagen', False)
-        max_size = 2 * 1024 * 1024  # 2MB
-        if imagen and imagen.size > max_size:
-            raise ValidationError("El tamaño de la imagen no debe exceder los 2MB.")
+        max_size = 2 * 1024 * 1024  
+        max_width = 1920  
+        max_height = 1080  
+
+        if imagen:
+           
+            if imagen.size > max_size:
+                raise ValidationError("El tamaño de la imagen no debe exceder los 2MB.")
+            
+           
+            img = Image.open(imagen)
+            width, height = img.size
+            if width > max_width or height > max_height:
+                
+                img.thumbnail((max_width, max_height), Image.ANTIALIAS)
+                
+               
+                output = BytesIO()
+                img.save(output, format='JPEG', quality=90)
+                output.seek(0)
+
+                
+                imagen = InMemoryUploadedFile(output, 'ImageField', imagen.name, 'image/jpeg', sys.getsizeof(output), None)
+
         return imagen
 
     def clean_slug(self):
