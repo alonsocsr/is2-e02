@@ -9,6 +9,9 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from decouple import config
 from django.utils import timezone
+import stripe
+
+stripe.api_key = config('STRIPE_SECRET_KEY')
 
 class HomeView(ListView):
     """
@@ -182,7 +185,9 @@ class BuscarContenidoView(ListView):
             resultados = resultados.filter(
                 Q(titulo__icontains=query) |
                 Q(autor__username__icontains=query) |
-                Q(categoria__nombre_categoria__icontains=query)
+                Q(categoria__nombre_categoria__icontains=query) |
+                Q(cuerpo__icontains=query) |
+                Q(resumen__icontains=query)
             )
 
         # Filtrar por categorías
@@ -215,6 +220,7 @@ class BuscarContenidoView(ListView):
         context['query'] = self.request.GET.get('q', '')
         context['categorias'] = Categorias.objects.all()
         context['autores'] = User.objects.filter(contenido__isnull=False).distinct()
+        context['STRIPE_PUBLIC_KEY'] = config('STRIPE_PUBLIC_KEY')
 
         return context
 

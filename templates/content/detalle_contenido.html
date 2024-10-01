@@ -54,7 +54,11 @@
                 src="{% if contenido.autor.profile.image %}{{ contenido.autor.profile.image.url }}{% else %}{% static 'default.png' %}{% endif %}"
                 alt="{{ contenido.autor.username }}">
             <div>
+                {% if contenido.autor is null %}
+                <p class="font-semibold ml-3">[eliminado]</p>
+                {% else %}
                 <p class="font-semibold ml-3">{{ contenido.autor.username }}</p>
+                {% endif %}
                 <p class="ml-3">Publicado el <time datetime="{{ contenido.fecha_modificacion }}">{{contenido.fecha_modificacion|date:"d M Y"}}</time></p>
             </div>
         </div>
