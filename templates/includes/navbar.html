@@ -36,8 +36,15 @@
                             </svg>
                         </button>
                     </form>
+                    {%if perms.permissions.visualizar_contenido and is_only_suscriptor %}
+                    <a href="{% url 'vista_all_contenidos' %}" class="gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300">
+                        Mis favoritos
+                    </a>
+                    {%endif%}
                 </div>
             </div>
+
+            
 
             <!-- Links de autenticación en pantallas grandes -->
             <div class="hidden sm:flex items-center">
@@ -77,8 +84,14 @@
                 </button>
             </form>
 
+            {%if perms.permissions.visualizar_contenido and is_only_suscriptor %}
+            <a href="{% url 'vista_all_contenidos' %}" class="text-gray-900 block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-200 hover:text-pink-800">
+                Mis favoritos
+            </a>
+            {%endif%}
+
             {% if user.is_authenticated %}
-                <a href="{% url 'vista_all_contenidos' %}" class="text-gray-900 block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-200 hover:text-pink-800">Ver todos los contenidos</a>
+                <!-- <a href="{% url 'vista_all_contenidos' %}" class="text-gray-900 block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-200 hover:text-pink-800">Ver todos los contenidos</a> -->
                 <a href="{% url 'profile' %}" class="text-gray-900 block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-200 hover:text-pink-800">Perfil</a>
                 <a href="{% url 'account_logout' %}" class="text-gray-900 block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-200 hover:text-pink-800">Logout</a>
             {% else %}

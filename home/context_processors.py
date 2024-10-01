@@ -18,3 +18,13 @@ def categorias_context(request):
         'categorias_interes_ids': categorias_interes_ids,
         'categorias_suscritas_ids': categorias_suscritas_ids
     }
+
+def is_only_suscriptor(request):
+    """
+    Recibe un objeto request y devuelve si el usuario es solamente un suscriptor o no
+    """
+    if request.user.is_authenticated:
+        is_suscriptor = request.user.groups.filter(name='Suscriptor').exists() and request.user.groups.count() == 1
+        return {'is_only_suscriptor': is_suscriptor}
+    
+    return {'is_only_suscriptor': False}
