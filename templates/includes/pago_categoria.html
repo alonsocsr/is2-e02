@@ -1,5 +1,4 @@
-{% if mostrar_modal %}
-<div id="modal" class="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+<div id="modal" class="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
     <div class="relative max-w-7xl mx-auto">
         <div class="max-w-lg mx-auto rounded-lg shadow-lg overflow-hidden lg:max-w-none lg:flex bg-pink-800">
             <!-- Contenido del Modal -->
@@ -29,7 +28,7 @@
                 </div>
             </div>
             <!-- Botón de cierre del modal -->
-            <button onclick="window.history.back();" class="absolute top-0 right-0 mt-4 mr-4 text-gray-800 text-2xl">
+            <button onclick="cerrarModal()" class="absolute top-0 right-0 mt-4 mr-4 text-gray-800 text-2xl">
                 &times;
             </button>
         </div>
@@ -65,5 +64,8 @@
             console.error('Error:', error);
         });
     };
+
+    function cerrarModal() {
+        document.getElementById('modal').classList.add('hidden');
+    }
 </script>
-{% endif %}
