@@ -176,6 +176,9 @@ class EliminarCategoriaView(LoginRequiredMixin, CustomPermissionRequiredMixin, V
         :return: HttpResponse - Redirección a la vista de gestión de categorías con un mensaje de éxito.
         """
         categoria = get_object_or_404(Categorias, pk=pk)
+        if Contenido.objects.filter(categoria=categoria).exists():
+            messages.error(request, f'No se puede eliminar la categoría "{categoria.nombre_categoria}" porque tiene contenidos asociados.', extra_tags='categoria error')
+            return redirect('categories:manage')
         nombre_categoria = categoria.nombre_categoria
         categoria.delete()
         messages.success(request, 'Categoría eliminada con éxito', extra_tags='categoria')
