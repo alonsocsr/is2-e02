@@ -9,9 +9,9 @@
 {% block content %}
 
     <!-- Mensajes de avisos/exitos -->
-    <div id="mensaje_box" class="mx-1 mb-1">
+    <div class="mx-1 mb-1">
         {% if messages %}
-            <div class="space-y-4">
+            <div id="mensaje_box" class="space-y-4">
                 {% for message in messages %}
                     <div class="p-4 rounded-lg {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %} shadow-md">
                         {{ message }}
@@ -389,12 +389,6 @@
         const moverAPublicado = {{ publicar_perm|yesno:"true,false" }};
         const moverAInactivo = {{ inactivar_perm|yesno:"true,false" }};
         const usuarioActualId = {{ request.user.id }};
-        setTimeout(function() {
-            var mensajeBox = document.getElementById('mensaje_box');
-            if (mensajeBox) {
-                mensajeBox.style.display = 'none';
-            }
-        }, 4000);
     </script>
 
 {% endblock content %}

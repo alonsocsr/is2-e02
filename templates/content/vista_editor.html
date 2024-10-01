@@ -6,9 +6,9 @@
 
 {% block content %}
     <!-- Mensajes de avisos/exitos -->
-    <div id="mensaje_box" class="mx-1 mb-4">
+    <div class="mx-1 mb-4">
         {% if messages %}
-            <div class="space-y-3">
+            <div id="mensaje_box" class="space-y-3">
                 {% for message in messages %}
                     <div class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
                         {{ message }}
@@ -167,11 +167,5 @@
         function closeModal() {
             document.getElementById('rejectModal').classList.add('hidden');
         }
-        setTimeout(function() {
-            var mensajeBox = document.getElementById('mensaje_box');
-            if (mensajeBox) {
-                mensajeBox.style.display = 'none';
-            }
-        }, 4000);
     </script>
 {% endblock content %}
