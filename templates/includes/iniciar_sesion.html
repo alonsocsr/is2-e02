@@ -1,0 +1,64 @@
+<div id="modalLogin" class="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 flex items-center justify-center transition-opacity duration-300 ease-out hidden">
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white max-w-4xl mx-auto rounded-lg shadow-lg overflow-hidden lg:max-w-none lg:flex border border-gray-300">
+            
+            <!-- Contenido del Modal -->
+            <div class="flex-1 px-6 py-8 lg:p-12 bg-gray-100">
+                <h3 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Inicia Sesión para acceder</h3>
+                <p class="mt-4 text-base text-gray-700 sm:text-lg">
+                    Para acceder a este contenido exclusivo, es necesario que inicies sesión en tu cuenta. 
+                    Si no tienes una cuenta, puedes registrarte fácilmente.
+                </p>
+                <div class="mt-6">
+                    <div class="flex items-center justify-center">
+                        <div class="flex-1 border-t-2 border-gray-300"></div>
+                    </div>
+                    <ul role="list" class="mt-6 space-y-5 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-5">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <p class="ml-3 text-base text-gray-700">Accede a contenido exclusivo para usuarios registrados.</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <p class="ml-3 text-base text-gray-700">Disfruta de actualizaciones y novedades frecuentes.</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Acciones del Modal -->
+            <div class="py-8 px-6 text-center lg:flex-shrink-0 lg:flex lg:flex-col lg:justify-center lg:p-12 bg-white">
+                <div class="border border-gray-300 rounded-lg p-6 bg-gray-50 shadow-md">
+                    <p class="text-lg leading-6 font-medium text-gray-900">Inicia sesión para continuar</p>
+                    <div class="mt-6">
+                        <div class="rounded-md shadow flex items-center justify-center">
+                            <button id="login-button" onclick="window.location.href = {% url 'account_login' %}" class="flex items-center justify-center px-16 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-lg tracking-wide cursor-pointer transition ease-in duration-300">
+                                Iniciar Sesión
+                            </button>
+                        </div>
+                        <p class="text-gray-500 text-sm mt-3">¿No tienes cuenta? <a href="{% url 'account_signup' %}" class="text-blue-600 hover:underline">Regístrate aquí</a></p>
+                    </div>
+                </div>
+            </div>
+            <!-- Botón de cierre del modal -->
+            <button id="closeButton" onClick="closeModal()" class="absolute top-3 right-14 text-gray-700 text-2xl hover:text-gray-900 transition ease-in duration-200">
+                &times;
+            </button>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function closeModal() {
+    document.getElementById('modalLogin').classList.add('hidden');
+    }
+</script>
