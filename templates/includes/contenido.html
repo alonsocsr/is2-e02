@@ -2,7 +2,7 @@
 <div class="w-full bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl overflow-hidden flex flex-col md:flex-row relative">
 
     {% if contenido.categoria.tipo_categoria in categorias_restringidas and not user.is_authenticated %}
-    <a href="{% url 'account_login' %}">    
+    <a href="#" onClick="mostrarModalLogin(event)">
     {% elif contenido.categoria.tipo_categoria == 'PA' and contenido.categoria.id not in categorias_suscritas_ids %}
     <a href="#" onClick="mostrarModal(event, '{{ contenido.categoria.id }}')">
     {% else %}
@@ -87,6 +87,13 @@
         const modal = document.getElementById('modal');
         modal.classList.remove('hidden');
     }
+    function mostrarModalLogin(event) {
+        event.preventDefault();  
+        event.stopPropagation();  
+        const modal = document.getElementById('modalLogin');
+        modal.classList.remove('hidden');
+    }
 </script>
 
 {% include 'includes/pago_categoria.html' with categoria=contenido.categoria %}
+{% include 'includes/iniciar_sesion.html' %}

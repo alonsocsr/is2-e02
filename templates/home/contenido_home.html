@@ -74,10 +74,10 @@
                     {% for destacado in destacados %}
                         {% if destacado.contenido.categoria.tipo_categoria in categorias_restringidas and not user.is_authenticated %}
                             <div class="each-frame border-box flex-none h-full" title="{{ destacado.contenido.titulo }}">
-                                <a href="{% url 'account_login' %}" class="block w-full h-full hover:bg-gray-100 rounded-xl duration-300">    
+                                <a href="#" onClick="mostrarModalLogin(event)">
                         {% elif destacado.contenido.categoria.tipo_categoria == 'PA' and destacado.contenido.categoria.id not in categorias_suscritas_ids %}
                             <div class="each-frame border-box flex-none h-full" title="{{ contenido.titulo }}">
-                                <a href="?modal=true&categoria_id={{ destacado.contenido.categoria.id }}" class="block w-full h-full hover:bg-gray-100 rounded-xl duration-300">
+                                <a href="#" onClick="mostrarModal(event, '{{ contenido.categoria.id }}')">
                         {% else %}
                             <div class="each-frame border-box flex-none h-full" title="{{ destacado.contenido.titulo }}">
                                 <a href="{% url 'detalle_contenido' destacado.contenido.slug %}" class="block w-full h-full hover:bg-gray-100 rounded-xl duration-300">
@@ -193,6 +193,24 @@
 </style>
 
 <script defer src="{% static 'js/carrusel.js' %}"></script>
+
+<script>
+    function mostrarModal(event, categoriaId) {
+        event.preventDefault();  
+        event.stopPropagation();  
+        const modal = document.getElementById('modal');
+        modal.classList.remove('hidden');
+    }
+    function mostrarModalLogin(event) {
+        event.preventDefault();  
+        event.stopPropagation();  
+        const modal = document.getElementById('modalLogin');
+        modal.classList.remove('hidden');
+    }
+
+</script>
+{% include 'includes/pago_categoria.html' with categoria=destacado.contenido.categoria %}
+{% include 'includes/iniciar_sesion.html' %}
 
 {% endblock content %}
 
