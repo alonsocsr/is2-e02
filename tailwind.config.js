@@ -10,7 +10,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily:{
-        'sans': ["Lora", "serif"],
+        'sans': ["Roboto", "serif"],
       }
     },
   },

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_detalle.html" %}
 {% load static %}
 
 {% block title %}
@@ -6,14 +6,14 @@ Todos los Contenidos
 {% endblock %}
 
 {% block content %}
-<div class="pt-10 p-10 m-5">
+<div class="max-w-screen-lg mx-auto m-5">
 
     <!-- Sección de contenidos en tres columnas -->
-    <section id="content-grid" class="flex flex-col items-center py-10 space-y-6">
+    <section id="content-grid" class="flex flex-col items-center space-y-6">
         {% for contenido in all_contenidos %}
-        <div class="w-full max-w-3xl bg-white shadow-lg rounded-lg overflow-hidden">
+        <div class="w-full relative sm:aspect-[1/1] lg:aspect-auto bg-white shadow-lg rounded-lg overflow-hidden">
             <a href="{% url 'detalle_contenido' contenido.slug %}" class="block w-full h-full">
-                <img class="w-full h-auto object-cover" 
+                <img class="w-full h-full lg:h-[60vh] overflow-hidden object-cover" 
                      src="{% if contenido.imagen %}{{ contenido.imagen.url }}{% else %}/static/default.jpg{% endif %}" 
                      alt="{{ contenido.titulo }}">
                 <div class="p-6">

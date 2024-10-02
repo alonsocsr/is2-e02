@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_detalle.html" %}
 
 {% load static %}
 
@@ -14,285 +14,287 @@
 {% endblock script%}
 
 {% block content %}
-<!-- Mensajes de avisos/exitos -->
-<div id="mensaje_box" class="mx-2 mb-4">
-    {% if messages %}
-    <div class="space-y-3">
-        {% for message in messages %}
-        <div class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
-            {{ message }}
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-</div>
 
-<!-- Imagen con categoría -->
-<section id="summary" class="bg-white rounded-xl shadow-md mb-4 mx-auto mt-4" style="max-width: 700px;">
-
-    <div class="p-4 mt-5">
-        <!-- Información de la categoría -->
-        <a href="{% url 'categories:detalle' contenido.categoria.id %}" class="text-pink-700 font-semibold mb-2 inline-block hover:underline">
-            {{ contenido.categoria.nombre_categoria }}
-        </a>
-
-        <!-- Título del contenido -->
-        <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ contenido.titulo }}</h1>
-
-        <!-- Resumen -->
-        {% if contenido.resumen %}
-        <div class="text-gray-700 mb-2">
-            <p>{{ contenido.resumen }}</p>
+<div class="max-w-screen-lg m-auto">
+    <!-- Mensajes de avisos/exitos -->
+    <div id="mensaje_box" class="mx-2 mb-4">
+        {% if messages %}
+        <div class="space-y-3">
+            {% for message in messages %}
+            <div class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
         </div>
         {% endif %}
     </div>
 
-    <!-- Autor y Fecha -->
-    <div class="flex items-center justify-between px-4 py-2 text-sm text-gray-500">
-        <div class="flex items-center">
-            <img class="w-10 h-10 rounded-full mr-3"
-                src="{% if contenido.autor.profile.image %}{{ contenido.autor.profile.image.url }}{% else %}{% static 'default.png' %}{% endif %}"
-                alt="{{ contenido.autor.username }}">
-            <div>
-                <p class="font-semibold ml-3">{{ contenido.autor.username }}</p>
-                <p class="ml-3">Publicado el <time datetime="{{ contenido.fecha_modificacion }}">{{contenido.fecha_modificacion|date:"d M Y"}}</time></p>
+    <!-- Imagen con categoría -->
+    <section id="summary" class="bg-white rounded-xl shadow-md mb-4 mx-auto mt-4">
+
+        <div class="p-4 mt-5">
+            <!-- Información de la categoría -->
+            <a href="{% url 'categories:detalle' contenido.categoria.id %}" class="text-pink-700 font-semibold mb-2 inline-block hover:underline">
+                {{ contenido.categoria.nombre_categoria }}
+            </a>
+
+            <!-- Título del contenido -->
+            <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ contenido.titulo }}</h1>
+
+            <!-- Resumen -->
+            {% if contenido.resumen %}
+            <div class="text-gray-700 mb-2">
+                <p>{{ contenido.resumen }}</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Autor y Fecha -->
+        <div class="flex items-center justify-between px-4 py-2 text-sm text-gray-500">
+            <div class="flex items-center">
+                <img class="w-10 h-10 rounded-full mr-3"
+                    src="{% if contenido.autor.profile.image %}{{ contenido.autor.profile.image.url }}{% else %}{% static 'default.png' %}{% endif %}"
+                    alt="{{ contenido.autor.username }}">
+                <div>
+                    <p class="font-semibold ml-3">{{ contenido.autor.username }}</p>
+                    <p class="ml-3">Publicado el <time datetime="{{ contenido.fecha_modificacion }}">{{contenido.fecha_modificacion|date:"d M Y"}}</time></p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <!-- Estrellas y puntuación -->
+                <div class="flex items-center text-gray-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#ec4899" class="w-5 h-5">
+                        <path fill-rule="evenodd"
+                            d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <span id="averageRating" class="text-pink-700 font-bold">{{ contenido.puntuacion|default:"0.0" }}/5</span>
+                </div>
+
+                <!-- Botón de Reportar -->
+                <button onclick="openModal('{{ contenido.slug }}')" class="bg-red-500 text-white py-1 px-3 rounded-md text-xs">
+                    Reportar
+                </button>
+
+                {% if is_admin %}
+                <form method="post" action="{% url 'contenido_seleccionado' contenido.slug %}">
+                    {% csrf_token %}
+                    {% if not seleccionado %}
+                    <button class="bg-gray-400 hover:bg-gray-500 text-white py-1 px-3 rounded-md text-xs" type="submit" name="select_content">Destacar Contenido</button>
+                    {% else %}
+                    <p class="text-sm text-gray-500">Este contenido ya ha sido destacado.</p>
+                    {% endif %}
+                </form>
+                {% endif %}
             </div>
         </div>
-        <div class="flex items-center space-x-4">
-            <!-- Estrellas y puntuación -->
-            <div class="flex items-center text-gray-500">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#ec4899" class="w-5 h-5">
-                    <path fill-rule="evenodd"
-                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
-                        clip-rule="evenodd" />
-                </svg>
-                <span id="averageRating" class="text-pink-700 font-bold">{{ contenido.puntuacion|default:"0.0" }}/5</span>
-            </div>
 
-            <!-- Botón de Reportar -->
-            <button onclick="openModal('{{ contenido.slug }}')" class="bg-red-500 text-white py-1 px-3 rounded-md text-xs">
-                Reportar
-            </button>
+        <div class="relative sm:aspect-[1/1] lg:aspect-auto">
+            <img src="{{ contenido.imagen.url }}" alt="{{ contenido.titulo }}" class="w-full h-full lg:h-[60vh] overflow-hidden object-cover">
+        </div>
 
-            {% if is_admin %}
-            <form method="post" action="{% url 'contenido_seleccionado' contenido.slug %}">
+        <!-- Botones de inactivar y estadísticas alineados a la derecha -->
+        <div class="flex justify-end space-x-4 p-4">
+            {% if perms.permissions.inactivar_contenido %}
+            <form id="inactivateForm-{{ contenido.id }}" action="{% url 'inactivar_contenido' contenido.id %}" method="POST">
                 {% csrf_token %}
-                {% if not seleccionado %}
-                <button class="bg-gray-400 hover:bg-gray-500 text-white py-1 px-3 rounded-md text-xs" type="submit" name="select_content">Destacar Contenido</button>
+                {% if contenido.activo %}
+                <button type="button" onclick="openInactivateModal('inactivateForm-{{ contenido.id }}')" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-3 rounded-md">
+                    Inactivar Contenido
+                </button>
                 {% else %}
-                <p class="text-sm text-gray-500">Este contenido ya ha sido destacado.</p>
+                <button type="button" onclick="openInactivateModal('inactivateForm-{{ contenido.id }}')" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-3 rounded-md">
+                    Activar Contenido
+                </button>
                 {% endif %}
             </form>
             {% endif %}
         </div>
+
+    </section>
+
+    <!-- Cuerpo del Contenido -->
+    <div class="bg-white shadow-md rounded-xl mx-auto mb-5">
+        <main class="p-6 text-gray-800 leading-relaxed" style="height: auto;">
+            <div class="prose max-w-none" style="word-break: break-word; overflow-wrap: break-word;">
+                {{ contenido.cuerpo|safe|linebreaks }}
+            </div>
+        </main>
     </div>
 
-    <div class="relative aspect-[1/1]">
-        <img src="{{ contenido.imagen.url }}" alt="{{ contenido.titulo }}" class="w-full h-full object-cover">
-    </div>
-
-    <!-- Botones de inactivar y estadísticas alineados a la derecha -->
-    <div class="flex justify-end space-x-4 p-4">
-        {% if perms.permissions.inactivar_contenido %}
-        <form id="inactivateForm-{{ contenido.id }}" action="{% url 'inactivar_contenido' contenido.id %}" method="POST">
-            {% csrf_token %}
-            {% if contenido.activo %}
-            <button type="button" onclick="openInactivateModal('inactivateForm-{{ contenido.id }}')" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-3 rounded-md">
-                Inactivar Contenido
+    <!-- Interacciones de usuario: Me gusta, No me gusta, Compartir, Estrellas -->
+    <div class="bg-white shadow-md rounded-xl mx-auto mb-5">
+    <section id="user-interactions" class="bg-white rounded-xl mb-4 mx-auto p-4 flex justify-around items-center">
+        <!-- Me gusta -->
+        <div class="flex flex-col items-center">
+            <button 
+                class="flex items-center space-x-1 text-gray-500 hover:text-pink-500 rounded-md transition duration-300 ease-in-out like-button"
+                id="like-button"
+                data-action-url="{% url 'like' contenido.id %}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" 
+                    class="w-5 h-5 like-icon" 
+                    fill="{% if liked %}#ec4899{% else %}currentColor{% endif %}" 
+                    stroke="{% if liked %}#ec4899{% else %}currentColor{% endif %}">
+                    <path d="M1 8.25a1.25 1.25 0 1 1 2.5 0v7.5a1.25 1.25 0 1 1-2.5 0v-7.5ZM11 3V1.7c0-.268.14-.526.395-.607A2 2 0 0 1 14 3c0 .995-.182 1.948-.514 2.826-.204.54.166 1.174.744 1.174h2.52c1.243 0 2.261 1.01 2.146 2.247a23.864 23.864 0 0 1-1.341 5.974C17.153 16.323 16.072 17 14.9 17h-3.192a3 3 0 0 1-1.341-.317l-2.734-1.366A3 3 0 0 0 6.292 15H5V8h.963c.685 0 1.258-.483 1.612-1.068a4.011 4.011 0 0 1 2.166-1.73c.432-.143.853-.386 1.011-.814.16-.432.248-.9.248-1.388Z" />
+                </svg>
+                <span class="text-xs">Me gusta</span>
             </button>
-            {% else %}
-            <button type="button" onclick="openInactivateModal('inactivateForm-{{ contenido.id }}')" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-3 rounded-md">
-                Activar Contenido
-            </button>
-            {% endif %}
-        </form>
-        {% endif %}
-    </div>
-
-</section>
-
-<!-- Cuerpo del Contenido -->
-<div class="bg-white shadow-md rounded-xl mx-auto mb-5" style="max-width: 700px;">
-    <main class="p-6 text-gray-800 leading-relaxed" style="height: auto;">
-        <div class="prose max-w-none" style="word-break: break-word; overflow-wrap: break-word;">
-            {{ contenido.cuerpo|safe|linebreaks }}
+            <span id="like-count" class="text-gray-500 text-sm">{{ contenido.cantidad_likes }}</span>
         </div>
-    </main>
-</div>
 
-<!-- Interacciones de usuario: Me gusta, No me gusta, Compartir, Estrellas -->
-<div class="bg-white shadow-md rounded-xl mx-auto mb-5" style="max-width: 700px;margin-top: 0;">
-<section id="user-interactions" class="bg-white rounded-xl shadow-md mb-4 mx-auto p-4 flex justify-around items-center" style="max-width: 700px;">
-    <!-- Me gusta -->
-    <div class="flex flex-col items-center">
-        <button 
-            class="flex items-center space-x-1 text-gray-500 hover:text-pink-500 rounded-md transition duration-300 ease-in-out like-button"
-            id="like-button"
-            data-action-url="{% url 'like' contenido.id %}">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" 
-                class="w-5 h-5 like-icon" 
-                fill="{% if liked %}#ec4899{% else %}currentColor{% endif %}" 
-                stroke="{% if liked %}#ec4899{% else %}currentColor{% endif %}">
-                <path d="M1 8.25a1.25 1.25 0 1 1 2.5 0v7.5a1.25 1.25 0 1 1-2.5 0v-7.5ZM11 3V1.7c0-.268.14-.526.395-.607A2 2 0 0 1 14 3c0 .995-.182 1.948-.514 2.826-.204.54.166 1.174.744 1.174h2.52c1.243 0 2.261 1.01 2.146 2.247a23.864 23.864 0 0 1-1.341 5.974C17.153 16.323 16.072 17 14.9 17h-3.192a3 3 0 0 1-1.341-.317l-2.734-1.366A3 3 0 0 0 6.292 15H5V8h.963c.685 0 1.258-.483 1.612-1.068a4.011 4.011 0 0 1 2.166-1.73c.432-.143.853-.386 1.011-.814.16-.432.248-.9.248-1.388Z" />
-            </svg>
-            <span class="text-xs">Me gusta</span>
-        </button>
-        <span id="like-count" class="text-gray-500 text-sm">{{ contenido.cantidad_likes }}</span>
-    </div>
-
-    <!-- Botón No me gusta -->
-    <div class="flex flex-col items-center">
-        <button 
-            class="flex items-center space-x-1 text-gray-500 hover:text-pink-500 rounded-md transition duration-300 ease-in-out dislike-button"
-            id="dislike-button"
-            data-action-url="{% url 'dislike' contenido.id %}">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" 
-                class="w-5 h-5 dislike-icon" 
-                fill="{% if disliked %}#ec4899{% else %}currentColor{% endif %}" 
-                stroke="{% if disliked %}#ec4899{% else %}currentColor{% endif %}">
-                <path d="M19 11.75a1.25 1.25 0 1 0-2.5 0v7.5a1.25 1.25 0 1 0 2.5 0v-7.5ZM9 17v1.3c0 .268-.14.526-.395.607A2 2 0 0 1 6 17c0-.995.182-1.948.514-2.826.204-.54-.166-1.174-.744-1.174h-2.52c-1.243 0-2.261-1.01-2.146-2.247a23.864 23.864 0 0 1 1.341-5.974C2.847 3.677 3.928 3 5.1 3h3.192a3 3 0 0 1 1.341.317l2.734 1.366A3 3 0 0 0 13.708 5H15v7h-.963c-.685 0-1.258.483-1.612 1.068a4.011 4.011 0 0 1-2.166 1.73c-.432.143-.853.386-1.011.814-.16.432-.248.9-.248 1.388Z" />
-            </svg>
-            <span class="text-xs">No me gusta</span>
-        </button>
-        <span id="dislike-count" class="text-gray-500 text-sm">{{ contenido.cantidad_dislikes }}</span>
-    </div>
-
-    <!-- Compartir -->
-    <button id="share-button" class="flex items-center space-x-1 text-gray-500 hover:text-pink-500">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
-            <path fill-rule="evenodd"
-                d="M13.75 7h-3V3.66l1.95 2.1a.75.75 0 1 0 1.1-1.02l-3.25-3.5a.75.75 0 0 0-1.1 0L6.2 4.74a.75.75 0 0 0 1.1 1.02l1.95-2.1V7h-3A2.25 2.25 0 0 0 4 9.25v7.5A2.25 2.25 0 0 0 6.25 19h7.5A2.25 2.25 0 0 0 16 16.75v-7.5A2.25 2.25 0 0 0 13.75 7Zm-3 0h-1.5v5.25a.75.75 0 0 0 1.5 0V7Z"
-                clip-rule="evenodd" />
-        </svg>
-        <span>Compartir</span>
-    </button>
-    <!--Modal para compartir-->
-    <div id="share-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-        <div id="contenido" data-contenido-id="{{ contenido.id }}" class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 space-y-4">
-          <div class="flex justify-between items-center border-b pb-3">
-            <h4 class="text-lg font-semibold text-gray-900">Compartir</h4>
-            <button class="modal-close text-gray-500 hover:text-gray-700">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-              </svg>
-            </button>
-          </div>
-      
-          <p class="text-gray-600">Elija una opción para compartir o copiar al portapapeles.</p>
-      
-          <!-- Buttons para compartir -->
-          <div class="space-y-2">
-            <button id="copy-button" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded flex justify-center items-center">
-              <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8 2a2 2 0 00-2 2v3h1V4a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-3v1h3a2 2 0 002-2V4a2 2 0 00-2-2H8z"></path>
-                <path d="M3 6a2 2 0 00-2 2v7a2 2 0 002 2h7a2 2 0 002-2V8a2 2 0 00-2-2H3zm0 1h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V8a1 1 0 011-1z"></path>
-              </svg>
-              Copiar enlace
-            </button>
-      
-            <button id="facebook-share" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded flex justify-center items-center">
-                <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 24 24">
-                    <path d="M17,3H7C4.791,3,3,4.791,3,7v10c0,2.209,1.791,4,4,4h5.621v-6.961h-2.343v-2.725h2.343V9.309 c0-2.324,1.421-3.591,3.495-3.591c0.699-0.002,1.397,0.034,2.092,0.105v2.43h-1.428c-1.13,0-1.35,0.534-1.35,1.322v1.735h2.7 l-0.351,2.725h-2.365V21H17c2.209,0,4-1.791,4-4V7C21,4.791,19.209,3,17,3z"></path>
+        <!-- Botón No me gusta -->
+        <div class="flex flex-col items-center">
+            <button 
+                class="flex items-center space-x-1 text-gray-500 hover:text-pink-500 rounded-md transition duration-300 ease-in-out dislike-button"
+                id="dislike-button"
+                data-action-url="{% url 'dislike' contenido.id %}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" 
+                    class="w-5 h-5 dislike-icon" 
+                    fill="{% if disliked %}#ec4899{% else %}currentColor{% endif %}" 
+                    stroke="{% if disliked %}#ec4899{% else %}currentColor{% endif %}">
+                    <path d="M19 11.75a1.25 1.25 0 1 0-2.5 0v7.5a1.25 1.25 0 1 0 2.5 0v-7.5ZM9 17v1.3c0 .268-.14.526-.395.607A2 2 0 0 1 6 17c0-.995.182-1.948.514-2.826.204-.54-.166-1.174-.744-1.174h-2.52c-1.243 0-2.261-1.01-2.146-2.247a23.864 23.864 0 0 1 1.341-5.974C2.847 3.677 3.928 3 5.1 3h3.192a3 3 0 0 1 1.341.317l2.734 1.366A3 3 0 0 0 13.708 5H15v7h-.963c-.685 0-1.258.483-1.612 1.068a4.011 4.011 0 0 1-2.166 1.73c-.432.143-.853.386-1.011.814-.16.432-.248.9-.248 1.388Z" />
                 </svg>
-              Compartir en Facebook
+                <span class="text-xs">No me gusta</span>
             </button>
-      
-            <button id="x-share" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded flex justify-center items-center">
-                <svg  class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 24 24">
-                    <path d="M 4.4042969 3 C 3.7572969 3 3.3780469 3.7287656 3.7480469 4.2597656 L 9.7363281 12.818359 L 3.7246094 19.845703 C 3.3356094 20.299703 3.6578594 21 4.2558594 21 L 4.9199219 21 C 5.2129219 21 5.4916406 20.871437 5.6816406 20.648438 L 10.919922 14.511719 L 14.863281 20.146484 C 15.238281 20.680484 15.849953 21 16.501953 21 L 19.835938 21 C 20.482937 21 20.862187 20.272188 20.492188 19.742188 L 14.173828 10.699219 L 19.900391 3.9902344 C 20.232391 3.6002344 19.955359 3 19.443359 3 L 18.597656 3 C 18.305656 3 18.027891 3.1276094 17.837891 3.3496094 L 12.996094 9.0097656 L 9.3945312 3.8554688 C 9.0205313 3.3194687 8.4098594 3 7.7558594 3 L 4.4042969 3 z"></path>
+            <span id="dislike-count" class="text-gray-500 text-sm">{{ contenido.cantidad_dislikes }}</span>
+        </div>
+
+        <!-- Compartir -->
+        <button id="share-button" class="flex items-center space-x-1 text-gray-500 hover:text-pink-500">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
+                <path fill-rule="evenodd"
+                    d="M13.75 7h-3V3.66l1.95 2.1a.75.75 0 1 0 1.1-1.02l-3.25-3.5a.75.75 0 0 0-1.1 0L6.2 4.74a.75.75 0 0 0 1.1 1.02l1.95-2.1V7h-3A2.25 2.25 0 0 0 4 9.25v7.5A2.25 2.25 0 0 0 6.25 19h7.5A2.25 2.25 0 0 0 16 16.75v-7.5A2.25 2.25 0 0 0 13.75 7Zm-3 0h-1.5v5.25a.75.75 0 0 0 1.5 0V7Z"
+                    clip-rule="evenodd" />
+            </svg>
+            <span>Compartir</span>
+        </button>
+        <!--Modal para compartir-->
+        <div id="share-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+            <div id="contenido" data-contenido-id="{{ contenido.id }}" class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h4 class="text-lg font-semibold text-gray-900">Compartir</h4>
+                <button class="modal-close text-gray-500 hover:text-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
-                Compartir en X
-              </button>
-          </div>
-          <!-- cerrar el modal -->
-            <div class="pt-4 border-t">
-                <button class="modal-close bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold py-2 px-4 rounded w-full">Cerrar</button>
+                </button>
+            </div>
+        
+            <p class="text-gray-600">Elija una opción para compartir o copiar al portapapeles.</p>
+        
+            <!-- Buttons para compartir -->
+            <div class="space-y-2">
+                <button id="copy-button" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded flex justify-center items-center">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 2a2 2 0 00-2 2v3h1V4a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-3v1h3a2 2 0 002-2V4a2 2 0 00-2-2H8z"></path>
+                    <path d="M3 6a2 2 0 00-2 2v7a2 2 0 002 2h7a2 2 0 002-2V8a2 2 0 00-2-2H3zm0 1h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V8a1 1 0 011-1z"></path>
+                </svg>
+                Copiar enlace
+                </button>
+        
+                <button id="facebook-share" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded flex justify-center items-center">
+                    <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 24 24">
+                        <path d="M17,3H7C4.791,3,3,4.791,3,7v10c0,2.209,1.791,4,4,4h5.621v-6.961h-2.343v-2.725h2.343V9.309 c0-2.324,1.421-3.591,3.495-3.591c0.699-0.002,1.397,0.034,2.092,0.105v2.43h-1.428c-1.13,0-1.35,0.534-1.35,1.322v1.735h2.7 l-0.351,2.725h-2.365V21H17c2.209,0,4-1.791,4-4V7C21,4.791,19.209,3,17,3z"></path>
+                    </svg>
+                Compartir en Facebook
+                </button>
+        
+                <button id="x-share" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded flex justify-center items-center">
+                    <svg  class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 24 24">
+                        <path d="M 4.4042969 3 C 3.7572969 3 3.3780469 3.7287656 3.7480469 4.2597656 L 9.7363281 12.818359 L 3.7246094 19.845703 C 3.3356094 20.299703 3.6578594 21 4.2558594 21 L 4.9199219 21 C 5.2129219 21 5.4916406 20.871437 5.6816406 20.648438 L 10.919922 14.511719 L 14.863281 20.146484 C 15.238281 20.680484 15.849953 21 16.501953 21 L 19.835938 21 C 20.482937 21 20.862187 20.272188 20.492188 19.742188 L 14.173828 10.699219 L 19.900391 3.9902344 C 20.232391 3.6002344 19.955359 3 19.443359 3 L 18.597656 3 C 18.305656 3 18.027891 3.1276094 17.837891 3.3496094 L 12.996094 9.0097656 L 9.3945312 3.8554688 C 9.0205313 3.3194687 8.4098594 3 7.7558594 3 L 4.4042969 3 z"></path>
+                    </svg>
+                    Compartir en X
+                </button>
+            </div>
+            <!-- cerrar el modal -->
+                <div class="pt-4 border-t">
+                    <button class="modal-close bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold py-2 px-4 rounded w-full">Cerrar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estrellas de Valoración -->
+        <div class="flex flex-col items-center">
+            <div id="rating" data-contenido-id="{{ contenido.id }}" class="flex space-x-1 cursor-pointer text-gray-500">
+                <svg id="star1" data-value="1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                    fill="{% if user_rating|default:0 >= 1 %}#ec4899{% else %}currentColor{% endif %}" class="w-6 h-6 star">
+                    <path fill-rule="evenodd"
+                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                        clip-rule="evenodd" />
+                </svg>
+                <svg id="star2" data-value="2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                    fill="{% if user_rating|default:0 >= 2 %}#ec4899{% else %}currentColor{% endif %}" class="w-6 h-6 star">
+                    <path fill-rule="evenodd"
+                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                        clip-rule="evenodd" />
+                </svg>
+                <svg id="star3" data-value="3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                    fill="{% if user_rating|default:0 >= 3 %}#ec4899{% else %}currentColor{% endif %}" class="w-6 h-6 star">
+                    <path fill-rule="evenodd"
+                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                        clip-rule="evenodd" />
+                </svg>
+                <svg id="star4" data-value="4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                    fill="{% if user_rating|default:0 >= 4 %}#ec4899{% else %}currentColor{% endif %}" class="w-6 h-6 star">
+                    <path fill-rule="evenodd"
+                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                        clip-rule="evenodd" />
+                </svg>
+                <svg id="star5" data-value="5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                    fill="{% if user_rating|default:0 >= 5 %}#ec4899{% else %}currentColor{% endif %}" class="w-6 h-6 star">
+                    <path fill-rule="evenodd"
+                        d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                        clip-rule="evenodd" />
+                </svg>
+            </div>
+            <p class="mt-2 text-gray-500">Tu calificación: <span id="userRating">{{ user_rating|default:0 }}</span>/5</p>
+        </div>
+
+    </section>
+    </div>
+    {% if user.is_authenticated %}
+    <div class="bg-white shadow-md rounded-xl p-6 text-gray-800 leading-relaxed mx-auto pt-5">
+        <div class="container mx-auto text-center">
+            {% include 'content/comments.html' %}
+        </div>
+    </div>
+    {% endif %}
+
+
+
+
+
+    <!-- Modal para el reporte -->
+    <div id="reportModal" class="hs-overlay hidden fixed top-0 start-0 z-50 w-full h-full bg-gray-500 bg-opacity-75">
+        <div class="flex justify-center items-center h-full">
+            <div class="bg-white rounded-lg shadow-md w-full max-w-md p-4">
+                <h3 class="text-lg font-semibold text-gray-800 mb-3">Reportar Contenido</h3>
+                <form id="reportForm" method="post" action="">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="flex justify-end mt-4 space-x-2">
+                        <button type="button" onclick="closeModal()"
+                            class="bg-gray-400 text-white hover:bg-gray-500 py-2 px-4 rounded-lg">Cancelar</button>
+                        <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-lg">Reportar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
-    <!-- Estrellas de Valoración -->
-    <div class="flex flex-col items-center">
-        <div id="rating" data-contenido-id="{{ contenido.id }}" class="flex space-x-1 cursor-pointer text-gray-500">
-            <svg id="star1" data-value="1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="{% if user_rating|default:0 >= 1 %}#ec4899{% else %}currentColor{% endif %}" class="w-6 h-6 star">
-                <path fill-rule="evenodd"
-                    d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
-                    clip-rule="evenodd" />
-            </svg>
-            <svg id="star2" data-value="2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="{% if user_rating|default:0 >= 2 %}#ec4899{% else %}currentColor{% endif %}" class="w-6 h-6 star">
-                <path fill-rule="evenodd"
-                    d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
-                    clip-rule="evenodd" />
-            </svg>
-            <svg id="star3" data-value="3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="{% if user_rating|default:0 >= 3 %}#ec4899{% else %}currentColor{% endif %}" class="w-6 h-6 star">
-                <path fill-rule="evenodd"
-                    d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
-                    clip-rule="evenodd" />
-            </svg>
-            <svg id="star4" data-value="4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="{% if user_rating|default:0 >= 4 %}#ec4899{% else %}currentColor{% endif %}" class="w-6 h-6 star">
-                <path fill-rule="evenodd"
-                    d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
-                    clip-rule="evenodd" />
-            </svg>
-            <svg id="star5" data-value="5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="{% if user_rating|default:0 >= 5 %}#ec4899{% else %}currentColor{% endif %}" class="w-6 h-6 star">
-                <path fill-rule="evenodd"
-                    d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
-                    clip-rule="evenodd" />
-            </svg>
-        </div>
-        <p class="mt-2 text-gray-500">Tu calificación: <span id="userRating">{{ user_rating|default:0 }}</span>/5</p>
-    </div>
 
-</section>
-</div>
-{% if user.is_authenticated %}
-<div class="bg-white shadow-md rounded-xl p-6 text-gray-800 leading-relaxed mx-auto pt-5"
-    style="max-width: 700px; height: auto;">
-    <div class="container mx-auto text-center">
-        {% include 'content/comments.html' %}
-    </div>
-</div>
-{% endif %}
-
-
-
-
-
-<!-- Modal para el reporte -->
-<div id="reportModal" class="hs-overlay hidden fixed top-0 start-0 z-50 w-full h-full bg-gray-500 bg-opacity-75">
-    <div class="flex justify-center items-center h-full">
-        <div class="bg-white rounded-lg shadow-md w-full max-w-md p-4">
-            <h3 class="text-lg font-semibold text-gray-800 mb-3">Reportar Contenido</h3>
-            <form id="reportForm" method="post" action="">
-                {% csrf_token %}
-                {{ form.as_p }}
+    <div id="confirmInactivateModal"
+        class="hs-overlay hidden fixed top-0 start-0 z-50 w-full h-full bg-gray-500 bg-opacity-75">
+        <div class="flex justify-center items-center h-full">
+            <div class="bg-white rounded-lg shadow-md w-full max-w-md p-4">
+                <h3 class="text-lg font-semibold text-gray-800 mb-3">Confirmación</h3>
+                <p class="text-gray-600">¿Estás seguro de que deseas inactivar este contenido?</p>
                 <div class="flex justify-end mt-4 space-x-2">
-                    <button type="button" onclick="closeModal()"
+                    <button type="button" onclick="closeInactivateModal()"
                         class="bg-gray-400 text-white hover:bg-gray-500 py-2 px-4 rounded-lg">Cancelar</button>
-                    <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-lg">Reportar</button>
+                    <button id="confirmInactivateButton" type="button"
+                        class="bg-pink-800 text-white hover:bg-pink-700 py-2 px-4 rounded-lg">Confirmar</button>
                 </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-
-<div id="confirmInactivateModal"
-    class="hs-overlay hidden fixed top-0 start-0 z-50 w-full h-full bg-gray-500 bg-opacity-75">
-    <div class="flex justify-center items-center h-full">
-        <div class="bg-white rounded-lg shadow-md w-full max-w-md p-4">
-            <h3 class="text-lg font-semibold text-gray-800 mb-3">Confirmación</h3>
-            <p class="text-gray-600">¿Estás seguro de que deseas inactivar este contenido?</p>
-            <div class="flex justify-end mt-4 space-x-2">
-                <button type="button" onclick="closeInactivateModal()"
-                    class="bg-gray-400 text-white hover:bg-gray-500 py-2 px-4 rounded-lg">Cancelar</button>
-                <button id="confirmInactivateButton" type="button"
-                    class="bg-pink-800 text-white hover:bg-pink-700 py-2 px-4 rounded-lg">Confirmar</button>
             </div>
         </div>
     </div>

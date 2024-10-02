@@ -32,7 +32,7 @@ class VistaAllContenidos(ListView):
     context_object_name="all_contenidos"
     
     def get_queryset(self):
-        queryset = Contenido.objects.filter(estado="Publicado")
+        queryset = Contenido.objects.filter(estado="Publicado", activo=True)
         if self.request.user.is_authenticated:
             user = self.request.user
             categorias_favoritas = user.profile.categorias_interes.values_list('id', flat=True)
@@ -593,7 +593,7 @@ class VistaContenidosReportados(LoginRequiredMixin, PermissionRequiredMixin, Lis
         user=self.request.user
         if user.has_perm('permissions.suspender_cuenta') or user.groups.filter(name="Admin"):
             return ContenidoReportado.objects.all()
-        elif user.groups.filter(name="Autor").exists():
+        elif user.has_perm('permissions.ver_reportes_contenido'):
             return ContenidoReportado.objects.filter(contenido__autor=user)
         else:
             return ContenidoReportado.objects.none()
