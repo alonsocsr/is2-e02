@@ -11,6 +11,7 @@
   <link href="{% static 'css/animate.css' %}" rel="stylesheet">
   <script src="{% static 'js/categorias.js' %}"></script>
   <script src="{% static 'js/kanban.js' %}"></script>
+  <script src="{% static 'js/mensajes.js' %}"></script>
   {% block script %}{% endblock %}
 </head>
 
@@ -23,14 +24,16 @@
   {% endif %}
     <!-- Sidebar oculto por defecto en pantallas pequeñas -->
     {% if user.is_authenticated %}
-    <aside id="sidebar"
-    class="fixed z-20 transform -translate-x-full sm:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col min-w-[12rem] max-w-[15rem] w-full h-screen px-5 py-8 bg-white border-r sm:sticky sm:top-0">
-      {% include 'includes/sidebar.html' %}
-    </aside>
+      {% if not is_only_suscriptor %}
+      <aside id="sidebar"
+      class="fixed z-20 transform -translate-x-full sm:relative sm:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col min-w-[12rem] max-w-[15rem] w-full h-screen px-5 py-8 bg-white border-r sm:sticky sm:top-0">
+        {% include 'includes/sidebar.html' %}
+      </aside>
+      {% endif %}
     {% endif %}
 
     <div class="flex flex-col flex-1 w-full">
-      {% if user.is_authenticated %}
+      {% if user.is_authenticated and  not is_only_suscriptor %}
         <!-- botón para mostrar/ocultar el sidebar en pantallas pequeñas -->
         <div class="fixed top-3 left-16 z-30 px-4 sm:hidden">
           <button id="toggleSidebar" class="p-3 bg-pink-700 text-white rounded-full shadow-md">

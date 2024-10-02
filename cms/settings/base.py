@@ -98,6 +98,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
 
                 'home.context_processors.categorias_context',
+                'home.context_processors.is_only_suscriptor',
             ],
         },
     },

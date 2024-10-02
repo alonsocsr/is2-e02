@@ -23,7 +23,11 @@ Todos los Contenidos
                              src="{% if contenido.autor.profile.image %}{{ contenido.autor.profile.image.url }}{% else %}/static/default.png{% endif %}"
                              alt="{{ contenido.autor.username }}">
                         <div>
+                            {% if contenido.autor is null %}
+                            <span class="font-semibold">[eliminado]</span><br>
+                            {% else %}
                             <span class="font-semibold">{{ contenido.autor.username }}</span><br>
+                            {% endif %}
                             <span class="text-gray-600">{{ contenido.categoria.nombre_categoria }}</span>
                             <span class="text-gray-600"> - {{ contenido.fecha_creacion|date:"d M Y" }}</span>
                         </div>

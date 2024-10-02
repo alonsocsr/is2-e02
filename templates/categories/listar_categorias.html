@@ -27,7 +27,7 @@
                     </div>
                     <div class="flex items-center justify-between">
                         <h5 class="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-800">{{ categoria.nombre_categoria }}</h5>
-                        
+                        {% if categoria.tipo_categoria == 'PU' or categoria.tipo_categoria == 'GR' or categoria.id in categorias_suscritas_ids %}
                         <!-- Botón para marcar/desmarcar categoría como favorita -->
                         <button type="submit" class="circle-button" aria-label="Marcar como favorito" data-categoria-id="{{ categoria.id }}" data-action-url="{% url 'categoria_interes' categoria.id %}">
                             {% if categoria.id in categorias_interes_ids %}
@@ -42,7 +42,7 @@
                             </svg>
                             {% endif %}
                         </button>
-                        
+                        {% endif %}
                         
                     </div>
 

@@ -9,9 +9,9 @@
 {% block content %}
 
     <!-- Mensajes de avisos/exitos -->
-    <div id="mensaje_box" class="mx-1 mb-1">
+    <div class="mx-1 mb-1">
         {% if messages %}
-            <div class="space-y-4">
+            <div id="mensaje_box" class="space-y-4">
                 {% for message in messages %}
                     <div class="p-4 rounded-lg {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %} shadow-md">
                         {{ message }}
@@ -51,7 +51,11 @@
                                         
                                         <!-- Información del autor y fecha -->
                                         <div class="flex-1 overflow-hidden">
-                                            <p class="text-xs text-gray-500 ">Por <strong>{{ post.autor }}</strong></p>
+                                            {% if post.autor is null %}
+                                            <p class="text-xs text-gray-500">Por <strong>[eliminado]</strong></p>
+                                            {% else %}
+                                            <p class="text-xs text-gray-500">Por <strong>{{ post.autor }}</strong></p>
+                                            {% endif %}
                                             <p class="text-xs text-gray-500 ">{{ post.fecha_creacion|date:"d M Y" }}</p>
                                             {% if post.categoria.moderada == False %}
                                                 <p class="text-xs text-pink-500 ">No Moderada</p>
@@ -104,7 +108,11 @@
                                         
                                         <!-- Información del autor y fecha -->
                                         <div class="flex-1 overflow-hidden">
-                                            <p class="text-xs text-gray-500 ">Por <strong>{{ post.autor }}</strong></p>
+                                            {% if post.autor is null %}
+                                            <p class="text-xs text-gray-500">Por <strong>[eliminado]</strong></p>
+                                            {% else %}
+                                            <p class="text-xs text-gray-500">Por <strong>{{ post.autor }}</strong></p>
+                                            {% endif %}
                                             <p class="text-xs text-gray-500 ">{{ post.fecha_creacion|date:"d M Y" }}</p>
                                             {% if post.usuario_editor == request.user %}
                                                 <p class="text-xs text-gray-500 "> <strong> Editando </strong></p>
@@ -149,7 +157,11 @@
                                         
                                         <!-- Información del autor y fecha -->
                                         <div class="flex-1 overflow-hidden">
-                                            <p class="text-xs text-gray-500 ">Por <strong>{{ post.autor }}</strong></p>
+                                            {% if post.autor is null %}
+                                            <p class="text-xs text-gray-500">Por <strong>[eliminado]</strong></p>
+                                            {% else %}
+                                            <p class="text-xs text-gray-500">Por <strong>{{ post.autor }}</strong></p>
+                                            {% endif %}
                                             <p class="text-xs text-gray-500 ">{{ post.fecha_creacion|date:"d M Y" }}</p>
                                             {% if post.usuario_editor != None %}
                                                 <p class="text-xs text-gray-500 ">Editado por: <strong>{{ post.usuario_editor }}</strong></p>
@@ -192,7 +204,11 @@
                                         
                                         <!-- Información del autor y fecha -->
                                         <div class="flex-1 overflow-hidden">
-                                            <p class="text-xs text-gray-500 ">Por <strong>{{ post.autor }}</strong></p>
+                                            {% if post.autor is null %}
+                                            <p class="text-xs text-gray-500">Por <strong>[eliminado]</strong></p>
+                                            {% else %}
+                                            <p class="text-xs text-gray-500">Por <strong>{{ post.autor }}</strong></p>
+                                            {% endif %}
                                             <p class="text-xs text-gray-500 ">{{ post.fecha_creacion|date:"d M Y" }}</p>
                                             {% if post.fecha_publicacion > fecha_actual %}
                                                 <p class="text-xs text-gray-500 ">A publicar el: <strong class="text-pink-500">{{ post.fecha_publicacion|date:"d M Y" }}</strong></p>
@@ -232,7 +248,11 @@
                                         
                                         <!-- Información del autor y fecha -->
                                         <div class="flex-1 overflow-hidden">
-                                            <p class="text-xs text-gray-500 ">Por <strong>{{ post.autor }}</strong></p>
+                                            {% if post.autor is null %}
+                                            <p class="text-xs text-gray-500">Por <strong>[eliminado]</strong></p>
+                                            {% else %}
+                                            <p class="text-xs text-gray-500">Por <strong>{{ post.autor }}</strong></p>
+                                            {% endif %}
                                             <p class="text-xs text-gray-500 ">{{ post.fecha_creacion|date:"d M Y" }}</p>
                                         </div>
                                     </div>
@@ -281,7 +301,11 @@
                                 
                                 <!-- Información del autor y fecha -->
                                 <div class="flex-1 overflow-hidden">
-                                    <p class="text-xs text-gray-500 ">Por <strong>{{ post.autor }}</strong></p>
+                                    {% if post.autor is null %}
+                                    <p class="text-xs text-gray-500">Por <strong>[eliminado]</strong></p>
+                                    {% else %}
+                                    <p class="text-xs text-gray-500">Por <strong>{{ post.autor }}</strong></p>
+                                    {% endif %}
                                     <p class="text-xs text-gray-500 ">{{ post.fecha_creacion|date:"d M Y" }}</p>
                                     <p class="text-xs text-gray-500 ">Vigencia hasta: <strong>{{ post.vigencia|date:"d M Y" }}</strong></p>
                                 </div>
@@ -389,12 +413,6 @@
         const moverAPublicado = {{ publicar_perm|yesno:"true,false" }};
         const moverAInactivo = {{ inactivar_perm|yesno:"true,false" }};
         const usuarioActualId = {{ request.user.id }};
-        setTimeout(function() {
-            var mensajeBox = document.getElementById('mensaje_box');
-            if (mensajeBox) {
-                mensajeBox.style.display = 'none';
-            }
-        }, 4000);
     </script>
 
 {% endblock content %}
