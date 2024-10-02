@@ -89,19 +89,19 @@ def configurar_roles_predefinidos(apps, schema_editor):
             'nombre_rol': 'Editor',
             'descripcion': 'Puede editar un contenido.',
             'rol_por_defecto': True,
-            'permisos': ['editar_contenido', 'visualizar_contenido', 'rechazar_contenido', 'editar_perfil', 'ver_tablero_kanban', 'modificar_tablero_kanban', 'cambiar_estado_contenido', 'ver_cantidad_likes', 'ver_cantidad_dislikes', 'ver_cantidad_visualizaciones', 'ver_cantidad_compartidos', 'modificar_estado_contenido'],
+            'permisos': ['editar_contenido', 'visualizar_contenido', 'rechazar_contenido', 'editar_perfil', 'ver_tablero_kanban', 'modificar_tablero_kanban', 'cambiar_estado_contenido', 'ver_cantidad_likes', 'ver_cantidad_dislikes', 'ver_cantidad_visualizaciones', 'ver_cantidad_compartidos', 'modificar_estado_contenido', 'modificar_tablero_kanban'],
         },
         {
             'nombre_rol': 'Autor',
             'descripcion': 'Puede editar un contenido.',
             'rol_por_defecto': True,
-            'permisos': ['crear_contenido', 'visualizar_contenido', 'rechazar_contenido', 'editar_perfil', 'inactivar_contenido', 'cambiar_estado_contenido', 'ver_tablero_kanban', 'ver_reportes_contenido', 'ver_estadisticas_contenido', 'ver_cantidad_likes', 'ver_cantidad_dislikes', 'ver_cantidad_visualizaciones', 'ver_cantidad_compartidos', 'modificar_estado_contenido', 'visualizar_versiones_contenido', 'restaurar_verisiones_contenido'],
+            'permisos': ['crear_contenido', 'visualizar_contenido', 'rechazar_contenido', 'editar_perfil', 'inactivar_contenido', 'cambiar_estado_contenido', 'ver_tablero_kanban', 'ver_reportes_contenido', 'ver_estadisticas_contenido', 'ver_cantidad_likes', 'ver_cantidad_dislikes', 'ver_cantidad_visualizaciones', 'ver_cantidad_compartidos', 'modificar_estado_contenido', 'visualizar_versiones_contenido', 'restaurar_verisiones_contenido', 'modificar_tablero_kanban'],
         },
         {
             'nombre_rol': 'Publicador',
             'descripcion': 'Puede publicar un contenido.',
             'rol_por_defecto': True,
-            'permisos': ['publicar_contenido', 'visualizar_contenido', 'rechazar_contenido', 'editar_perfil', 'cambiar_estado_contenido', 'ver_tablero_kanban', 'modificar_tablero_kanban', 'ver_cantidad_likes', 'ver_cantidad_dislikes', 'ver_cantidad_visualizaciones', 'ver_cantidad_compartidos', 'modificar_estado_contenido'],
+            'permisos': ['publicar_contenido', 'visualizar_contenido', 'rechazar_contenido', 'editar_perfil', 'cambiar_estado_contenido', 'ver_tablero_kanban', 'modificar_tablero_kanban', 'ver_cantidad_likes', 'ver_cantidad_dislikes', 'ver_cantidad_visualizaciones', 'ver_cantidad_compartidos', 'modificar_estado_contenido', 'modificar_tablero_kanban'],
         },
         {
             'nombre_rol': 'Suscriptor',
@@ -113,7 +113,7 @@ def configurar_roles_predefinidos(apps, schema_editor):
             'nombre_rol': 'AutorSuper',
             'descripcion': 'Puede crear contenido no moderado',
             'rol_por_defecto': True,
-            'permisos': ['crear_contenido', 'visualizar_contenido', 'rechazar_contenido', 'editar_perfil', 'inactivar_contenido', 'cambiar_estado_contenido', 'ver_tablero_kanban', 'ver_reportes_contenido', 'ver_estadisticas_contenido', 'ver_cantidad_likes', 'ver_cantidad_dislikes', 'ver_cantidad_visualizaciones', 'ver_cantidad_compartidos', 'modificar_estado_contenido', 'visualizar_versiones_contenido', 'restaurar_verisiones_contenido', 'publicar_contenido', 'categoria_no_moderada'],
+            'permisos': ['crear_contenido', 'visualizar_contenido', 'rechazar_contenido', 'editar_perfil', 'inactivar_contenido', 'cambiar_estado_contenido', 'ver_tablero_kanban', 'ver_reportes_contenido', 'ver_estadisticas_contenido', 'ver_cantidad_likes', 'ver_cantidad_dislikes', 'ver_cantidad_visualizaciones', 'ver_cantidad_compartidos', 'modificar_estado_contenido', 'visualizar_versiones_contenido', 'restaurar_verisiones_contenido', 'categoria_no_moderada', 'modificar_tablero_kanban'],
         },
 
     ]

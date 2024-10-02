@@ -54,7 +54,7 @@
         "pk": 5,
         "fields": {
             "nombre_categoria": "Cine",
-            "descripcion": "Noticias, receñas, debates y más",
+            "descripcion": "Noticias, reseñas, debates y más",
             "descripcion_corta": "CN",
             "estado":true,
             "moderada":true,
@@ -66,7 +66,7 @@
         "pk": 6,
         "fields": {
             "nombre_categoria": "Música",
-            "descripcion": "Noticias, receñas, debates y más",
+            "descripcion": "Noticias, reseñas, debates y más",
             "descripcion_corta": "MS",
             "estado":true,
             "moderada":true,
