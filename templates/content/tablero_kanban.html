@@ -30,7 +30,7 @@
                 <h2 class="text-xl font-bold text-center text-gray-700">Borrador</h2>
                 <div class="kanban-items min-h-[300px] space-y-4 p-2 border border-gray-300 rounded-lg">
                     {% for post in borrador %}
-                        <a href="{% url 'detalle_contenido' post.slug %}?from_kanban=true">
+                        <a href="{% url 'detalle_contenido' post.slug %}?is_staff=true">
                             <div class="bg-gray-50 px-4 pb-4 rounded-lg shadow-md flex flex-col space-y-2 contenido-item mb-2 transition-transform transform hover:scale-110" draggable="true" data-id="{{ post.id }}" data-autor-id="{{ post.autor.id }}" data-moderada="{{ post.categoria.moderada|yesno:'true,false' }}">
                               
                                 <div class="mt-2">
@@ -80,10 +80,10 @@
                                 {% if post.usuario_editor == request.user or post.usuario_editor == None %}
                                     <a href="{% url 'editar_contenido' post.id %}">
                                     {% else %}
-                                    <a href="{% url 'detalle_contenido' post.slug %}?from_kanban=true">
+                                    <a href="{% url 'detalle_contenido' post.slug %}?is_staff=true">
                                     {% endif %}
                             {% else %}
-                            <a href="{% url 'detalle_contenido' post.slug %}?from_kanban=true">
+                            <a href="{% url 'detalle_contenido' post.slug %}?is_staff=true">
                             {% endif %}
 
                                 <div class="bg-gray-50 px-4 pb-4 rounded-lg shadow-md flex flex-col space-y-2 contenido-item mb-2 transition-transform transform hover:scale-110" draggable="true" data-id="{{ post.id }}" data-autor-id="{{ post.autor.id }}" data-moderada="{{ post.categoria.moderada|yesno:'true,false' }}">
@@ -132,7 +132,7 @@
                 <h2 class="text-xl font-bold text-center text-gray-700">Publicación</h2>
                 <div class="kanban-items min-h-[300px] space-y-4 p-2 border border-gray-300 rounded-lg">
                     {% for post in publicacion %}
-                        <a href="{% url 'detalle_contenido' post.slug %}?from_kanban=true">
+                        <a href="{% url 'detalle_contenido' post.slug %}?is_staff=true">
                             <div class="bg-gray-50 px-4 pb-4 rounded-lg shadow-md flex flex-col space-y-2 contenido-item mb-2 transition-transform transform hover:scale-110" draggable="true" data-id="{{ post.id }}" data-autor-id="{{ post.autor.id }}" data-moderada="{{ post.categoria.moderada|yesno:'true,false' }}">
                                 <!-- Título del contenido -->
                                 <div class="mt-2">
@@ -177,7 +177,7 @@
                 <h2 class="text-xl font-bold text-center text-gray-700">Publicado</h2>
                 <div class="kanban-items min-h-[300px] space-y-4 p-2 border border-gray-300 rounded-lg">
                     {% for post in publicado %}
-                        <a href="{% url 'detalle_contenido' post.slug %}?from_kanban=true">
+                        <a href="{% url 'detalle_contenido' post.slug %}?is_staff=true">
                             <div class="bg-gray-50 px-4 pb-4 rounded-lg shadow-md flex flex-col space-y-2 contenido-item mb-2 transition-transform transform hover:scale-110" draggable="true" data-id="{{ post.id }}" data-autor-id="{{ post.autor.id }}" data-moderada="{{ post.categoria.moderada|yesno:'true,false' }}">
                            
                                 <div class="mt-2">
@@ -219,7 +219,7 @@
                 <h2 class="text-xl font-bold text-center text-gray-700">Inactivo</h2>
                 <div class="kanban-items min-h-[300px] space-y-4 p-2 border border-gray-300 rounded-lg">
                     {% for post in inactivo %}
-                        <a href="{% url 'detalle_contenido' post.slug %}?from_kanban=true">
+                        <a href="{% url 'detalle_contenido' post.slug %}?is_staff=true">
                             <div class="bg-gray-50 px-4 pb-4 rounded-lg shadow-md flex flex-col space-y-2 contenido-item mb-2 transition-transform transform hover:scale-110" draggable="true" data-id="{{ post.id }}" data-autor-id="{{ post.autor.id }}" data-moderada="{{ post.categoria.moderada|yesno:'true,false' }}">
                        
                                 <div class="mt-2">
