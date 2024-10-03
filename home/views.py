@@ -220,6 +220,7 @@ class BuscarContenidoView(ListView):
         context['query'] = self.request.GET.get('q', '')
         context['categorias'] = Categorias.objects.all()
         context['autores'] = User.objects.filter(contenido__isnull=False).distinct()
+        
         context['STRIPE_PUBLIC_KEY'] = config('STRIPE_PUBLIC_KEY')
 
         return context

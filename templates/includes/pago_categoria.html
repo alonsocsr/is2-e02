@@ -40,12 +40,18 @@
 <script src="https://js.stripe.com/v3/"></script>
 
 <script>
+    
     var categoria_id = {{ categoria.id }};
+    
     var stripe = Stripe('{{ STRIPE_PUBLIC_KEY }}');
 
     function procesarPago() {
+        if (categoria_id === null) {
+            console.error('Error: No hay una categoría seleccionada.');
+            return;
+        }
         var url = '/categorias/' + categoria_id + '/';
-
+        console.log('Iniciando el proceso de pago. URL:', url);
         fetch(url, {  
             method: 'POST',
             headers: {
@@ -53,11 +59,18 @@
                 'X-CSRFToken': '{{ csrf_token }}'
             },
         }).then(function (response) {
+            console.log('Respuesta del servidor:', response);
             return response.json();
         }).then(function (session) {
-            return stripe.redirectToCheckout({ sessionId: session.id });
+            console.log('Contenido de la sesión:', session);
+            if (session.error) {
+                console.error('Error en la sesión de Stripe:', session.error);
+            } else {
+                return stripe.redirectToCheckout({ sessionId: session.id });
+            }
         }).then(function (result) {
             if (result.error) {
+                console.error('Error en Stripe:', result.error.message);
                 alert(result.error.message);
             }
         }).catch(function (error) {
