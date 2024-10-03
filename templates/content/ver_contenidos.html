@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-Todos los Contenidos
+    Favoritos | Stark
 {% endblock %}
 
 {% block content %}
@@ -45,6 +45,33 @@ Todos los Contenidos
         {% empty %}
             <p class="text-gray-600 col-span-full text-center">No hay posts disponibles.</p>
         {% endfor %}
+
+        <!-- Pagination Controls -->
+        {% if is_paginated %}
+        <div class="mt-6 flex justify-center rounded-sm">
+            <nav class="relative z-0 inline-flex shadow-sm -space-x-px" aria-label="Pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        &laquo; Primera
+                    </a>
+                    <a href="?page={{ page_obj.previous_page_number }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        Anterior
+                    </a>
+                {% endif %}
+                <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                    Pág {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                </span>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        Siguiente
+                    </a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        Última &raquo;
+                    </a>
+                {% endif %}
+            </nav>
+        </div>
+    {% endif %}
     </section>
     
     
