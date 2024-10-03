@@ -22,7 +22,7 @@
             document.getElementById('closeButton').classList.add('hidden');
         </script>
 
-    {% elif contenido.categoria.tipo_categoria == 'PA' and contenido.categoria.id not in categorias_suscritas_ids and not contenido.autor == request.user and not request.GET.from_kanban == 'true' %}
+    {% elif contenido.categoria.tipo_categoria == 'PA' and contenido.categoria.id not in categorias_suscritas_ids and not contenido.autor == request.user and not request.GET.is_staff == 'true' %}
         {% include '403.html' %}
 
     {% else %}

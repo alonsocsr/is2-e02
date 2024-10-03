@@ -4,7 +4,7 @@
     {% if contenido.categoria.tipo_categoria in categorias_restringidas and not user.is_authenticated %}
     <a href="#" onClick="mostrarModalLogin(event)">
     {% elif contenido.categoria.tipo_categoria == 'PA' and contenido.categoria.id not in categorias_suscritas_ids %}
-    <a href="#" onClick="mostrarModal(event, '{{ contenido.categoria.id }}')">
+    <a href="#" onclick="mostrarModalPago(event, '{{ contenido.categoria.id }}', '{{ contenido.categoria.nombre_categoria }}', '{{ contenido.categoria.descripcion }}', '{{ contenido.categoria.precio }}')">
     {% else %}
     <a href="{% url 'detalle_contenido' contenido.slug %}">
     {% endif %}    
@@ -81,12 +81,26 @@
         event.stopPropagation();  
         window.location.href = `/categorias/${categoriaId}/`;
     }
-    function mostrarModal(event, categoriaId) {
+    
+    function mostrarModalPago(event, categoriaId, categoriaNombre, categoriaDescripcion, categoriaPrecio) {
+        // console.log('Mostrando modal de pago para la categoría:', categoriaId);
+        // console.log('Nombre:', categoriaNombre);
+        // console.log('Descripción:', categoriaDescripcion);
+        // console.log('Precio:', categoriaPrecio);
+
         event.preventDefault();  
         event.stopPropagation();  
-        const modal = document.getElementById('modal');
+
+        // Actualizar el contenido del modal
+        document.getElementById('modalCategoriaNombre').textContent = categoriaNombre;
+        document.getElementById('modalCategoriaDescripcion').textContent = categoriaDescripcion;
+        document.getElementById('modalCategoriaPrecio').textContent = categoriaPrecio;
+        document.getElementById('checkout-button').setAttribute('onclick', `procesarPago('${categoriaId}')`);
+
+        const modal = document.getElementById('modalPago');
         modal.classList.remove('hidden');
     }
+
     function mostrarModalLogin(event) {
         event.preventDefault();  
         event.stopPropagation();  
@@ -95,7 +109,5 @@
     }
 </script>
 
-
-
-{% include 'includes/pago_categoria.html' with categoria=contenido.categoria %}
+{% include 'includes/pago_categoria.html' %}
 {% include 'includes/iniciar_sesion.html' %}
