@@ -12,12 +12,12 @@
     {% if user.is_authenticated %}
         <section id="static-text" class="lg:w-3/5 w-full flex items-center justify-center">
             <div class="text-center space-y-6">
-                <!-- Título con la nueva font-family y gradiente de colores -->
+   
                 <h1 class="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-gray-800 via-pink-800 to-gray-800" 
                     style="font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';">
                     Bienvenido de vuelta a Stark CMS
                 </h1>
-                <!-- Subtítulo con la nueva font-family -->
+         
                 <p class="text-gray-700 text-lg leading-relaxed" 
                     style="font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';">
                     Explora los nuevos artículos, comparte tus opiniones y participa en los debates más apasionantes. ¡Gracias por ser parte de <span style="font-family: 'Merriweather', serif;">Stark</span>!
@@ -49,17 +49,17 @@
     <!-- Carrusel  -->
     <section id="carousel-posts" class="hidden xl:block xl:w-3/5 w-full mt-10 xl:mt-0">
         <div class="gallery border-2 rounded-xl mx-auto m-5 bg-white shadow-lg" style="width:750px;">
-            <!-- Título del contenido -->
+      
             <div class="top flex p-2 border-b select-none rounded-t-xl bg-gray-100">
                 <div class="heading text-gray-800 w-full pl-3 font-semibold my-auto"></div>
                 <div class="buttons ml-auto flex text-gray-600 mr-1">
-                    <!-- Botón anterior -->
+
                     <svg action="prev" class="w-7 border-2 rounded-l-lg p-1 cursor-pointer border-r-0 hover:bg-gray-200"
                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path action="prev" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
-                    <!-- Botón siguiente -->
+       
                     <svg action="next" class="w-7 border-2 rounded-r-lg p-1 cursor-pointer hover:bg-gray-200"
                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path action="next" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -67,7 +67,7 @@
                     </svg>
                 </div>
             </div>
-            <!-- Contenido -->
+ 
             <div class="content-area w-full h-96 overflow-hidden rounded-b-xl">
                 <div class="platform shadow-xl h-full flex">
 
@@ -84,13 +84,13 @@
                         {% endif %}  
                 
                                 <div class="main flex w-full p-8 cursor-pointer">
-                                    <!-- Imagen -->
+                             
                                     <div class="sub w-4/6 my-auto">
                                         <img class="w-full h-48 object-cover rounded-lg" src="{% if destacado.contenido.imagen %}{{ destacado.contenido.imagen.url }}{% else %}/static/default.jpg{% endif %}" alt="{{ destacado.contenido.titulo }}">
                                     </div>
-                                    <!-- Información -->
+                        
                                     <div class="sub w-full my-auto px-4">
-                                        <!-- Autor y categoría -->
+                               
                                         <div class="text-sm mb-4 flex items-center space-x-4">
                                             <img class="w-8 h-8 rounded-full" src="{% if destacado.contenido.autor.profile.image %}{{ destacado.contenido.autor.profile.image.url }}{% else %}/static/default.png{% endif %}" alt="{{ destacado.contenido.autor.username }}">
                                             <div>
@@ -103,12 +103,11 @@
                                                 <span class="text-gray-600">{{ destacado.contenido.categoria.nombre_categoria }}</span>
                                             </div>
                                         </div>
-                                        <!-- Título -->
-                                        <!-- <div class="head text-3xl font-bold mb-2">{{ contenido.titulo }}</div> -->
+                                        
                                         <div class="head text-3xl text-gray-900 font-bold text-lg mb-1 truncate break-words">{{ destacado.contenido.titulo }}</div>
-                                        <!-- Resumen -->
+                       
                                         <div class="long-text text-lg text-gray-700">{{ destacado.contenido.resumen|truncatewords:20 }}</div>
-                                        <!-- Fecha -->
+                                  
                                         <div class="text-sm mt-4 text-gray-600">{{ destacado.contenido.fecha_creacion|date:"d M Y" }}</div>
                                     </div>
                                 </div>
@@ -210,8 +209,8 @@
 
 </script>
 
+
 {% include 'includes/pago_categoria.html' with categoria=destacado.contenido.categoria %}
 {% include 'includes/iniciar_sesion.html' %}
-
 {% endblock content %}
 

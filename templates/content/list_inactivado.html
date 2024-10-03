@@ -28,22 +28,22 @@
         
             {% for contenido in contenidos %}
                 
-            <!-- contenido -->
+        
             <div class="w-full bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl overflow-hidden flex flex-col md:flex-row relative">                     
-                    <!-- imagen -->
+   
                 <a href="{% url 'detalle_contenido' contenido.slug %}" class="h-32 md:h-48 lg:h-auto lg:w-48 flex-none bg-cover bg-center" 
                 style="background-image: url('{% if contenido.imagen %}{{ contenido.imagen.url }}{% else %}/static/default.jpg{% endif %}'); object-fit: cover;">
                 </a>
 
-                    <!-- Categoría en la parte superior derecha -->
+
                 <div class="absolute top-2 right-2 bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full">
                     {{ contenido.categoria.nombre_categoria }}
                 </div>
 
-                <!-- Información -->
+
                 <div class="px-4 py-3 w-full flex flex-col justify-between leading-normal overflow-hidden">
                     
-                    <!-- Autor y fecha -->
+  
                     <div class="flex items-center justify-between mb-2">
                         <div class="text-sm">
                             {% if contenido.autor is null %}
@@ -55,11 +55,11 @@
                         </div>
                     </div>
 
-                    <!-- Título y resumen del contenido -->
+           
                     <div class="mb-4">
                         <div class="text-gray-900 font-bold text-lg mb-1 truncate">{{ contenido.titulo }}</div>
                         
-                        <!-- Estilo actualizado para mostrar varias líneas -->
+                   
                         <p class="text-gray-700 text-xs overflow-hidden" 
                             style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; font-size: 0.85rem;">
                             {{ contenido.resumen|truncatewords:30 }}
@@ -67,9 +67,9 @@
                 
                     </div>
 
-                    <!-- Botones de acción alineados -->
+
                     <div class="flex flex-col justify-between space-y-2">
-                        <!-- Botón Activar -->
+               
                         <form action="{% url 'inactivar_contenido' contenido.id %}" method="POST">
                             {% csrf_token %}
                             <button type="submit" class="bg-pink-800 hover:bg-pink-700 text-white text-xs py-2 px-4 rounded-md text-center w-full">

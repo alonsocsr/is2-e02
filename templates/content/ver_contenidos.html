@@ -8,7 +8,7 @@ Todos los Contenidos
 {% block content %}
 <div class="max-w-screen-lg mx-auto m-5">
 
-    <!-- Sección de contenidos en tres columnas -->
+    
     <section id="content-grid" class="flex flex-col items-center space-y-6">
         {% for contenido in all_contenidos %}
         <div class="w-full relative sm:aspect-[1/1] lg:aspect-auto bg-white shadow-lg rounded-lg overflow-hidden">
@@ -32,12 +32,12 @@ Todos los Contenidos
                             <span class="text-gray-600"> - {{ contenido.fecha_creacion|date:"d M Y" }}</span>
                         </div>
                     </div>
-                    <!-- Título -->
+                 
                     <h3 class="text-2xl font-bold mb-2">{{ contenido.titulo }}</h3>
-                    <!-- Resumen -->
+                  
                     <p class="text-gray-700 text-base">{{ contenido.resumen|truncatewords:20 }}</p>
-                    <!-- Fecha -->
-                    <!-- <p class="text-sm text-gray-600 mt-4">{{ contenido.fecha_creacion|date:"d M Y" }}</p> -->
+                
+                 
                     <p class="text-gray-700 text-base">{{ contenido.cuerpo|safe|linebreaks  }}</p>
                 </div>
             </a>

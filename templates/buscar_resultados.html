@@ -7,9 +7,9 @@
         Resultados de búsqueda para: "{{ query }}"
     </h2>
 
-    <!-- Dropdown para filtrar por categorías y autores -->
+  
     <div class="flex justify-end mb-6 space-x-4">
-        <!-- Dropdown de categorías con buscador -->
+  
         <div class="relative inline-block text-left">
             <button id="dropdownCategorias" class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none">
                 Filtrar por Categorías
@@ -20,7 +20,7 @@
             <div id="dropdownCategoriasMenu" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 hidden p-2 space-y-2">
                 <form method="GET" action="{% url 'buscar_contenido' %}">
                     <input type="hidden" name="q" value="{{ query }}">
-                    <!-- Input de búsqueda para categorías -->
+                
                     <input type="text" id="buscarCategoria" placeholder="Buscar categoría..." class="px-3 py-1 border rounded-md text-sm w-full mb-2">
                     <div id="listaCategorias" class="py-1 space-y-2 max-h-40 overflow-y-auto">
                         {% for categoria in categorias %}
@@ -39,7 +39,7 @@
             </div>
         </div>
 
-        <!-- Dropdown de autores con búsqueda -->
+
         <div class="relative inline-block text-left">
             <button id="dropdownAutores" class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none">
                 Filtrar por Autores
@@ -50,7 +50,7 @@
             <div id="dropdownAutoresMenu" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 hidden p-2 space-y-2">
                 <form method="GET" action="{% url 'buscar_contenido' %}">
                     <input type="hidden" name="q" value="{{ query }}">
-                    <!-- Input de búsqueda -->
+  
                     <input type="text" id="buscarAutor" placeholder="Buscar autor..." class="px-3 py-1 border rounded-md text-sm w-full mb-2">
                     <div id="listaAutores" class="py-1 space-y-2 max-h-40 overflow-y-auto">
                         {% for autor in autores %}
@@ -70,7 +70,7 @@
         </div>
     </div>
 
-    <!-- Resultados de la búsqueda -->
+
     {% if resultados %}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {% for contenido in resultados %}
@@ -84,7 +84,7 @@
             <p class="text-gray-600">Intenta con otro término de búsqueda.</p>
             <p class="text-gray-600 mt-4">Aquí tienes otros post que te podrían interesar:</p>
 
-            <!-- Sugerencias como contenidos -->
+  
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 text-left">
                 {% for contenido in sugerencias %}
                     {% include "includes/contenido.html" %}
@@ -104,7 +104,7 @@
     const listaAutores = document.getElementById('listaAutores');
     const listaCategorias = document.getElementById('listaCategorias');
 
-    // Manejar los dropdowns
+
     dropdownCategorias.addEventListener('click', function(event) {
         event.stopPropagation();
         dropdownCategoriasMenu.classList.toggle('hidden');
@@ -115,12 +115,12 @@
         dropdownAutoresMenu.classList.toggle('hidden');
     });
 
-    // Búsqueda dinámica de autores (petición AJAX simulada)
+ 
     buscarAutorInput.addEventListener('input', function() {
         const query = this.value.toLowerCase();
 
-        // Simula la búsqueda de autores. Aquí puedes hacer una petición AJAX si es necesario.
-        listaAutores.innerHTML = ''; // Limpia la lista
+     
+        listaAutores.innerHTML = ''; 
         {% for autor in autores %}
             if ('{{ autor.username }}'.toLowerCase().includes(query)) {
                 listaAutores.innerHTML += `
@@ -133,7 +133,7 @@
         {% endfor %}
     });
 
-    // Búsqueda dinámica de categorías
+   
     buscarCategoriaInput.addEventListener('input', function() {
         const query = this.value.toLowerCase();
         const categorias = listaCategorias.querySelectorAll('div');
@@ -144,7 +144,7 @@
         });
     });
 
-    // Evitar que el dropdown se cierre al hacer clic dentro de él
+    
     dropdownCategoriasMenu.addEventListener('click', function(event) {
         event.stopPropagation();
     });
@@ -153,7 +153,7 @@
         event.stopPropagation();
     });
 
-    // Cerrar dropdowns al hacer clic fuera del menú
+    
     document.addEventListener('click', function(event) {
         if (!dropdownCategorias.contains(event.target)) {
             dropdownCategoriasMenu.classList.add('hidden');
@@ -164,7 +164,7 @@
         }
     });
 
-    // Prevenir que se cierre el dropdown al hacer clic en los inputs de búsqueda
+
     buscarAutorInput.addEventListener('click', function(event) {
         event.stopPropagation();
     });
@@ -173,7 +173,7 @@
         event.stopPropagation();
     });
 
-    // Evitar que el dropdown se cierre al hacer clic en los checkboxes dentro del menú
+
     listaAutores.addEventListener('click', function(event) {
         event.stopPropagation();
     });
