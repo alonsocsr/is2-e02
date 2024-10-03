@@ -15,20 +15,6 @@
 
 {% block content %}
 
-<div class="max-w-screen-lg m-auto">
-    <!-- Mensajes de avisos/exitos -->
-    <div id="mensaje_box" class="mx-2 mb-4">
-        {% if messages %}
-        <div class="space-y-3">
-            {% for message in messages %}
-            <div class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
-                {{ message }}
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-    </div>
-
     {% if contenido.categoria.tipo_categoria in categorias_restringidas and not user.is_authenticated %}
         {% include 'includes/iniciar_sesion.html' %}
         <script>
@@ -36,10 +22,25 @@
             document.getElementById('closeButton').classList.add('hidden');
         </script>
 
-    {% elif contenido.categoria.tipo_categoria == 'PA' and contenido.categoria.id not in categorias_suscritas_ids %}
+    {% elif contenido.categoria.tipo_categoria == 'PA' and contenido.categoria.id not in categorias_suscritas_ids and not contenido.autor == request.user and not request.GET.from_kanban == 'true' %}
         {% include '403.html' %}
 
     {% else %}
+    
+    <div class="max-w-screen-lg m-auto">
+        <!-- Mensajes de avisos/exitos -->
+        <div id="mensaje_box" class="mx-2 mb-4">
+            {% if messages %}
+            <div class="space-y-3">
+                {% for message in messages %}
+                <div class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
     <!-- Imagen con categoría -->
     <section id="summary" class="bg-white rounded-xl shadow-md mb-4 mx-auto mt-4">
 
