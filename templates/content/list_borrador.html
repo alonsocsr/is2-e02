@@ -29,31 +29,28 @@ Mis borradores | Stark
     <div
       class="w-full bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl overflow-hidden flex flex-col md:flex-row">
 
-      <!-- Imagen con restricciones de tamaño y object-cover -->
+
       <a href="{% url 'crear_contenido' contenido.id %}"
         class="h-32 md:h-48 lg:h-auto lg:w-48 flex-none bg-cover bg-center"
         style="background-image: url('{% if contenido.imagen %}{{ contenido.imagen.url }}{% else %}/static/default.jpg{% endif %}'); object-fit: cover;">
       </a>
 
-      <!-- Información -->
+
       <div class="px-4 py-3 w-full flex flex-col justify-between leading-normal overflow-hidden">
 
-        <!-- Autor y fecha -->
+
         <div class="flex items-center justify-between mb-2">
           <div class="text-sm">
             <p class="text-gray-900 leading-none">{{ contenido.autor.get_full_name }}</p>
             <p class="text-gray-600 text-xs">{{ contenido.fecha_creacion|date:"d M Y" }}</p>
-            <!-- Botones de acción alineados verticalmente en pantallas pequeñas -->
-
-            
           </div>
         </div>
 
-        <!-- Título y resumen del contenido -->
+ 
         <div class="mb-4">
           <div class="text-gray-900 font-bold text-lg mb-1 truncate">{{ contenido.titulo }}</div>
 
-          <!-- Estilo actualizado para mostrar varias líneas -->
+    
           <p class="text-gray-700 text-xs overflow-hidden"
             style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; font-size: 0.85rem;">
             {{ contenido.resumen|truncatewords:30 }}
@@ -72,14 +69,14 @@ Mis borradores | Stark
           {% endif %}
         </div>
 
-        <!-- Botones de acción alineados verticalmente en pantallas pequeñas -->
+
         <div class="flex flex-col justify-between space-y-2">
-          <!-- Botón Editar -->
+
           <a href="{% url 'crear_contenido' contenido.id %}"
             class="bg-pink-800 hover:bg-pink-700 text-white text-xs py-2 px-4 rounded-md text-center w-full">
             Editar Borrador
           </a>
-          <!-- Botón Enviar a Edición -->
+
           {% if contenido.categoria.moderada %}
           <form id="sendToEditorForm-{{ contenido.id }}" action="{% url 'cambiar_estado' contenido.id %}" method="POST" class="w-full">
               {% csrf_token %}
@@ -104,15 +101,10 @@ Mis borradores | Stark
     {% endfor %}
   </div>
 
-  <!-- Botón para crear nuevo contenido -->
-  <!-- <div class="mt-6 text-center">
-        <a href="{% url 'crear_contenido_nuevo' %}" class="bg-pink-800 hover:bg-pink-700 text-white py-3 px-6 rounded-lg w-full md:w-auto inline-block">
-          Crear Nuevo Contenido
-        </a>
-      </div> -->
+
 </div>
 {% endif %}
-<!-- Modal para el rechazo -->
+
 <div id="rejectModal" class="hs-overlay hidden fixed top-0 start-0 z-50 w-full h-full bg-gray-500 bg-opacity-75">
   <div class="flex justify-center items-center h-full">
     <div class="bg-white rounded-lg shadow-md w-full max-w-md p-4">
@@ -131,7 +123,7 @@ Mis borradores | Stark
   </div>
 </div>
 
-<!-- Modal de confirmación -->
+
 <div id="confirmModal" class="hs-overlay hidden fixed top-0 start-0 z-50 w-full h-full bg-gray-500 bg-opacity-75">
   <div class="flex justify-center items-center h-full">
     <div class="bg-white rounded-lg shadow-md w-full max-w-md p-4">
@@ -156,18 +148,18 @@ Mis borradores | Stark
     }
   }
 
-  // Función para abrir el modal de confirmación
+
   function openConfirmModal(formId) {
       document.getElementById('confirmModal').classList.remove('hidden');
       const confirmButton = document.getElementById('confirmButton');
 
-      // Cuando el usuario haga clic en "Confirmar", enviar el formulario
+  
       confirmButton.onclick = function() {
           document.getElementById(formId).submit();
       };
   }
 
-  // Función para cerrar el modal de confirmación
+
   function closeConfirmModal() {
       document.getElementById('confirmModal').classList.add('hidden');
   }

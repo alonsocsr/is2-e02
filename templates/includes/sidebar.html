@@ -1,50 +1,6 @@
 
-<!-- <aside class="flex flex-col min-w-[12rem] max-w-[15rem] w-full h-screen px-5 py-8 overflow-y-auto bg-white border-r transition-all duration-300 ease-in-out transform md:translate-x-0 md:relative md:shadow-none md:w-60"> -->
     <div class="flex flex-col justify-between flex-1 mt-16">
         <nav class="-mx-3 space-y-6">
-            <!-- <div class="space-y-3">
-                <details class="group [&_summary::-webkit-details-marker]:hidden">
-                    <summary class="flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100 hover:text-pink-700 transition-colors duration-300 transform">
-                        <span class="text-sm font-medium">Categorías</span>
-                        <span class="shrink-0 transition duration-300 group-open:-rotate-180">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                            </svg>
-                        </span>
-                    </summary>
-
-                    <ul class="mt-2 space-y-1 px-4">
-                        {% for categoria in categorias %}
-                        <li class="flex justify-between items-center">
-                            <a href="{% url 'categories:detalle' categoria.id %}" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-pink-700">
-                                {{ categoria.nombre_categoria }}
-                            </a>
-                            
-                            <form method="POST" action="{% url 'categoria_interes' categoria.id %}">
-                                {% csrf_token %}
-                                <button type="submit" class="star-button" aria-label="Marcar como favorito">
-                                    
-                                    {% if categoria.id in categorias_interes_ids %}
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="star-icon">
-                                        <path fill="#FF1493" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                                    </svg>
-                                    {% else %}
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="star-icon">
-                                        <path fill="#b3b3b3" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                                    </svg>
-                                    {% endif %}
-                                </button>
-                            </form>
-                        </li>
-                        {% empty %}
-                        <li>
-                            <p class="block px-4 py-2 text-gray-700">No hay categorías disponibles</p>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </details>
-            </div> -->
-            
             <div class="space-y-3 ">
                 
                 {%if perms.permissions.crear_contenido or perms.permissions.editar_contenido or perms.permissions.publicar_contenido or perms.permissions.suspender_cuenta%}
@@ -184,7 +140,7 @@
             </div>
         </nav>
     </div>
-<!-- </aside> -->
+
 <style>
     .star-button {
         background: none;
@@ -195,17 +151,17 @@
       }
     
       .star-icon {
-        width: 16px; /* Puedes ajustar este tamaño según prefieras */
+        width: 16px; 
         height: 16px;
-        fill: #b3b3b3; /* Color inicial gris */
-        transition: fill 0.3s ease; /* Transición suave */
+        fill: #b3b3b3; 
+        transition: fill 0.3s ease; 
       }
     
       .star-button:hover .star-icon {
-        fill: #FF1493; /* Color rosa al hacer hover */
+        fill: #FF1493;
       }
     
       .star-button:focus .star-icon {
-        fill: #FF1493; /* Color rosa al hacer click */
+        fill: #FF1493;
       }
 </style>

@@ -32,12 +32,12 @@
                     {% for post in borrador %}
                         <a href="{% url 'detalle_contenido' post.slug %}?is_staff=true">
                             <div class="bg-gray-50 px-4 pb-4 rounded-lg shadow-md flex flex-col space-y-2 contenido-item mb-2 transition-transform transform hover:scale-110" draggable="true" data-id="{{ post.id }}" data-autor-id="{{ post.autor.id }}" data-moderada="{{ post.categoria.moderada|yesno:'true,false' }}">
-                                <!-- Título del contenido -->
+                              
                                 <div class="mt-2">
                                     <h3 class="font-bold text-gray-800 break-words truncate" title="{{ post.titulo }}">{{ post.titulo|truncatechars:100 }}</h3>
                                 </div>
                                 
-                                <!-- Contenedor superior: Imagen + Información del autor y fecha -->
+                         
                                 <div class="flex items-center space-x-4">
                                     <!-- Imagen del contenido -->
                                     <div class="flex-shrink-0 w-12 h-12">
@@ -70,7 +70,7 @@
                 </div>
             </div>
 
-            <!-- Repetir la misma estructura para las demás columnas -->
+        
             <!-- Columna para Edición -->
             <div class="bg-white p-5 rounded-lg shadow-lg kanban-column" data-status="Edicion">
                 <h2 class="text-xl font-bold text-center text-gray-700">Edición</h2>
@@ -87,12 +87,12 @@
                             {% endif %}
 
                                 <div class="bg-gray-50 px-4 pb-4 rounded-lg shadow-md flex flex-col space-y-2 contenido-item mb-2 transition-transform transform hover:scale-110" draggable="true" data-id="{{ post.id }}" data-autor-id="{{ post.autor.id }}" data-moderada="{{ post.categoria.moderada|yesno:'true,false' }}">
-                                    <!-- Título del contenido -->
+                              
                                     <div class="mt-2">
                                         <h3 class="font-bold text-gray-800 break-words truncate" title="{{ post.titulo }}">{{ post.titulo|truncatechars:100 }}</h3>
                                     </div>
                                     
-                                    <!-- Contenedor superior: Imagen + Información del autor y fecha -->
+                              
                                     <div class="flex items-center space-x-4">
                                         <!-- Imagen del contenido -->
                                         <div class="flex-shrink-0 w-12 h-12">
@@ -139,9 +139,9 @@
                                     <h3 class="font-bold  text-gray-800 break-words truncate" title="{{ post.titulo }}">{{ post.titulo|truncatechars:100 }}</h3>
                                 </div>
                                 
-                                <!-- Contenedor superior: Imagen + Información del autor y fecha -->
+                     
                                 <div class="flex items-center space-x-4">
-                                    <!-- Imagen del contenido -->
+                           
                                     <div class="flex-shrink-0 w-12 h-12">
                                         {% if post.imagen %}
                                             <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}" class="w-full h-full object-cover rounded-lg">
@@ -179,12 +179,12 @@
                     {% for post in publicado %}
                         <a href="{% url 'detalle_contenido' post.slug %}?is_staff=true">
                             <div class="bg-gray-50 px-4 pb-4 rounded-lg shadow-md flex flex-col space-y-2 contenido-item mb-2 transition-transform transform hover:scale-110" draggable="true" data-id="{{ post.id }}" data-autor-id="{{ post.autor.id }}" data-moderada="{{ post.categoria.moderada|yesno:'true,false' }}">
-                                <!-- Título del contenido -->
+                           
                                 <div class="mt-2">
                                     <h3 class="font-bold text-gray-800 break-words truncate" title="{{ post.titulo }}">{{ post.titulo|truncatechars:100 }}</h3>
                                 </div>
                                 
-                                <!-- Contenedor superior: Imagen + Información del autor y fecha -->
+                             
                                 <div class="flex items-center space-x-4">
                                     <!-- Imagen del contenido -->
                                     <div class="flex-shrink-0 w-12 h-12">
@@ -214,21 +214,21 @@
                 </div>
             </div>
 
-            <!-- Columna para Inactivo -->
+            <!-- Columna para Inactivo-->
             <div class="bg-white p-5 rounded-lg shadow-lg kanban-column" data-status="Inactivo">
                 <h2 class="text-xl font-bold text-center text-gray-700">Inactivo</h2>
                 <div class="kanban-items min-h-[300px] space-y-4 p-2 border border-gray-300 rounded-lg">
                     {% for post in inactivo %}
                         <a href="{% url 'detalle_contenido' post.slug %}?is_staff=true">
                             <div class="bg-gray-50 px-4 pb-4 rounded-lg shadow-md flex flex-col space-y-2 contenido-item mb-2 transition-transform transform hover:scale-110" draggable="true" data-id="{{ post.id }}" data-autor-id="{{ post.autor.id }}" data-moderada="{{ post.categoria.moderada|yesno:'true,false' }}">
-                                <!-- Título del contenido -->
+                       
                                 <div class="mt-2">
                                     <h3 class="font-bold text-gray-800 break-words truncate" title="{{ post.titulo }}">{{ post.titulo|truncatechars:100 }}</h3>
                                 </div>
                                 
-                                <!-- Contenedor superior: Imagen + Información del autor y fecha -->
+   
                                 <div class="flex items-center space-x-4">
-                                    <!-- Imagen del contenido -->
+                                    
                                     <div class="flex-shrink-0 w-12 h-12">
                                         {% if post.imagen %}
                                             <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}" class="w-full h-full object-cover rounded-lg">
@@ -260,21 +260,21 @@
             </button>
         </div>
 
-        <!-- Modal para los contenidos archivados -->
+        <!-- Modal: contenidos archivados -->
         <div id="archivadoModal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
             <div class="bg-white p-6 rounded-lg shadow-lg w-96 max-h-80 overflow-y-auto relative">
                 <h3 class="text-lg font-bold mb-4">Contenidos Archivados</h3>
                 <div class="space-y-4">
                     {% for post in archivado %}
                         <div class="bg-gray-50 px-4 pb-4 rounded-lg shadow-md flex flex-col space-y-2 contenido-item mb-2">
-                            <!-- Título del contenido -->
+                      
                             <div class="mt-2">
                                 <h3 class="font-bold text-gray-800 break-words truncate" title="{{ post.titulo }}">{{ post.titulo|truncatechars:100 }}</h3>
                             </div>
                             
-                            <!-- Contenedor superior: Imagen + Información del autor y fecha -->
+                            <!-- Contenedor superior: Imagen, información del autor y fecha -->
                             <div class="flex items-center space-x-4">
-                                <!-- Imagen del contenido -->
+                                <!-- Imagen de portada del contenido -->
                                 <div class="flex-shrink-0 w-12 h-12">
                                     {% if post.imagen %}
                                         <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}" class="w-full h-full object-cover rounded-lg">
@@ -303,11 +303,11 @@
             </div>
         </div>
 
-        <!-- Modal para el rechazo -->
+ 
         <div id="rejectModal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
             <div class="bg-white p-6 rounded-lg shadow-lg w-96">
                 <h3 class="text-lg font-bold mb-4">Motivo de Rechazo</h3>
-                <p id="postName"></p> <!-- Aquí se mostrará el nombre del post -->
+                <p id="postName"></p> 
                 <form id="rejectForm" method="post">
                     <textarea id="mensajeRechazo" name="mensaje_rechazo" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Ingresa el motivo del rechazo"></textarea>
                     <div class="flex justify-end mt-4">
@@ -320,7 +320,7 @@
         </div>
 
 
-        <!-- Modal de confirmación -->
+  
         <div id="confirmModal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
             <div class="bg-white p-6 rounded-lg shadow-lg w-96">
                 <h3 class="text-lg font-bold mb-4">Confirmar cambios</h3>
@@ -342,33 +342,33 @@
         }
         
         .kanban-column {
-            width: 250px; /* Ancho fijo para cada columna */
-            flex: 0 0 250px; /* No permitir que la columna crezca o se encoja */
-            max-height: 80vh; /* Altura máxima de la columna */
-            overflow-y: auto; /* Hacer scroll interno en la columna */
+            width: 250px; 
+            flex: 0 0 250px; 
+            max-height: 80vh;
+            overflow-y: auto; 
             overflow-x: hidden;
         }
 
         .kanban-items {
-            max-height: 70vh; /* Limitar la altura del contenido de las tarjetas */
-            overflow-y: auto; /* Habilitar scroll interno en el contenedor de tarjetas */
+            max-height: 70vh; 
+            overflow-y: auto; 
             border: none;
             overflow-x: hidden;
         }
 
         .contenido-item {
-            width: 100%; /* Asegura que las tarjetas no excedan el ancho de la columna */
-            max-width: 100%; /* Prevenir desbordamiento horizontal */
+            width: 100%; 
+            max-width: 100%; 
         }
-        /* Scroll horizontal para la vista general en pantallas más pequeñas */
+  
         @media (max-width: 768px) {
             .container {
-                overflow-x: auto; /* Habilitar scroll horizontal para toda la vista en pantallas pequeñas */
+                overflow-x: auto; 
             }
 
             .grid {
-                width: max-content; /* Asegura que la cuadrícula no se ajuste al contenedor, permitiendo el scroll horizontal */
-                flex-wrap: nowrap; /* Evita que las columnas se apilen */
+                width: max-content; 
+                flex-wrap: nowrap; 
             }
         }
         
@@ -376,16 +376,16 @@
             transition: all 0.2s ease;
         }
 
-        /* Asegura que las tarjetas tengan un hover claro */
+     
         .contenido-item:hover {
             background-color: #f1f5f9;
         }
 
         .long-text {
-            white-space: normal; /* Asegura que el texto no se mantenga en una línea */
-            word-wrap: break-word; /* Rompe las palabras largas */
-            overflow-wrap: break-word; /* Compatibilidad adicional para algunos navegadores */
-            max-width: 100%; /* Asegúrate de que no exceda el ancho */
+            white-space: normal; 
+            word-wrap: break-word; 
+            overflow-wrap: break-word; 
+            max-width: 100%; 
         }
         
     </style>

@@ -38,7 +38,7 @@
                                     <span class="text-gray-500">de {{ log.anterior_estado }} a </span>
                                     <span class="font-semibold text-gray-900">{{ log.nuevo_estado }}</span>
                                 </div>
-                                <!-- fecha del cambio -->
+                      
                                 <div class="px-2">
                                     <span class="text-gray-600">{{ log.fecha|date:"M d, Y H:i" }}</span>
                                 </div>
@@ -54,7 +54,7 @@
                 {% endfor %}
             </div>
 
-            <!-- Pagination Controls -->
+  
             {% if is_paginated %}
                 <div class="mt-6 flex justify-center rounded-sm">
                     <nav class="relative z-0 inline-flex shadow-sm -space-x-px" aria-label="Pagination">

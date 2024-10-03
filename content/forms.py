@@ -1,6 +1,5 @@
 import sys
 from django import forms
-from PIL import Image
 from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from .models import Contenido, ContenidoReportado
@@ -58,7 +57,7 @@ class ContenidoForm(forms.ModelForm):
         if imagen and imagen.size > max_size:
             raise ValidationError("El tamaño de la imagen no debe exceder los 2MB.")
         return imagen
-
+    
     def clean_slug(self):
         instance = self.instance
         titulo = self.cleaned_data.get('titulo')

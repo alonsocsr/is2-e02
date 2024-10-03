@@ -44,9 +44,6 @@
                 </div>
             </div>
 
-            
-
-            <!-- Links de autenticación en pantallas grandes -->
             <div class="hidden sm:flex items-center">
                 {% if user.is_authenticated %}
                     <div class="flex items-center space-x-3">
@@ -74,7 +71,7 @@
             <a href="{% url 'home' %}" class="text-gray-900 block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-200 hover:text-pink-800">Home</a>
             <a href="{% url 'categories:listar' %}" class="text-gray-900 block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-200 hover:text-pink-800">Categorías</a>
 
-            <!-- Agregar el bloque de búsqueda aquí -->
+    
             <form method="GET" action="{% url 'buscar_contenido' %}" class="relative text-gray-800">
                 <input type="search" name="q" placeholder="Buscar..." class="bg-gray-200 h-10 px-5 pr-10 rounded-full text-sm focus:outline-none w-full">
                 <button type="submit" class="absolute right-0 top-0 mt-3 mr-4">
@@ -103,7 +100,7 @@
 
 </nav>
 
-<!-- Script para alternar el menú móvil -->
+
 <script>
     const hamburgerBtn = document.getElementById('hamburger-btn');
     const mobileMenu = document.getElementById('mobile-menu');
