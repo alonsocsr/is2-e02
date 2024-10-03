@@ -6,4 +6,4 @@ class ContentConfig(AppConfig):
     name = 'content'
     # desactivo mientras que no se necesite, descomentar las lineas para mandar al correo
     def ready(self):
-            import content.signals
+        import content.signals

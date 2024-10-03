@@ -36,7 +36,7 @@
             document.getElementById('closeButton').classList.add('hidden');
         </script>
 
-    {% elif contenido.categoria.tipo_categoria == 'PA' and contenido.categoria.id not in categorias_suscritas_ids %}
+    {% elif not is_admin and contenido.autor not in request.user and contenido.categoria.tipo_categoria == 'PA' and contenido.categoria.id not in categorias_suscritas_ids %}
         {% include '403.html' %}
 
     {% else %}
@@ -111,7 +111,7 @@
 
         <!-- Botones de inactivar y estadísticas alineados a la derecha -->
         <div class="flex justify-end space-x-4 p-4">
-            {% if perms.permissions.inactivar_contenido %}
+            {% if perms.permissions.inactivar_contenido and contenido.autor == request.user or is_admin%}
             <form id="inactivateForm-{{ contenido.id }}" action="{% url 'inactivar_contenido' contenido.id %}" method="POST">
                 {% csrf_token %}
                 {% if contenido.activo %}

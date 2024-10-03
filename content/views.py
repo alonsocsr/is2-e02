@@ -30,6 +30,7 @@ class VistaAllContenidos(ListView):
     template_name="content/ver_contenidos.html"
     model=Contenido
     context_object_name="all_contenidos"
+    paginate_by = 3
     
     def get_queryset(self):
         queryset = Contenido.objects.filter(estado="Publicado", activo=True)
@@ -311,6 +312,7 @@ class CambiarEstadoView(UpdateView):
                 contenido.mensaje_rechazo = ''
                 messages.success(self.request, "El contenido ha sido enviado a Edición.")
             elif contenido.estado == 'Edicion':
+                contenido.usuario_editor = usuario
                 contenido.estado = 'Publicar'
                 #Se utiliza la función que crea el historial de cambio
                 log_status_change(contenido, anterior, 'Publicar', usuario)
@@ -433,12 +435,9 @@ class EditarContenido(LoginRequiredMixin, PermissionRequiredMixin, FormView):
 
     def form_valid(self, form):
         contenido = form.save(commit=False)
-        try:
-            contenido.save()
-            contenido.save_version(self.request.user)
-            messages.success(self.request, "Contenido guardado y versión creada con éxito.")
-        except ValueError:
-            messages.error('El título ya existe')    
+        contenido.save()
+        contenido.save_version(self.request.user)
+        messages.success(self.request, "Contenido guardado y versión creada con éxito.")    
 
         self.object = contenido
         return super().form_valid(form)
@@ -722,6 +721,7 @@ class UpdatePostStatusView(LoginRequiredMixin, PermissionRequiredMixin, View):
             elif new_status == 'Publicacion':
                 post.estado = 'Publicar'
                 if ban == 0:
+                    post.usuario_editor = self.request.user
                     log_status_change(post, estado_anterior, 'Publicar', self.request.user)
                     ban = 1
             elif new_status == 'Publicado':

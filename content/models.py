@@ -61,7 +61,7 @@ class Contenido(models.Model):
     estado = models.CharField(max_length=30, default="Borrador")
     activo = models.BooleanField(default=False)
     mensaje_rechazo = models.TextField(blank=True,default="")
-    slug = models.SlugField(unique=True, db_index=True)
+    slug = models.SlugField(unique=True, db_index=True, max_length=255)
     # Campos para interaccion
     cantidad_likes = models.PositiveIntegerField(default=0)
     cantidad_dislikes = models.PositiveIntegerField(default=0)

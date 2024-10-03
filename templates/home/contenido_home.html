@@ -2,7 +2,7 @@
 
 {% load static %}
 {% block title %}
-    House Stark Blog | Bienvenido de Vuelta
+    Stark | Bienvenido de Vuelta
 {% endblock title %}
 
 {% block content %}
@@ -48,7 +48,7 @@
 
     <!-- Carrusel  -->
     <section id="carousel-posts" class="hidden xl:block xl:w-3/5 w-full mt-10 xl:mt-0">
-        <div class="gallery border-2 rounded-xl mx-auto m-5 bg-white shadow-lg" style="width:750px;">
+        <div class="gallery border-2 rounded-xl mx-auto m-5 bg-white shadow-lg w-[750px]" style="width:750px;">
             <!-- Título del contenido -->
             <div class="top flex p-2 border-b select-none rounded-t-xl bg-gray-100">
                 <div class="heading text-gray-800 w-full pl-3 font-semibold my-auto"></div>
@@ -76,7 +76,7 @@
                             <div class="each-frame border-box flex-none h-full" title="{{ destacado.contenido.titulo }}">
                                 <a href="#" onClick="mostrarModalLogin(event)">
                         {% elif destacado.contenido.categoria.tipo_categoria == 'PA' and destacado.contenido.categoria.id not in categorias_suscritas_ids %}
-                            <div class="each-frame border-box flex-none h-full" title="{{ contenido.titulo }}">
+                            <div class="each-frame border-box flex-none h-full" title="{{ destacado.contenido.titulo }}">
                                 <a href="#" onClick="mostrarModal(event, '{{ contenido.categoria.id }}')">
                         {% else %}
                             <div class="each-frame border-box flex-none h-full" title="{{ destacado.contenido.titulo }}">
@@ -85,16 +85,16 @@
                 
                                 <div class="main flex w-full p-8 cursor-pointer">
                                     <!-- Imagen -->
-                                    <div class="sub w-4/6 my-auto">
+                                    <div class="sub w-2/5 my-auto">
                                         <img class="w-full h-48 object-cover rounded-lg" src="{% if destacado.contenido.imagen %}{{ destacado.contenido.imagen.url }}{% else %}/static/default.jpg{% endif %}" alt="{{ destacado.contenido.titulo }}">
                                     </div>
                                     <!-- Información -->
-                                    <div class="sub w-full my-auto px-4">
+                                    <div class="sub w-3/5 my-auto px-4">
                                         <!-- Autor y categoría -->
                                         <div class="text-sm mb-4 flex items-center space-x-4">
                                             <img class="w-8 h-8 rounded-full" src="{% if destacado.contenido.autor.profile.image %}{{ destacado.contenido.autor.profile.image.url }}{% else %}/static/default.png{% endif %}" alt="{{ destacado.contenido.autor.username }}">
                                             <div>
-                                                {% if post.autor is null %}
+                                                {% if destacado.contenido.autor is null %}
                                                 <span class="font-semibold">[eliminado]</span>
                                                 {% else %}
                                                 <span class="font-semibold">{{ destacado.contenido.autor.username }}</span>
@@ -105,7 +105,7 @@
                                         </div>
                                         <!-- Título -->
                                         <!-- <div class="head text-3xl font-bold mb-2">{{ contenido.titulo }}</div> -->
-                                        <div class="head text-3xl text-gray-900 font-bold text-lg mb-1 truncate break-words">{{ destacado.contenido.titulo }}</div>
+                                        <div class="head text-gray-900 font-bold text-lg mb-1 truncate break-words">{{ destacado.contenido.titulo }}</div>
                                         <!-- Resumen -->
                                         <div class="long-text text-lg text-gray-700">{{ destacado.contenido.resumen|truncatewords:20 }}</div>
                                         <!-- Fecha -->
