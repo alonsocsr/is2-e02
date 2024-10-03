@@ -27,7 +27,7 @@
 
             <div class="w-full bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl overflow-hidden flex flex-col md:flex-row relative"> 
                 
-                <a href="{% url 'detalle_contenido' contenido_reportado.contenido.slug %}" class="h-32 md:h-48 lg:h-auto lg:w-48 flex-none bg-cover bg-center" 
+                <a href="{% url 'detalle_contenido' contenido_reportado.contenido.slug %}?is_staff=true" class="h-32 md:h-48 lg:h-auto lg:w-48 flex-none bg-cover bg-center" 
                 style="background-image: url('{% if contenido_reportado.contenido.imagen %}{{ contenido_reportado.contenido.imagen.url }}{% else %}/static/default.png{% endif %}'); object-fit: cover;">
                 </a>
 

@@ -77,7 +77,7 @@
                                 <a href="#" onClick="mostrarModalLogin(event)">
                         {% elif destacado.contenido.categoria.tipo_categoria == 'PA' and destacado.contenido.categoria.id not in categorias_suscritas_ids %}
                             <div class="each-frame border-box flex-none h-full" title="{{ destacado.contenido.titulo }}">
-                                <a href="#" onClick="mostrarModal(event, '{{ contenido.categoria.id }}')">
+                                <a href="#" onClick="mostrarModalCarrusel(event,'{{destacado.contenido.categoria.id}}', '{{ destacado.contenido.categoria.nombre_categoria }}', '{{destacado.contenido.categoria.descripcion}}', '{{destacado.contenido.categoria.precio}}')">
                         {% else %}
                             <div class="each-frame border-box flex-none h-full" title="{{ destacado.contenido.titulo }}">
                                 <a href="{% url 'detalle_contenido' destacado.contenido.slug %}" class="block w-full h-full hover:bg-gray-100 rounded-xl duration-300">
@@ -195,12 +195,23 @@
 <script defer src="{% static 'js/carrusel.js' %}"></script>
 
 <script>
-    function mostrarModal(event, categoriaId) {
+
+    function mostrarModalCarrusel(event, categoriaId, categoriaNombre, categoriaDescripcion, categoriaPrecio) {
+        //console.log('Mostrando modal de pago en el carrrusel:', categoriaId);
         event.preventDefault();  
         event.stopPropagation();  
-        const modal = document.getElementById('modal');
+
+        // Actualizar el contenido del modal
+        document.getElementById('modalCategoriaNombre').textContent = categoriaNombre;
+        document.getElementById('modalCategoriaDescripcion').textContent = categoriaDescripcion;
+        document.getElementById('modalCategoriaPrecio').textContent = categoriaPrecio;
+        document.getElementById('checkout-button').setAttribute('onclick', `procesarPago('${categoriaId}')`);
+
+        const modal = document.getElementById('modalPago');
         modal.classList.remove('hidden');
     }
+
+    
     function mostrarModalLogin(event) {
         event.preventDefault();  
         event.stopPropagation();  
@@ -209,7 +220,8 @@
     }
 
 </script>
-{% include 'includes/pago_categoria.html' with categoria=destacado.contenido.categoria %}
+
+{% include 'includes/pago_categoria.html' %}
 {% include 'includes/iniciar_sesion.html' %}
 
 {% endblock content %}

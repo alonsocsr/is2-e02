@@ -280,6 +280,7 @@ class DetalleCategoriaView(DetailView):
         :return: JsonResponse - Respuesta JSON con el ID de la sesión de Stripe o un mensaje de error en caso de fallo.
         """
         categoria = self.get_object() 
+        print(f'Precio de la categoría {categoria.nombre_categoria}: {categoria.precio}')  # Depuración
         try:
             # Crear una sesión de pago con Stripe
             session = stripe.checkout.Session.create(
@@ -301,8 +302,14 @@ class DetalleCategoriaView(DetailView):
                 cancel_url=self.request.build_absolute_uri('/categorias/cancel/'),
             )
             return JsonResponse({'id': session.id})
+        except stripe.error.StripeError as e:
+            # Cualquier error relacionado con Stripe se registra aquí
+            print(f'Error de Stripe: {str(e)}')
+            return JsonResponse({'error': str(e)})
         except Exception as e:
-            return JsonResponse({'error': str(e)})     
+            # Cualquier otro error se maneja aquí
+            print(f'Error general: {str(e)}')
+            return JsonResponse({'error': 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.'})     
 
 
 class PaymentSuccessView(View):

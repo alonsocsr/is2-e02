@@ -21,53 +21,51 @@
         {% endif %}
     </div>
 
-    <div class="container mx-auto p-6 overflow-x-auto">
-        <h1 class="text-3xl font-extrabold text-gray-800 mt-2 mb-8 text-center">Tablero Kanban</h1>
-        <div class="grid grid-flow-col auto-cols-max gap-6" style="min-width: 1200px;">
+    <div class="container mx-auto p-6 overflow-x-auto mt-4">
+        <h1 class="text-3xl font-extrabold text-gray-800 mt-2 mb-8 mr-36 text-center">Tablero Kanban</h1>
+        <div class="grid grid-flow-col auto-cols-max gap-6 ml-2" style="min-width: 1200px;">
             
             <!-- Columna para Borrador -->
             <div class="bg-white p-5 rounded-lg shadow-lg kanban-column" data-status="Borrador">
                 <h2 class="text-xl font-bold text-center text-gray-700">Borrador</h2>
                 <div class="kanban-items min-h-[300px] space-y-4 p-2 border border-gray-300 rounded-lg">
                     {% for post in borrador %}
-                        {% if perms.permissions.modificar_tablero_kanban or post.autor == request.user %} 
-                            <a href="{% url 'detalle_contenido' post.slug %}">
-                                <div class="bg-gray-50 px-4 pb-4 rounded-lg shadow-md flex flex-col space-y-2 contenido-item mb-2 transition-transform transform hover:scale-110" draggable="true" data-id="{{ post.id }}" data-autor-id="{{ post.autor.id }}" data-moderada="{{ post.categoria.moderada|yesno:'true,false' }}">
-                                    <!-- Título del contenido -->
-                                    <div class="mt-2">
-                                        <h3 class="font-bold text-gray-800 break-words truncate" title="{{ post.titulo }}">{{ post.titulo|truncatechars:100 }}</h3>
+                        <a href="{% url 'detalle_contenido' post.slug %}?is_staff=true">
+                            <div class="bg-gray-50 px-4 pb-4 rounded-lg shadow-md flex flex-col space-y-2 contenido-item mb-2 transition-transform transform hover:scale-110" draggable="true" data-id="{{ post.id }}" data-autor-id="{{ post.autor.id }}" data-moderada="{{ post.categoria.moderada|yesno:'true,false' }}">
+                                <!-- Título del contenido -->
+                                <div class="mt-2">
+                                    <h3 class="font-bold text-gray-800 break-words truncate" title="{{ post.titulo }}">{{ post.titulo|truncatechars:100 }}</h3>
+                                </div>
+                                
+                                <!-- Contenedor superior: Imagen + Información del autor y fecha -->
+                                <div class="flex items-center space-x-4">
+                                    <!-- Imagen del contenido -->
+                                    <div class="flex-shrink-0 w-12 h-12">
+                                        {% if post.imagen %}
+                                            <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}" class="w-full h-full object-cover rounded-lg">
+                                        {% else %}
+                                            <img src="https://via.placeholder.com/80x80" alt="No image" class="w-full h-full object-cover rounded-lg">
+                                        {% endif %}
                                     </div>
                                     
-                                    <!-- Contenedor superior: Imagen + Información del autor y fecha -->
-                                    <div class="flex items-center space-x-4">
-                                        <!-- Imagen del contenido -->
-                                        <div class="flex-shrink-0 w-12 h-12">
-                                            {% if post.imagen %}
-                                                <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}" class="w-full h-full object-cover rounded-lg">
-                                            {% else %}
-                                                <img src="https://via.placeholder.com/80x80" alt="No image" class="w-full h-full object-cover rounded-lg">
-                                            {% endif %}
-                                        </div>
-                                        
-                                        <!-- Información del autor y fecha -->
-                                        <div class="flex-1 overflow-hidden">
-                                            {% if post.autor is null %}
-                                            <p class="text-xs text-gray-500">Por <strong>[eliminado]</strong></p>
-                                            {% else %}
-                                            <p class="text-xs text-gray-500">Por <strong>{{ post.autor }}</strong></p>
-                                            {% endif %}
-                                            <p class="text-xs text-gray-500 ">{{ post.fecha_creacion|date:"d M Y" }}</p>
-                                            {% if post.categoria.moderada == False %}
-                                                <p class="text-xs text-pink-500 ">No Moderada</p>
-                                            {% endif %}
-                                            {% if post.fecha_publicacion > fecha_actual %}
-                                                <p class="text-xs text-pink-500 ">A publicar el: <strong>{{ post.fecha_publicacion|date:"d M Y" }}</strong></p>
-                                            {% endif %}
-                                        </div>
+                                    <!-- Información del autor y fecha -->
+                                    <div class="flex-1 overflow-hidden">
+                                        {% if post.autor is null %}
+                                        <p class="text-xs text-gray-500">Por <strong>[eliminado]</strong></p>
+                                        {% else %}
+                                        <p class="text-xs text-gray-500">Por <strong>{{ post.autor }}</strong></p>
+                                        {% endif %}
+                                        <p class="text-xs text-gray-500 ">{{ post.fecha_creacion|date:"d M Y" }}</p>
+                                        {% if post.categoria.moderada == False %}
+                                            <p class="text-xs text-pink-500 ">No Moderada</p>
+                                        {% endif %}
+                                        {% if post.fecha_publicacion > fecha_actual %}
+                                            <p class="text-xs text-pink-500 ">A publicar el: <strong>{{ post.fecha_publicacion|date:"d M Y" }}</strong></p>
+                                        {% endif %}
                                     </div>
                                 </div>
-                            </a>
-                        {% endif %}
+                            </div>
+                        </a>
                     {% endfor %}
                 </div>
             </div>
@@ -78,15 +76,14 @@
                 <h2 class="text-xl font-bold text-center text-gray-700">Edición</h2>
                 <div class="kanban-items min-h-[300px] space-y-4 p-2 border border-gray-300 rounded-lg">
                     {% for post in edicion %}
-                        {% if perms.permissions.editar_contenido or perms.permissions.modificar_tablero_kanban or post.autor == request.user %} 
                             {% if perms.permissions.editar_contenido %}
                                 {% if post.usuario_editor == request.user or post.usuario_editor == None %}
                                     <a href="{% url 'editar_contenido' post.id %}">
                                     {% else %}
-                                    <a href="{% url 'detalle_contenido' post.slug %}">
+                                    <a href="{% url 'detalle_contenido' post.slug %}?is_staff=true">
                                     {% endif %}
-                            {% elif post.autor == request.user or perms.permissions.modificar_tablero_kanban %}
-                            <a href="{% url 'detalle_contenido' post.slug %}">
+                            {% else %}
+                            <a href="{% url 'detalle_contenido' post.slug %}?is_staff=true">
                             {% endif %}
 
                                 <div class="bg-gray-50 px-4 pb-4 rounded-lg shadow-md flex flex-col space-y-2 contenido-item mb-2 transition-transform transform hover:scale-110" draggable="true" data-id="{{ post.id }}" data-autor-id="{{ post.autor.id }}" data-moderada="{{ post.categoria.moderada|yesno:'true,false' }}">
@@ -126,7 +123,6 @@
                                     </div>
                                 </div>
                             </a>
-                        {% endif %}
                     {% endfor %}
                 </div>
             </div>
@@ -136,44 +132,42 @@
                 <h2 class="text-xl font-bold text-center text-gray-700">Publicación</h2>
                 <div class="kanban-items min-h-[300px] space-y-4 p-2 border border-gray-300 rounded-lg">
                     {% for post in publicacion %}
-                        {% if perms.permissions.modificar_tablero_kanban or post.autor == request.user %}
-                            <a href="{% url 'detalle_contenido' post.slug %}">
-                                <div class="bg-gray-50 px-4 pb-4 rounded-lg shadow-md flex flex-col space-y-2 contenido-item mb-2 transition-transform transform hover:scale-110" draggable="true" data-id="{{ post.id }}" data-autor-id="{{ post.autor.id }}" data-moderada="{{ post.categoria.moderada|yesno:'true,false' }}">
-                                    <!-- Título del contenido -->
-                                    <div class="mt-2">
-                                        <h3 class="font-bold  text-gray-800 break-words truncate" title="{{ post.titulo }}">{{ post.titulo|truncatechars:100 }}</h3>
+                        <a href="{% url 'detalle_contenido' post.slug %}?is_staff=true">
+                            <div class="bg-gray-50 px-4 pb-4 rounded-lg shadow-md flex flex-col space-y-2 contenido-item mb-2 transition-transform transform hover:scale-110" draggable="true" data-id="{{ post.id }}" data-autor-id="{{ post.autor.id }}" data-moderada="{{ post.categoria.moderada|yesno:'true,false' }}">
+                                <!-- Título del contenido -->
+                                <div class="mt-2">
+                                    <h3 class="font-bold  text-gray-800 break-words truncate" title="{{ post.titulo }}">{{ post.titulo|truncatechars:100 }}</h3>
+                                </div>
+                                
+                                <!-- Contenedor superior: Imagen + Información del autor y fecha -->
+                                <div class="flex items-center space-x-4">
+                                    <!-- Imagen del contenido -->
+                                    <div class="flex-shrink-0 w-12 h-12">
+                                        {% if post.imagen %}
+                                            <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}" class="w-full h-full object-cover rounded-lg">
+                                        {% else %}
+                                            <img src="https://via.placeholder.com/80x80" alt="No image" class="w-full h-full object-cover rounded-lg">
+                                        {% endif %}
                                     </div>
                                     
-                                    <!-- Contenedor superior: Imagen + Información del autor y fecha -->
-                                    <div class="flex items-center space-x-4">
-                                        <!-- Imagen del contenido -->
-                                        <div class="flex-shrink-0 w-12 h-12">
-                                            {% if post.imagen %}
-                                                <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}" class="w-full h-full object-cover rounded-lg">
-                                            {% else %}
-                                                <img src="https://via.placeholder.com/80x80" alt="No image" class="w-full h-full object-cover rounded-lg">
-                                            {% endif %}
-                                        </div>
-                                        
-                                        <!-- Información del autor y fecha -->
-                                        <div class="flex-1 overflow-hidden">
-                                            {% if post.autor is null %}
-                                            <p class="text-xs text-gray-500">Por <strong>[eliminado]</strong></p>
-                                            {% else %}
-                                            <p class="text-xs text-gray-500">Por <strong>{{ post.autor }}</strong></p>
-                                            {% endif %}
-                                            <p class="text-xs text-gray-500 ">{{ post.fecha_creacion|date:"d M Y" }}</p>
-                                            {% if post.usuario_editor != None %}
-                                                <p class="text-xs text-gray-500 ">Editado por: <strong>{{ post.usuario_editor }}</strong></p>
-                                            {% endif %}
-                                            {% if post.fecha_publicacion > fecha_actual %}
-                                                <p class="text-xs text-gray-500 ">A publicar el: <strong class="text-pink-500">{{ post.fecha_publicacion|date:"d M Y" }}</strong></p>
-                                            {% endif %}
-                                        </div>
+                                    <!-- Información del autor y fecha -->
+                                    <div class="flex-1 overflow-hidden">
+                                        {% if post.autor is null %}
+                                        <p class="text-xs text-gray-500">Por <strong>[eliminado]</strong></p>
+                                        {% else %}
+                                        <p class="text-xs text-gray-500">Por <strong>{{ post.autor }}</strong></p>
+                                        {% endif %}
+                                        <p class="text-xs text-gray-500 ">{{ post.fecha_creacion|date:"d M Y" }}</p>
+                                        {% if post.usuario_editor != None %}
+                                            <p class="text-xs text-gray-500 ">Editado por: <strong>{{ post.usuario_editor }}</strong></p>
+                                        {% endif %}
+                                        {% if post.fecha_publicacion > fecha_actual %}
+                                            <p class="text-xs text-gray-500 ">A publicar el: <strong class="text-pink-500">{{ post.fecha_publicacion|date:"d M Y" }}</strong></p>
+                                        {% endif %}
                                     </div>
                                 </div>
-                            </a>
-                        {% endif %}
+                            </div>
+                        </a>
                     {% endfor %}
                 </div>
             </div>
@@ -183,41 +177,39 @@
                 <h2 class="text-xl font-bold text-center text-gray-700">Publicado</h2>
                 <div class="kanban-items min-h-[300px] space-y-4 p-2 border border-gray-300 rounded-lg">
                     {% for post in publicado %}
-                        {% if perms.permissions.modificar_tablero_kanban or post.autor == request.user %}
-                            <a href="{% url 'detalle_contenido' post.slug %}">
-                                <div class="bg-gray-50 px-4 pb-4 rounded-lg shadow-md flex flex-col space-y-2 contenido-item mb-2 transition-transform transform hover:scale-110" draggable="true" data-id="{{ post.id }}" data-autor-id="{{ post.autor.id }}" data-moderada="{{ post.categoria.moderada|yesno:'true,false' }}">
-                                    <!-- Título del contenido -->
-                                    <div class="mt-2">
-                                        <h3 class="font-bold text-gray-800 break-words truncate" title="{{ post.titulo }}">{{ post.titulo|truncatechars:100 }}</h3>
+                        <a href="{% url 'detalle_contenido' post.slug %}?is_staff=true">
+                            <div class="bg-gray-50 px-4 pb-4 rounded-lg shadow-md flex flex-col space-y-2 contenido-item mb-2 transition-transform transform hover:scale-110" draggable="true" data-id="{{ post.id }}" data-autor-id="{{ post.autor.id }}" data-moderada="{{ post.categoria.moderada|yesno:'true,false' }}">
+                                <!-- Título del contenido -->
+                                <div class="mt-2">
+                                    <h3 class="font-bold text-gray-800 break-words truncate" title="{{ post.titulo }}">{{ post.titulo|truncatechars:100 }}</h3>
+                                </div>
+                                
+                                <!-- Contenedor superior: Imagen + Información del autor y fecha -->
+                                <div class="flex items-center space-x-4">
+                                    <!-- Imagen del contenido -->
+                                    <div class="flex-shrink-0 w-12 h-12">
+                                        {% if post.imagen %}
+                                            <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}" class="w-full h-full object-cover rounded-lg">
+                                        {% else %}
+                                            <img src="https://via.placeholder.com/80x80" alt="No image" class="w-full h-full object-cover rounded-lg">
+                                        {% endif %}
                                     </div>
                                     
-                                    <!-- Contenedor superior: Imagen + Información del autor y fecha -->
-                                    <div class="flex items-center space-x-4">
-                                        <!-- Imagen del contenido -->
-                                        <div class="flex-shrink-0 w-12 h-12">
-                                            {% if post.imagen %}
-                                                <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}" class="w-full h-full object-cover rounded-lg">
-                                            {% else %}
-                                                <img src="https://via.placeholder.com/80x80" alt="No image" class="w-full h-full object-cover rounded-lg">
-                                            {% endif %}
-                                        </div>
-                                        
-                                        <!-- Información del autor y fecha -->
-                                        <div class="flex-1 overflow-hidden">
-                                            {% if post.autor is null %}
-                                            <p class="text-xs text-gray-500">Por <strong>[eliminado]</strong></p>
-                                            {% else %}
-                                            <p class="text-xs text-gray-500">Por <strong>{{ post.autor }}</strong></p>
-                                            {% endif %}
-                                            <p class="text-xs text-gray-500 ">{{ post.fecha_creacion|date:"d M Y" }}</p>
-                                            {% if post.fecha_publicacion > fecha_actual %}
-                                                <p class="text-xs text-gray-500 ">A publicar el: <strong class="text-pink-500">{{ post.fecha_publicacion|date:"d M Y" }}</strong></p>
-                                            {% endif %}
-                                        </div>
+                                    <!-- Información del autor y fecha -->
+                                    <div class="flex-1 overflow-hidden">
+                                        {% if post.autor is null %}
+                                        <p class="text-xs text-gray-500">Por <strong>[eliminado]</strong></p>
+                                        {% else %}
+                                        <p class="text-xs text-gray-500">Por <strong>{{ post.autor }}</strong></p>
+                                        {% endif %}
+                                        <p class="text-xs text-gray-500 ">{{ post.fecha_creacion|date:"d M Y" }}</p>
+                                        {% if post.fecha_publicacion > fecha_actual %}
+                                            <p class="text-xs text-gray-500 ">A publicar el: <strong class="text-pink-500">{{ post.fecha_publicacion|date:"d M Y" }}</strong></p>
+                                        {% endif %}
                                     </div>
                                 </div>
-                            </a>
-                        {% endif %}
+                            </div>
+                        </a>
                     {% endfor %}
                 </div>
             </div>
@@ -227,51 +219,43 @@
                 <h2 class="text-xl font-bold text-center text-gray-700">Inactivo</h2>
                 <div class="kanban-items min-h-[300px] space-y-4 p-2 border border-gray-300 rounded-lg">
                     {% for post in inactivo %}
-                        {% if perms.permissions.modificar_tablero_kanban or post.autor == request.user %}
-                            <a href="{% url 'detalle_contenido' post.slug %}">
-                                <div class="bg-gray-50 px-4 pb-4 rounded-lg shadow-md flex flex-col space-y-2 contenido-item mb-2 transition-transform transform hover:scale-110" draggable="true" data-id="{{ post.id }}" data-autor-id="{{ post.autor.id }}" data-moderada="{{ post.categoria.moderada|yesno:'true,false' }}">
-                                    <!-- Título del contenido -->
-                                    <div class="mt-2">
-                                        <h3 class="font-bold text-gray-800 break-words truncate" title="{{ post.titulo }}">{{ post.titulo|truncatechars:100 }}</h3>
+                        <a href="{% url 'detalle_contenido' post.slug %}?is_staff=true">
+                            <div class="bg-gray-50 px-4 pb-4 rounded-lg shadow-md flex flex-col space-y-2 contenido-item mb-2 transition-transform transform hover:scale-110" draggable="true" data-id="{{ post.id }}" data-autor-id="{{ post.autor.id }}" data-moderada="{{ post.categoria.moderada|yesno:'true,false' }}">
+                                <!-- Título del contenido -->
+                                <div class="mt-2">
+                                    <h3 class="font-bold text-gray-800 break-words truncate" title="{{ post.titulo }}">{{ post.titulo|truncatechars:100 }}</h3>
+                                </div>
+                                
+                                <!-- Contenedor superior: Imagen + Información del autor y fecha -->
+                                <div class="flex items-center space-x-4">
+                                    <!-- Imagen del contenido -->
+                                    <div class="flex-shrink-0 w-12 h-12">
+                                        {% if post.imagen %}
+                                            <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}" class="w-full h-full object-cover rounded-lg">
+                                        {% else %}
+                                            <img src="https://via.placeholder.com/80x80" alt="No image" class="w-full h-full object-cover rounded-lg">
+                                        {% endif %}
                                     </div>
                                     
-                                    <!-- Contenedor superior: Imagen + Información del autor y fecha -->
-                                    <div class="flex items-center space-x-4">
-                                        <!-- Imagen del contenido -->
-                                        <div class="flex-shrink-0 w-12 h-12">
-                                            {% if post.imagen %}
-                                                <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}" class="w-full h-full object-cover rounded-lg">
-                                            {% else %}
-                                                <img src="https://via.placeholder.com/80x80" alt="No image" class="w-full h-full object-cover rounded-lg">
-                                            {% endif %}
-                                        </div>
-                                        
-                                        <!-- Información del autor y fecha -->
-                                        <div class="flex-1 overflow-hidden">
-                                            {% if post.autor is null %}
-                                            <p class="text-xs text-gray-500">Por <strong>[eliminado]</strong></p>
-                                            {% else %}
-                                            <p class="text-xs text-gray-500">Por <strong>{{ post.autor }}</strong></p>
-                                            {% endif %}
-                                            <p class="text-xs text-gray-500 ">{{ post.fecha_creacion|date:"d M Y" }}</p>
-                                        </div>
+                                    <!-- Información del autor y fecha -->
+                                    <div class="flex-1 overflow-hidden">
+                                        {% if post.autor is null %}
+                                        <p class="text-xs text-gray-500">Por <strong>[eliminado]</strong></p>
+                                        {% else %}
+                                        <p class="text-xs text-gray-500">Por <strong>{{ post.autor }}</strong></p>
+                                        {% endif %}
+                                        <p class="text-xs text-gray-500 ">{{ post.fecha_creacion|date:"d M Y" }}</p>
                                     </div>
                                 </div>
+                            </div>
                             </a>
-                        {% endif %}
                     {% endfor %}
                 </div>
             </div>
         </div>
         
         <div class="mt-6 flex justify-end space-x-4">
-            <button id="revertirCambios" class="bg-gray-400 hover:bg-gray-500 active:bg-gray-600 hover:scale-105 text-white py-2 px-4 rounded-lg transition ease-in-out duration-300">
-                Revertir Cambios
-            </button>
-            <button id="guardarCambios" class="bg-pink-800 hover:bg-pink-700 active:bg-pink-900 hover:scale-105 text-white py-2 px-4 rounded-lg transition ease-in-out duration-300">
-                Guardar Cambios
-            </button>
-            <button id="mostrarArchivados" class="bg-pink-800 hover:bg-pink-700 active:bg-pink-900 hover:scale-105 text-white py-2 px-4 rounded-lg transition ease-in-out duration-300">
+            <button id="mostrarArchivados" class="bg-pink-800 mr-36 hover:bg-pink-700 active:bg-pink-900 hover:scale-105 text-white py-2 px-4 rounded-lg transition ease-in-out duration-300">
                 Ver Archivados
             </button>
         </div>
