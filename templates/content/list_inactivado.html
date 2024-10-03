@@ -31,7 +31,7 @@
             <!-- contenido -->
             <div class="w-full bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl overflow-hidden flex flex-col md:flex-row relative">                     
                     <!-- imagen -->
-                <a href="{% url 'detalle_contenido' contenido.slug %}" class="h-32 md:h-48 lg:h-auto lg:w-48 flex-none bg-cover bg-center" 
+                <a href="{% url 'detalle_contenido' contenido.slug %}?is_staff=true" class="h-32 md:h-48 lg:h-auto lg:w-48 flex-none bg-cover bg-center" 
                 style="background-image: url('{% if contenido.imagen %}{{ contenido.imagen.url }}{% else %}/static/default.jpg{% endif %}'); object-fit: cover;">
                 </a>
 

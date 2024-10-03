@@ -1,10 +1,11 @@
-<div id="modal" class="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
+
+<div id="modalPago" class="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
     <div class="relative max-w-7xl mx-auto">
         <div class="max-w-lg mx-auto rounded-lg shadow-lg overflow-hidden lg:max-w-none lg:flex bg-pink-800">
             <!-- Contenido del Modal -->
             <div class="flex-1 px-6 py-8 lg:p-12">
-                <h3 class="text-2xl font-extrabold text-white sm:text-3xl">{{ categoria.nombre_categoria }}</h3>
-                <p class="mt-6 text-base text-white sm:text-lg">{{ categoria.descripcion }}</p>
+                <h3 id="modalCategoriaNombre" class="text-2xl font-extrabold text-white sm:text-3xl"></h3>
+                <p id="modalCategoriaDescripcion" class="mt-6 text-base text-white sm:text-lg"></p>
                 <div class="mt-8">
                     <div class="flex items-center">
                         <div class="flex-1 border-t-2 border-pink-400"></div>
@@ -18,17 +19,17 @@
             <div class="py-8 px-6 text-center lg:flex-shrink-0 lg:flex lg:flex-col lg:justify-center lg:p-12 bg-pink-600">
                 <p class="text-lg leading-6 font-medium text-white">Pago único de</p>
                 <div class="mt-4 flex items-center justify-center text-5xl font-extrabold text-white ">
-                    <span>{{ categoria.precio }}</span><span class="ml-3 text-xl font-medium text-white">GS</span>
+                    <span id="modalCategoriaPrecio"></span><span class="ml-3 text-xl font-medium text-white">GS</span>
                 </div>
                 <div class="mt-6">
                     <div class="rounded-md shadow flex items-center justify-center">
-                        <button id="checkout-button" onclick="procesarPago()" class="flex items-center justify-center py-5 px-12 bg-pink-100 hover:bg-pink-900 hover:text-pink-200 text-pink-800 p-2 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500 mt-4">Suscribirse</button>
+                        <button id="checkout-button" class="flex items-center justify-center py-5 px-12 bg-pink-100 hover:bg-pink-900 hover:text-pink-200 text-pink-800 p-2 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500 mt-4">Suscribirse</button>
                     </div>
                     <p class="text-gray-800 text-sm mt-3">100% real no fake</p>
                 </div>
             </div>
             <!-- Botón de cierre del modal -->
-            <button onclick="cerrarModal()" class="absolute top-0 right-0 mt-4 mr-4 text-gray-800 text-2xl">
+            <button onclick="cerrarModalPago()" class="absolute top-0 right-0 mt-4 mr-4 text-gray-800 text-2xl">
                 &times;
             </button>
         </div>
@@ -41,11 +42,11 @@
 
 <script>
     
-    var categoria_id = {{ categoria.id }};
-    
     var stripe = Stripe('{{ STRIPE_PUBLIC_KEY }}');
 
-    function procesarPago() {
+    function procesarPago(categoriaId) {
+        var categoria_id = categoriaId;
+
         if (categoria_id === null) {
             console.error('Error: No hay una categoría seleccionada.');
             return;
@@ -78,7 +79,7 @@
         });
     };
 
-    function cerrarModal() {
-        document.getElementById('modal').classList.add('hidden');
+    function cerrarModalPago() {
+        document.getElementById('modalPago').classList.add('hidden');
     }
 </script>
