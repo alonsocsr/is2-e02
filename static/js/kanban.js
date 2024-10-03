@@ -1,18 +1,15 @@
 
 document.addEventListener('DOMContentLoaded', function () {
     const columns = document.querySelectorAll('.kanban-column .kanban-items');
-    const guardarBtn = document.getElementById('guardarCambios');
-    const revertirBtn = document.getElementById('revertirCambios');
     const rejectModal = document.getElementById('rejectModal');
     const confirmModal = document.getElementById('confirmModal');
-    const guardarRechazoBtn = document.getElementById('guardarRechazo');
     const confirmarCambiosBtn = document.getElementById('confirmarCambios');
-    const cancelarRechazoBtn = document.getElementById('cancelarRechazo');
     const cancelarConfirmacionBtn = document.getElementById('cancelarConfirmacion');
+    const guardarRechazoBtn = document.getElementById('guardarRechazo');
+    const cancelarRechazoBtn = document.getElementById('cancelarRechazo');
 
     let cambiosPendientes = [];
     let estadoOriginal = {};
-    let rechazosPendientes = [];
 
     // Guardar el estado inicial de cada contenido al cargar la página
     function guardarEstadoInicial() {
@@ -28,8 +25,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const estadoActual = post.closest('.kanban-column').getAttribute('data-status');
         const esAutor = parseInt(post.getAttribute('data-autor-id')) === usuarioActualId;
         const esModerada = post.getAttribute('data-moderada') === 'true';
-        
-            // Restringir movimiento a Edición o Publicación si la categoría no es moderada
+
+        // Restringir movimiento a Edición o Publicación si la categoría no es moderada
         if (estadoActual === 'Borrador' && (nuevoEstado === 'Edicion' || nuevoEstado === 'Publicacion') && esAutor && !esModerada) {
             return false;  // No permitir mover a Edición o Publicación si la categoría no es moderada
         }
@@ -73,11 +70,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 cambiosPendientes.push({ id: postId, status: status, title: postTitle });
             }
 
-            // Si se mueve de Edición a Borrador o de Publicación a Edición, requerir motivo de rechazo
+            // Si se mueve de Edición a Borrador o de Publicación a Edición, mostrar modal de rechazo
             const estadoOriginalPost = estadoOriginal[postId];
             if ((estadoOriginalPost === 'Edicion' && status === 'Borrador') ||
                 (estadoOriginalPost === 'Publicacion' && status === 'Edicion')) {
-                rechazosPendientes.push({ id: postId, title: postTitle });
+                mostrarModalRechazo({ id: postId, title: postTitle });
+                
+            // Si se mueve a Publicado o a otro estado válido, mostrar modal de confirmación
+            } else if (estadoOriginalPost !== status) {
+                // Mostrar modal de confirmación
+                mostrarModalConfirmacion();   
             }
         });
     });
@@ -120,18 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
 
-    // Al hacer clic en guardar cambios
-    guardarBtn.addEventListener('click', function () {
-        if (rechazosPendientes.length > 0) {
-            // Si hay rechazos pendientes, mostrar el modal de rechazo para el primer post
-            mostrarModalRechazo(rechazosPendientes[0]);
-        } else {
-            // Si no hay rechazos pendientes, mostrar el modal de confirmación
-            mostrarModalConfirmacion();
-        }
-    });
-
-    // Mostrar modal de rechazo si hay movimientos que lo requieren
+    // Sección de rechazo de contenido
     function mostrarModalRechazo(post) {
         document.getElementById('postName').textContent = `Motivo de rechazo para: ${post.title}`;
         postPendienteRechazo = post;
@@ -144,17 +135,18 @@ document.addEventListener('DOMContentLoaded', function () {
         rejectModal.classList.add('hidden'); 
     }
 
-    // Guardar el motivo de rechazo
-    guardarRechazoBtn.addEventListener('click', function () {
-        // Si quedan más rechazos pendientes, mostrar el siguiente modal
-        if (rechazosPendientes.length > 0) {
-            mostrarModalRechazo(rechazosPendientes[0]);
-        } else {
-            ocultarModalRechazo();
-            mostrarModalConfirmacion();
-        }
+    guardarRechazoBtn.addEventListener('click', ocultarModalRechazo);
+
+    cancelarRechazoBtn.addEventListener('click', function () {
+        revertirCambios();
+        ocultarModalRechazo();
     });
     
+
+    // Sección de confirmación de cambios
+    function mostrarModalConfirmacion() { confirmModal.classList.remove('hidden'); }
+    function ocultarModalConfirmacion() { confirmModal.classList.add('hidden'); }
+
     confirmarCambiosBtn.addEventListener('click', function () {
         fetch(`/update-post-status/`, {
             method: 'POST',
@@ -172,15 +164,15 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    cancelarConfirmacionBtn.addEventListener('click', function(){
+        revertirCambios();
+        ocultarModalConfirmacion();
+    });
 
-    cancelarRechazoBtn.addEventListener('click', ocultarModalRechazo);
-    cancelarConfirmacionBtn.addEventListener('click', ocultarModalConfirmacion);
+    
 
-    function mostrarModalConfirmacion() { confirmModal.classList.remove('hidden'); }
-    function ocultarModalConfirmacion() { confirmModal.classList.add('hidden'); }
-
-    // Función para revertir los cambios
-    revertirBtn.addEventListener('click', function () {
+    // Revertir los cambios si el usuario cancela la acción
+    function revertirCambios () {
         const draggables = document.querySelectorAll('.contenido-item');
 
         draggables.forEach(draggable => {
@@ -188,14 +180,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const estadoOriginalPost = estadoOriginal[postId];
             const columnaOriginal = document.querySelector(`.kanban-column[data-status="${estadoOriginalPost}"] .kanban-items`);
 
-            // Mover el contenido visualmente a su columna original
             columnaOriginal.appendChild(draggable);
 
-            // Eliminar cualquier cambio pendiente relacionado con esta publicación
             cambiosPendientes = cambiosPendientes.filter(cambio => cambio.id !== postId);
-            rechazosPendientes = rechazosPendientes.filter(cambio => cambio.id !== postId);
         });
-    });
+    };
 
     const mostrarArchivadosBtn = document.getElementById('mostrarArchivados');
     const archivadoModal = document.getElementById('archivadoModal');
@@ -217,6 +206,5 @@ document.addEventListener('DOMContentLoaded', function () {
 
     setupDraggables();
     guardarEstadoInicial();
-
 
 });

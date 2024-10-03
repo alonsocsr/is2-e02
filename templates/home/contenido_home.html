@@ -94,7 +94,7 @@
                                         <div class="text-sm mb-4 flex items-center space-x-4">
                                             <img class="w-8 h-8 rounded-full" src="{% if destacado.contenido.autor.profile.image %}{{ destacado.contenido.autor.profile.image.url }}{% else %}/static/default.png{% endif %}" alt="{{ destacado.contenido.autor.username }}">
                                             <div>
-                                                {% if post.autor is null %}
+                                                {% if destacado.contenido.autor is null %}
                                                 <span class="font-semibold">[eliminado]</span>
                                                 {% else %}
                                                 <span class="font-semibold">{{ destacado.contenido.autor.username }}</span>
@@ -209,6 +209,7 @@
     }
 
 </script>
+
 {% include 'includes/pago_categoria.html' with categoria=destacado.contenido.categoria %}
 {% include 'includes/iniciar_sesion.html' %}
 

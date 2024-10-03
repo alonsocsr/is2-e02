@@ -115,6 +115,7 @@ class VistaContenido(FormMixin, DetailView):
             context['disliked'] = False
             
         return context
+    
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user 
@@ -315,7 +316,7 @@ class CambiarEstadoView(UpdateView):
                 #Se utiliza la función que crea el historial de cambio
                 log_status_change(contenido, anterior, 'Publicar', usuario)
                 contenido.mensaje_rechazo = ''
-                messages.success(self.request, "El contenido ha sido enviado a publicacion")
+                messages.success(self.request, "El contenido ha sido enviado a publicación")
 
             elif contenido.estado == 'Publicar':
                 contenido.estado = 'Publicado'
@@ -490,7 +491,7 @@ class RechazarContenido(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
             contenido.estado = 'Edicion'
             #Se utiliza la función que crea el historial de cambio
             log_status_change(contenido, 'Publicar', 'Edicion', self.request.user)
-            messages.success(self.request, "El contenido ha sido enviado a Edicion.")
+            messages.success(self.request, "El contenido ha sido enviado a Edición.")
         elif contenido.estado == 'Edicion':
             contenido.estado = 'Borrador'
             #Se utiliza la función que crea el historial de cambio
@@ -664,22 +665,28 @@ class TableroKanbanView(LoginRequiredMixin, PermissionRequiredMixin, TemplateVie
     permission_required = 'permissions.ver_tablero_kanban'
 
     def get_context_data(self, **kwargs):
+        user = self.request.user
         context = super().get_context_data(**kwargs)
-        # Obtener las publicaciones y agruparlas por estado
-        contenido = Contenido.objects.all()
+
+        # Si el usuario es solamente autor debe ver solamente su contenido, si tiene otro rol tiene que ver el de todos
+        if user.has_perm('permissions.crear_contenido') and not user.has_perm('permissions.editar_contenido') and not user.has_perm('permissions.publicar_contenido'):
+            contenido = Contenido.objects.filter(autor=user)
+        else:    
+            contenido = Contenido.objects.all()
+            
         context['borrador'] = contenido.filter(estado='Borrador').order_by('fecha_creacion')
         context['edicion'] = contenido.filter(estado='Edicion').order_by('fecha_creacion')
         context['publicacion'] = contenido.filter(estado='Publicar').order_by('fecha_creacion')
         context['publicado'] = contenido.filter(estado='Publicado').order_by('fecha_creacion')
         context['inactivo'] = contenido.exclude(vigencia__lte=timezone.now().date()).filter(estado='Inactivo').order_by('fecha_creacion')
         context['archivado'] = contenido.filter(vigencia__lte=timezone.now().date()).order_by('vigencia')
+                 
         # Obtener los permisos necesarios para mover los contenidos
         context['crear_perm'] = self.request.user.has_perm('permissions.crear_contenido')
         context['editar_perm'] = self.request.user.has_perm('permissions.editar_contenido')
         context['publicar_perm'] = self.request.user.has_perm('permissions.publicar_contenido')
         context['inactivar_perm'] = self.request.user.has_perm('permissions.inactivar_contenido')
-
-        context['fecha_actual']=timezone.now().date()
+        context['fecha_actual'] = timezone.now().date()
         return context
 
 
