@@ -78,9 +78,13 @@
                                         <div id="menu-{{ contenido.id }}" class="hidden absolute right-0 bottom-8 w-40 bg-white rounded-md shadow-lg z-10">
                                             <div class="py-2">
                                                 {% if perms.permissions.inactivar_contenido %}
-                                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-pink-700">Inactivar</a>
+                                                <form id="inactivateForm-{{ contenido.id }}" action="{% url 'inactivar_contenido' contenido.id %}" method="POST">
+                                                    {% csrf_token %}
+                                                    {{ form.as_p }}
+                                                    <a type="button" onclick="openInactivateModal('inactivateForm-{{ contenido.id }}')" class="menu-close flex items-start w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-pink-700">Inactivar</a>
+                                                </form>
                                                 {% endif %}
-                                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-pink-700">Compartir</a>
+                                                <a id="share-button" onClick="share('{{ contenido.id }}', '{{ contenido.slug }}')" class="menu-close block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-pink-700">Compartir</a>
                                             </div>
                                         </div>
                                     </div>
@@ -95,21 +99,29 @@
     </section>
 </div>
 
+{% include 'includes/inactivar.html' %}
+{% include 'includes/compartir.html' %}
+
 
 <script>
     function toggleMenu(event, contenidoId) {
-        event.preventDefault();  // Evitar que el clic propague al enlace padre
-        event.stopPropagation();  
+        event.preventDefault();
+        event.stopPropagation();
         const menu = document.getElementById('menu-' + contenidoId);
         menu.classList.toggle('hidden');
+
+        const closeButtons = document.querySelectorAll(".menu-close");
+        closeButtons.forEach(button => {
+            button.addEventListener("click", function() {
+                menu.classList.add('hidden');
+            });
+        });
     }
 
     function mostrarModalPago(event, categoriaId, categoriaNombre, categoriaDescripcion, categoriaPrecio) {
-
         event.preventDefault();  
         event.stopPropagation();  
 
-        // Actualizar el contenido del modal
         document.getElementById('modalCategoriaNombre').textContent = categoriaNombre;
         document.getElementById('modalCategoriaDescripcion').textContent = categoriaDescripcion;
         document.getElementById('modalCategoriaPrecio').textContent = categoriaPrecio;

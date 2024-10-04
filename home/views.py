@@ -120,6 +120,7 @@ class HomeView(ListView):
 
         # Añadir categorías restringidas
         context['categorias_restringidas'] = ['GR', 'PA']
+        context['is_admin'] = self.request.user.is_authenticated and self.request.user.groups.filter(name="Admin").exists()
 
         # Verificar si el modal debe mostrarse
         mostrar_modal = self.request.GET.get('modal') == 'true'

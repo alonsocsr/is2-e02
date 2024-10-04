@@ -681,10 +681,10 @@ class TableroKanbanView(LoginRequiredMixin, PermissionRequiredMixin, TemplateVie
         context['archivado'] = contenido.filter(vigencia__lte=timezone.now().date()).order_by('vigencia')
                  
         # Obtener los permisos necesarios para mover los contenidos
-        context['crear_perm'] = self.request.user.has_perm('permissions.crear_contenido')
-        context['editar_perm'] = self.request.user.has_perm('permissions.editar_contenido')
-        context['publicar_perm'] = self.request.user.has_perm('permissions.publicar_contenido')
-        context['inactivar_perm'] = self.request.user.has_perm('permissions.inactivar_contenido')
+        context['crear_perm'] = self.request.user.has_perm('permissions.crear_contenido') and self.request.user.has_perm('permissions.modificar_tablero_kanban')
+        context['editar_perm'] = self.request.user.has_perm('permissions.editar_contenido') and self.request.user.has_perm('permissions.modificar_tablero_kanban')
+        context['publicar_perm'] = self.request.user.has_perm('permissions.publicar_contenido') and self.request.user.has_perm('permissions.modificar_tablero_kanban')
+        context['inactivar_perm'] = self.request.user.has_perm('permissions.inactivar_contenido') and self.request.user.has_perm('permissions.modificar_tablero_kanban')
         context['fecha_actual'] = timezone.now().date()
         return context
 

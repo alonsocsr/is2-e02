@@ -14,8 +14,8 @@
             <img src="{{ contenido.imagen.url }}" alt="{{ contenido.titulo }}" class="object-cover w-full h-full rounded-t-lg md:rounded-l-lg md:rounded-t-none">
         </div>
         <!-- Categoría -->
-        <div class="absolute top-2 right-2 bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full" >
-            <button id="CategoryButton" onClick="CategoryHandler(event, '{{ contenido.categoria.id }}')"  class="hover:underline hover:text-pink-700">
+        <div id="CategoryButton" class="absolute top-2 right-2 bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full" >
+            <button onClick="CategoryHandler(event, '{{ contenido.categoria.id }}')"  class="hover:underline hover:text-pink-700">
                 {{ contenido.categoria.nombre_categoria }}
             </button>
         </div>
@@ -58,9 +58,15 @@
                     <div id="menu-{{ contenido.id }}" class="hidden absolute right-0 bottom-8 w-40 bg-white rounded-md shadow-lg z-50">
                         <div class="py-2">
                             {% if perms.permissions.inactivar_contenido %}
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-pink-700">Inactivar</a>
+                                {% if contenido.autor == request.user or is_admin %}
+                                    <form id="inactivateForm-{{ contenido.id }}" action="{% url 'inactivar_contenido' contenido.id %}" method="POST">
+                                        {% csrf_token %}
+                                        {{ form.as_p }}
+                                        <a type="button" onclick="openInactivateModal('inactivateForm-{{ contenido.id }}')" class="menu-close flex items-start w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-pink-700">Inactivar</a>
+                                    </form>
+                                {% endif %}
                             {% endif %}
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-pink-700">Compartir</a>
+                            <a id="share-button" onClick="share('{{ contenido.id }}', '{{ contenido.slug }}')" class="menu-close block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-pink-700">Compartir</a>
                         </div>
                     </div>
                 </div>
@@ -69,29 +75,34 @@
     </a>
 </div>
 
+ {% include 'includes/inactivar.html' %}
+
 <script>
+
     function toggleMenu(event, contenidoId) {
-        event.preventDefault();  // Evitar que el clic propague al enlace padre
+        event.preventDefault();
         event.stopPropagation();  
         const menu = document.getElementById('menu-' + contenidoId);
         menu.classList.toggle('hidden');
+
+        const closeButtons = document.querySelectorAll(".menu-close");
+        closeButtons.forEach(button => {
+            button.addEventListener("click", function() {
+                menu.classList.add('hidden');
+            });
+        });
     }
+
     function CategoryHandler(event, categoriaId) {
-        event.preventDefault();  // Evitar que el clic propague al enlace padre
+        event.preventDefault(); 
         event.stopPropagation();  
         window.location.href = `/categorias/${categoriaId}/`;
     }
     
     function mostrarModalPago(event, categoriaId, categoriaNombre, categoriaDescripcion, categoriaPrecio) {
-        // console.log('Mostrando modal de pago para la categoría:', categoriaId);
-        // console.log('Nombre:', categoriaNombre);
-        // console.log('Descripción:', categoriaDescripcion);
-        // console.log('Precio:', categoriaPrecio);
-
         event.preventDefault();  
         event.stopPropagation();  
 
-        // Actualizar el contenido del modal
         document.getElementById('modalCategoriaNombre').textContent = categoriaNombre;
         document.getElementById('modalCategoriaDescripcion').textContent = categoriaDescripcion;
         document.getElementById('modalCategoriaPrecio').textContent = categoriaPrecio;
@@ -107,7 +118,10 @@
         const modal = document.getElementById('modalLogin');
         modal.classList.remove('hidden');
     }
+    
 </script>
 
+
+{% include 'includes/compartir.html' %}
 {% include 'includes/pago_categoria.html' %}
 {% include 'includes/iniciar_sesion.html' %}
