@@ -228,6 +228,19 @@ class BuscarContenidoView(ListView):
 
 
 def ordenar_contenidos(queryset, seleccionado=False,favorito=False):
+    """
+    Ordena un queryset de contenidos según los criterios especificados.
+
+    Los contenidos pueden ser ordenados por:
+    - Favoritos del usuario
+    - Seleccionados por el administrador
+    - Fecha de publicación
+
+    :param queryset: QuerySet - El queryset de contenidos a ordenar.
+    :param seleccionado: bool - Indica si se debe ordenar por contenidos seleccionados por el administrador.
+    :param favorito: bool - Indica si se debe ordenar por favoritos del usuario.
+    :return: QuerySet - El queryset ordenado según los criterios especificados.
+    """
     #se ordena por favoritos, seleccionados por el administrador y por fecha de publicacion
     if seleccionado and favorito:
         return queryset.order_by('-favoritos_usuario', '-seleccionados_admin','-fecha_publicacion')

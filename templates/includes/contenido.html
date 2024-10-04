@@ -14,8 +14,8 @@
             <img src="{{ contenido.imagen.url }}" alt="{{ contenido.titulo }}" class="object-cover w-full h-full rounded-t-lg md:rounded-l-lg md:rounded-t-none">
         </div>
         <!-- Categoría -->
-        <div id="CategoryButton" class="absolute top-2 right-2 bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full" >
-            <button onClick="CategoryHandler(event, '{{ contenido.categoria.id }}')"  class="hover:underline hover:text-pink-700">
+        <div id="CategoryButton" class="absolute top-2 right-2 bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full hover:text-pink-700" >
+            <button onClick="CategoryHandler(event, '{{ contenido.categoria.id }}')">
                 {{ contenido.categoria.nombre_categoria }}
             </button>
         </div>

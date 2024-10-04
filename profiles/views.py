@@ -145,6 +145,21 @@ def registrar_suscripcion(request, categoria_id):
 
 class LikeView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
+        """
+        Maneja la acción de dar like a un contenido.
+
+        Permite al usuario dar o quitar un like al contenido.
+
+        :param request: HttpRequest - La solicitud HTTP POST.
+        :param args: list - Argumentos adicionales para la vista.
+        :param kwargs: dict - Argumentos de palabra clave adicionales para la vista.  
+
+        :cvar contenido_id: int - El ID del contenido que se está procesando.
+        :cvar content: Contenido - El contenido al que se le da like.
+        :cvar profile: Profile - El perfil del usuario actual.
+
+        :return: JsonResponse - Respuesta en formato JSON con el estado del like y conteos.
+        """
         contenido_id = self.kwargs.get('id')
         content = get_object_or_404(Contenido, id=contenido_id)
         profile = request.user.profile
@@ -174,6 +189,21 @@ class LikeView(LoginRequiredMixin, View):
 
 class DislikeView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
+        """
+        Maneja la acción de dar dislike a un contenido.
+
+        Permite al usuario dar o quitar un dislike al contenido.
+
+        :param request: HttpRequest - La solicitud HTTP POST.
+        :param args: list - Argumentos adicionales para la vista.
+        :param kwargs: dict - Argumentos de palabra clave adicionales para la vista.
+        
+        :cvar contenido_id: int - El ID del contenido que se está procesando.
+        :cvar content: Contenido - El contenido al que se le da dislike.
+        :cvar profile: Profile - El perfil del usuario actual.
+
+        :return: JsonResponse - Respuesta en formato JSON con el estado del dislike y conteos.
+        """
         contenido_id = self.kwargs.get('id')
         content = get_object_or_404(Contenido, id=contenido_id)
         profile = request.user.profile  
@@ -206,18 +236,13 @@ class EliminarCuentaView(LoginRequiredMixin, FormView):
     """
     Vista para eliminar la cuenta del usuario y su perfil asociado.
 
-    Requiere que el usuario esté autenticado y proporciona un formulario
-    para que el usuario confirme la eliminación de su cuenta mediante la 
+    Requiere que el usuario esté autenticado y proporciona un formulario para que el usuario confirme la eliminación de su cuenta mediante la 
     verificación de su contraseña.
 
-    Attributes
-    ----------
-    form_class : ConfirmDeleteAccountForm
-        Clase de formulario utilizada para validar la contraseña antes de 
-        eliminar la cuenta.
-    success_url : str
-        URL a la que se redirige al usuario después de que se haya eliminado 
-        exitosamente su cuenta.
+    :cvar form_class: ConfirmDeleteAccountForm - Clase de formulario utilizada para validar la contraseña antes de 
+    eliminar la cuenta.
+    :cvar success_url: str - URL a la que se redirige al usuario después de que se haya eliminado 
+    exitosamente su cuenta.
     """
 
     form_class = ConfirmDeleteAccountForm
@@ -225,20 +250,13 @@ class EliminarCuentaView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         """
-        Valida el formulario y elimina la cuenta del usuario si la contraseña 
-        proporcionada es correcta.
+        Valida el formulario y elimina la cuenta del usuario.
 
-        Parameters
-        ----------
-        form : ConfirmDeleteAccountForm
-            Instancia del formulario con los datos proporcionados por el usuario.
+        Desconecta al usuario después de eliminar la cuenta y muestra un mensaje de éxito.
 
-        Returns
-        -------
-        HttpResponse
-            Respuesta HTTP que redirige a la URL de éxito si la cuenta fue 
-            eliminada correctamente. En caso contrario, muestra el formulario 
-            con errores.
+        :param form: ConfirmDeleteAccountForm - El formulario validado.
+
+        :return: HttpResponseRedirect - Redirige al usuario a la URL de éxito.
         """
         user = self.request.user
         password = form.cleaned_data.get('password')
@@ -263,19 +281,5 @@ class EliminarCuentaView(LoginRequiredMixin, FormView):
     
 
     def get_form(self, form_class=None):
-        """
-        Retorna una instancia del formulario de eliminación de cuenta.
-
-        Parameters
-        ----------
-        form_class : ConfirmDeleteAccountForm, optional
-            Clase del formulario a utilizar. Si no se proporciona, se usa la 
-            clase especificada en `form_class`.
-
-        Returns
-        -------
-        ConfirmDeleteAccountForm
-            Instancia del formulario inicializada con los datos proporcionados.
-        """
         form = super().get_form(form_class)
         return form

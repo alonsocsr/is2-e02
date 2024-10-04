@@ -444,10 +444,6 @@ class EditarContenido(LoginRequiredMixin, PermissionRequiredMixin, FormView):
         return super().form_valid(form)
     
     def get_success_url(self):
-        """
-        Returns:
-            str: La URL a la que se redirige al usuario.
-        """
         return reverse('editar_contenido', kwargs={'contenido_id': self.object.id})
 
 
@@ -459,7 +455,7 @@ class ContenidoPublicarList(LoginRequiredMixin, PermissionRequiredMixin, ListVie
     :cvar context_object_name: str - Nombre del contexto que contiene la lista de contenidos.
     :cvar permission_required: str - Permiso requerido para acceder a esta vista.
     
-    returns: Respuesta HTTP que muestra la lista de contenidos
+    :return: Respuesta HTTP que muestra la lista de contenidos
     """
     model = Contenido
     template_name = 'content/vista_publicador.html'
@@ -479,6 +475,8 @@ class RechazarContenido(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
     :cvar model: Contenido - El modelo del contenido que se está actualizando.
     :cvar form_class: type - Clase del formulario utilizado para rechazar el contenido.
     :cvar permission_required: str - Permiso requerido para acceder a esta vista.
+
+    :return: Redirección a la página anterior después de actualizar el estado.
     """
     model = Contenido
     form_class = RechazarContenidoForm
@@ -600,7 +598,13 @@ class VistaContenidosReportados(LoginRequiredMixin, PermissionRequiredMixin, Lis
         
 
 class DestacarContenido(LoginRequiredMixin, PermissionRequiredMixin, View):
+    """
+    Vista para destacar o eliminar un contenido destacado.
 
+    :cvar permission_required: str - Permiso requerido para acceder a esta vista.
+
+    :return: Redirección a la página anterior después de destacar o eliminar el contenido.
+    """
     permission_required = 'permissions.destacar_contenido'
     
     def post(self, request, *args, **kwargs):
@@ -774,6 +778,17 @@ def log_status_change(contenido, anterior, nuevo, user=None):
         )
 
 class ContentStatusHistoryView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    """
+    Vista para mostrar el historial de cambios de estado de los contenidos.
+
+    Muestra los registros de cambios de estado realizados por el usuario.
+
+    :cvar model: Modelo utilizado para almacenar los cambios de estado.
+    :cvar template_name: str - Nombre de la plantilla utilizada para renderizar la lista de cambios.
+    :cvar context_object_name: str - Nombre del contexto para la lista de cambios.
+    :cvar permission_required: str - Permiso requerido para acceder a esta vista.
+    :cvar paginate_by: int - Número de registros por página para la paginación.
+    """
     model = StatusChangeLog
     template_name = 'content/status_history.html'
     context_object_name = 'status_logs'
@@ -795,6 +810,13 @@ class ContentStatusHistoryView(LoginRequiredMixin, PermissionRequiredMixin, List
         return context
 
 class CalificarContenidoView(LoginRequiredMixin, View):
+    """
+    Vista para calificar el contenido.
+
+    Permite a los usuarios calificar un contenido y actualizar su puntuación en la base de datos.
+
+    :return: Respuesta JSON con el promedio de puntuación y la cantidad de valoraciones.
+    """
     def post(self, request, *args, **kwargs):
         contenido_id = self.kwargs.get('contenido_id')
         puntuacion = request.POST.get('puntuacion')
@@ -830,6 +852,15 @@ class CalificarContenidoView(LoginRequiredMixin, View):
         return JsonResponse({'success': False, 'error': 'Puntuación inválida.'})
 
 class IncrementShareCountView(View):
+    """
+    Vista para incrementar el contador de compartidos de un contenido.
+
+    Esta vista se encarga de manejar las solicitudes POST para incrementar
+    el contador de las veces que el contenido ha sido compartido. Al recibir
+    una solicitud, busca el contenido correspondiente y actualiza su contador.
+
+    :return: Respuesta JSON que indica el estado de la operación y el nuevo contador de compartidos.
+    """
     def post(self, request, *args, **kwargs):
         contenido_id = request.POST.get('contenido_id')
         contenido = get_object_or_404(Contenido, id=contenido_id)

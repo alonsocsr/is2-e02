@@ -216,7 +216,11 @@ class StatusChangeLog(models.Model):
 @receiver(pre_save, sender=Contenido)
 def track_status_change(sender, instance, **kwargs):
     """
-    Signal que guarda el estado del contenido antes de que se actualice para uso posterior en la view donde se crea el historia.
+    Signal que guarda el estado del contenido antes de que se actualice para uso posterior en la vista donde se crea la historia.
+
+    :param sender: type - El modelo que envía la señal (Contenido).
+    :param instance: Contenido - La instancia del modelo que se está guardando.
+    :param \**kwargs: dict - Parámetros adicionales pasados a la señal.
 
     """
     if instance.pk:

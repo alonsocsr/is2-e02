@@ -64,12 +64,12 @@
                                         <a href="{% url 'categories:modificar' pk=categoria.pk %}" class="text-green-600 hover:bg-green-100 p-2 rounded-md">
                                             Modificar
                                         </a>
-                                        <form method="post" action="{% url 'categories:eliminar' pk=categoria.pk %}" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta categoría?');">
+                                        <form id="deleteForm-{{ categoria.pk }}" method="post" action="{% url 'categories:eliminar' categoria.pk %}" class="inline-block">
                                             {% csrf_token %}
-                                            <button type="submit" class="text-red-600 hover:bg-red-100 p-2 rounded-md">
-                                                Eliminar
+                                            <button type="button" onclick="openConfirmModal('deleteForm-{{ categoria.pk }}', '{{ categoria.nombre_categoria }}')" class="text-red-600 hover:bg-red-100 p-2 rounded-md">
+                                              Eliminar
                                             </button>
-                                        </form>
+                                          </form>
                                     </div>
                                 </td>
                             </tr>
@@ -85,4 +85,40 @@
         </div>
     </div>
 </div>
+
+
+<!-- Modal de confirmación -->
+<div id="confirmModal" class="hs-overlay hidden fixed top-0 start-0 z-50 w-full h-full bg-gray-500 bg-opacity-75">
+    <div class="flex justify-center items-center h-full">
+      <div class="bg-white rounded-lg shadow-md w-full max-w-md p-4">
+        <h3 class="text-lg font-semibold text-gray-800 mb-3">Confirmación</h3>
+        <p class="text-gray-600">¿Desea eliminar la categoría "<span id="modalCategoryName"></span>"?</p>
+        <div class="flex justify-end mt-4 space-x-2">
+          <button type="button" onclick="closeConfirmModal()" class="bg-gray-400 text-white hover:bg-gray-500 py-2 px-4 rounded-lg">Cancelar</button>
+          <button id="confirmButton" type="button" class="bg-pink-800 text-white hover:bg-pink-700 py-2 px-4 rounded-lg">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Función para abrir el modal de confirmación
+    function openConfirmModal(formId, categoryName) {
+        document.getElementById('confirmModal').classList.remove('hidden');
+        const confirmButton = document.getElementById('confirmButton');
+  
+        // Actualiza el mensaje del modal con el nombre de la categoría
+        document.getElementById('modalCategoryName').textContent = categoryName;
+  
+        // Cuando el usuario haga clic en "Confirmar", enviar el formulario
+        confirmButton.onclick = function() {
+            document.getElementById(formId).submit();
+        };
+    }
+  
+    // Función para cerrar el modal de confirmación
+    function closeConfirmModal() {
+        document.getElementById('confirmModal').classList.add('hidden');
+    }
+  </script>
 {% endblock content %}
