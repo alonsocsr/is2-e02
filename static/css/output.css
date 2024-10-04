@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
 
 /*
 ! tailwindcss v3.4.10 | MIT License | https://tailwindcss.com
@@ -48,7 +48,7 @@ html,
   -o-tab-size: 4;
      tab-size: 4;
   /* 3 */
-  font-family: Roboto, serif;
+  font-family: Figtree, serif;
   /* 4 */
   font-feature-settings: normal;
   /* 5 */
@@ -1059,10 +1059,6 @@ video {
   width: 1rem;
 }
 
-.w-4\/6{
-  width: 66.666667%;
-}
-
 .w-40{
   width: 10rem;
 }
@@ -1089,10 +1085,6 @@ video {
 
 .w-96{
   width: 24rem;
-}
-
-.w-\[750px\]{
-  width: 750px;
 }
 
 .w-auto{
@@ -1534,6 +1526,11 @@ video {
   border-color: rgb(255 255 255 / var(--tw-border-opacity));
 }
 
+.bg-black{
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
+}
+
 .bg-gray-100{
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
@@ -1641,11 +1638,6 @@ video {
 .bg-white{
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-
-.bg-black{
-  --tw-bg-opacity: 1;
-  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
 }
 
 .bg-opacity-50{
@@ -2389,6 +2381,10 @@ video {
 
 .hover\:underline:hover{
   text-decoration-line: underline;
+}
+
+.hover\:opacity-100:hover{
+  opacity: 1;
 }
 
 .hover\:shadow-xl:hover{

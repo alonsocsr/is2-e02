@@ -21,28 +21,18 @@
     {% if user.is_authenticated %}
     <div class="p-6 mt-6">
         <h2 class="text-3xl font-bold text-gray-800 mb-6">Contenidos Sujetos a Edición</h2>
-        
-
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            
             {% for contenido in contenidos %}
-
-     
             <div class="w-full bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl overflow-hidden flex flex-col md:flex-row relative"> 
-                    
                 <a href="{% url 'editar_contenido' contenido.id %}" class="h-32 md:h-48 lg:h-auto lg:w-48 flex-none bg-cover bg-center" 
                 style="background-image: url('{% if contenido.imagen %}{{ contenido.imagen.url }}{% else %}/static/default.jpg{% endif %}'); object-fit: cover;">
                 </a>
-
          
                 <div class="absolute top-2 right-2 bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full">
                     {{ contenido.categoria.nombre_categoria }}
                 </div>
 
-        
                 <div class="px-4 py-3 w-full flex flex-col justify-between leading-normal overflow-hidden">
-                    
-                 
                     <div class="flex items-center justify-between mb-2">
                         <div class="text-sm">
                             {% if contenido.autor is null %}
@@ -54,16 +44,12 @@
                         </div>
                     </div>
 
-                
                     <div class="mb-4">
                         <div class="text-gray-900 font-bold text-lg mb-1 truncate">{{ contenido.titulo }}</div>
-                        
-                       
                         <p class="text-gray-700 text-xs overflow-hidden" 
                             style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; font-size: 0.85rem;">
                             {{ contenido.resumen|truncatewords:30 }}
                         </p>
-                    
                         {% if contenido.mensaje_rechazo %}
                             <div class="mt-2">
                                 <button class="text-xs text-red-600 hover:text-red-800" onclick="toggleRejectionMessage({{ contenido.id }})">
@@ -75,40 +61,33 @@
                             </div>
                         {% endif %}
                     </div>
-
                  
                     <div class="flex flex-col justify-between space-y-2">
-                      
                         <a href="{% url 'editar_contenido' contenido.id %}" class="bg-pink-800 hover:bg-pink-700 text-white text-xs py-2 px-4 rounded-md text-center w-full">
                             Editar Contenido
                         </a>
-                      
                         <form id="sendToPublisherForm-{{ contenido.id }}" action="{% url 'cambiar_estado' contenido.id %}" method="POST" class="w-full">
                             {% csrf_token %}
                             <button type="button" onclick="openConfirmModal('sendToPublisherForm-{{ contenido.id }}')" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md text-center w-full">
                                 Enviar a Publicador
                             </button>
                         </form>
-
-
                      
                         <button type="button" onclick="openModal({{ contenido.id }})" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-2 px-4 rounded-md text-center w-full">
                             Rechazar
                         </button>
                     </div>
-
                 </div>
-
             </div>
             {% empty %}
             <p class="text-gray-600">No tienes contenido pendiente de edición.</p>
             {% endfor %}
         </div>
-
     </div>
     {% endif %}
+
     <!-- Modal para el rechazo -->
-    <div id="rejectModal" class="hs-overlay hidden fixed top-0 start-0 z-50 w-full h-full bg-gray-500 bg-opacity-75">
+    <div id="rejectModal" class="hs-overlay hidden fixed top-0 start-0 z-50 w-full h-full bg-gray-800 bg-opacity-50">
         <div class="flex justify-center items-center h-full">
             <div class="bg-white rounded-lg shadow-md w-full max-w-md p-4">
                 <h3 class="text-lg font-semibold text-gray-800 mb-3">Rechazar Contenido</h3>
@@ -124,7 +103,7 @@
         </div>
     </div>
 
-    <div id="confirmModal" class="hs-overlay hidden fixed top-0 start-0 z-50 w-full h-full bg-gray-500 bg-opacity-75">
+    <div id="confirmModal" class="hs-overlay hidden fixed top-0 start-0 z-50 w-full h-full bg-gray-800 bg-opacity-50">
         <div class="flex justify-center items-center h-full">
             <div class="bg-white rounded-lg shadow-md w-full max-w-md p-4">
                 <h3 class="text-lg font-semibold text-gray-800 mb-3">Confirmación</h3>
@@ -137,39 +116,36 @@
         </div>
     </div>
     
-    <script>
-
-     
-        function openConfirmModal(formId) {
+<script>
+    function openConfirmModal(formId) {
         document.getElementById('confirmModal').classList.remove('hidden');
         const confirmButton = document.getElementById('confirmButton');
-
         
         confirmButton.onclick = function() {
             document.getElementById(formId).submit();
         };
     }
-
     
     function closeConfirmModal() {
         document.getElementById('confirmModal').classList.add('hidden');
     }
-        function toggleRejectionMessage(id) {
-            var message = document.getElementById('rejection-message-' + id);
-            if (message.classList.contains('hidden')) {
-                message.classList.remove('hidden');
-            } else {
-                message.classList.add('hidden');
-            }
-        }
 
-        function openModal(contentId) {
+    function toggleRejectionMessage(id) {
+        var message = document.getElementById('rejection-message-' + id);
+        if (message.classList.contains('hidden')) {
+            message.classList.remove('hidden');
+        } else {
+            message.classList.add('hidden');
+        }
+    }
+
+    function openModal(contentId) {
         document.getElementById('rejectModal').classList.remove('hidden');
         document.getElementById('rejectForm').action = "{% url 'rechazar_contenido' 0 %}".replace('0', contentId);
-        }
+    }
 
-        function closeModal() {
-            document.getElementById('rejectModal').classList.add('hidden');
-        }
-    </script>
+    function closeModal() {
+        document.getElementById('rejectModal').classList.add('hidden');
+    }
+</script>
 {% endblock content %}

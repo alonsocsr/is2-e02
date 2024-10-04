@@ -21,29 +21,20 @@
 
     {% if user.is_authenticated %}
     <div class="p-6 mt-6">
-
         <h2 class="text-3xl font-bold text-gray-800 mb-6">Contenidos Inactivados</h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        
-            {% for contenido in contenidos %}
-                
-        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">        
+            {% for contenido in contenidos %}                        
             <div class="w-full bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl overflow-hidden flex flex-col md:flex-row relative">                     
                     <!-- imagen -->
                 <a href="{% url 'detalle_contenido' contenido.slug %}?is_staff=true" class="h-32 md:h-48 lg:h-auto lg:w-48 flex-none bg-cover bg-center" 
                 style="background-image: url('{% if contenido.imagen %}{{ contenido.imagen.url }}{% else %}/static/default.jpg{% endif %}'); object-fit: cover;">
                 </a>
 
-
                 <div class="absolute top-2 right-2 bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full">
                     {{ contenido.categoria.nombre_categoria }}
                 </div>
 
-
                 <div class="px-4 py-3 w-full flex flex-col justify-between leading-normal overflow-hidden">
-                    
-  
                     <div class="flex items-center justify-between mb-2">
                         <div class="text-sm">
                             {% if contenido.autor is null %}
@@ -54,40 +45,29 @@
                             <p class="text-gray-600 text-xs">{{ contenido.fecha_creacion|date:"d M Y" }}</p>
                         </div>
                     </div>
-
            
                     <div class="mb-4">
-                        <div class="text-gray-900 font-bold text-lg mb-1 truncate">{{ contenido.titulo }}</div>
-                        
-                   
+                        <div class="text-gray-900 font-bold text-lg mb-1 truncate">{{ contenido.titulo }}</div>                                         
                         <p class="text-gray-700 text-xs overflow-hidden" 
                             style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; font-size: 0.85rem;">
                             {{ contenido.resumen|truncatewords:30 }}
-                        </p>
-                
+                        </p>                
                     </div>
 
-
-                    <div class="flex flex-col justify-between space-y-2">
-               
+                    <div class="flex flex-col justify-between space-y-2">               
                         <form action="{% url 'inactivar_contenido' contenido.id %}" method="POST">
                             {% csrf_token %}
                             <button type="submit" class="bg-pink-800 hover:bg-pink-700 text-white text-xs py-2 px-4 rounded-md text-center w-full">
                                 Activar
                             </button>
-                        </form>
-                        
-                    </div>
-                    
+                        </form>                       
+                    </div>                   
                 </div>
-
             </div>
             {% empty %}
             <p class="text-gray-600">No existen contenidos inactivados.</p>
             {% endfor %}
-        
         </div>
-
     </div>
     {% endif %}
 {% endblock content %}
