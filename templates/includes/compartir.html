@@ -1,5 +1,5 @@
 
-<div id="share-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50">
+<div id="share-modal" class="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
     <div id="contenido" class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 space-y-4">
     <div class="flex justify-between items-center border-b pb-3">
         <h4 class="text-lg font-semibold text-gray-900">Compartir</h4>
@@ -93,8 +93,8 @@
         function handleCopy(event) {
             const contenidoSlug = event.target.dataset.slug;
             const contenidoId = event.target.dataset.contenidoId;
-            const oldUrl = window.location.href;
-            const newUrl = oldUrl + 'detalle-contenido/' + contenidoSlug + '/';
+            const oldUrl = window.location.origin;
+            const newUrl = oldUrl + '/detalle-contenido/' + contenidoSlug + '/';
             navigator.clipboard.writeText(newUrl).then(function() {
                 console.log('Copy Slug:', contenidoSlug);
                 updateShareCount(contenidoId);
@@ -104,8 +104,8 @@
         function handleFacebookShare(event) {
             const contenidoSlug = event.target.dataset.slug;
             const contenidoId = event.target.dataset.contenidoId;
-            const oldUrl = window.location.href;
-            const newUrl = oldUrl + 'detalle-contenido/' + contenidoSlug + '/';
+            const oldUrl = window.location.origin;
+            const newUrl = oldUrl + '/detalle-contenido/' + contenidoSlug + '/';
             window.open(`https://www.facebook.com/sharer/sharer.php?u=${newUrl}`, '_blank');
             console.log('Facebook Slug:', contenidoSlug);
             updateShareCount(contenidoId);
@@ -114,8 +114,8 @@
         function handleXShare(event) {
             const contenidoSlug = event.target.dataset.slug;
             const contenidoId = event.target.dataset.contenidoId;
-            const oldUrl = window.location.href;
-            const newUrl = oldUrl + 'detalle-contenido/' + contenidoSlug + '/';
+            const oldUrl = window.location.origin;
+            const newUrl = oldUrl + '/detalle-contenido/' + contenidoSlug + '/';
             window.open(`https://x.com/intent/tweet?url=${encodeURIComponent(newUrl)}`, '_blank');
             console.log('X Slug:', contenidoSlug);
             updateShareCount(contenidoId);

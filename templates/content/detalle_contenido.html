@@ -14,7 +14,17 @@
 {% endblock script%}
 
 {% block content %}
-    
+    {% if contenido.categoria.tipo_categoria in categorias_restringidas and not user.is_authenticated %}
+        {% include 'includes/iniciar_sesion.html' %}
+        <script>
+            document.getElementById('modalLogin').classList.remove('hidden');
+            document.getElementById('closeButton').classList.add('hidden');
+        </script>
+
+    {% elif contenido.categoria.tipo_categoria == 'PA' and contenido.categoria.id not in categorias_suscritas_ids and not contenido.autor == request.user and not request.GET.is_staff == 'true' %}
+        {% include '403.html' %}
+        
+    {% else %}
     <div class="max-w-screen-lg m-auto">
         <!-- Mensajes de avisos/exitos -->
         <div id="mensaje_box" class="mx-2 mb-4">
@@ -29,16 +39,6 @@
             {% endif %}
         </div>
 
-    {% if contenido.categoria.tipo_categoria in categorias_restringidas and not user.is_authenticated %}
-        {% include 'includes/iniciar_sesion.html' %}
-        <script>
-            document.getElementById('modalLogin').classList.remove('hidden');
-            document.getElementById('closeButton').classList.add('hidden');
-        </script>
-
-    {% elif not is_admin and contenido.autor not in request.user and contenido.categoria.tipo_categoria == 'PA' and contenido.categoria.id not in categorias_suscritas_ids %}
-        {% include '403.html' %}
-    {% else %}
     <!-- Imagen con categoría -->
     <section id="summary" class="bg-white rounded-xl shadow-md mb-4 mx-auto mt-4">
 
@@ -233,7 +233,7 @@
     {% endif %}
 
 
-    <div id="reportModal" class="hs-overlay hidden fixed top-0 start-0 z-50 w-full h-full bg-gray-500 bg-opacity-75">
+    <div id="reportModal" class="hs-overlay fixed top-0 start-0 z-50 w-full h-full bg-gray-800 bg-opacity-50 hidden">
         <div class="flex justify-center items-center h-full">
             <div class="bg-white rounded-lg shadow-md w-full max-w-md p-4">
                 <h3 class="text-lg font-semibold text-gray-800 mb-3">Reportar Contenido</h3>
