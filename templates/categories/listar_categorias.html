@@ -29,7 +29,7 @@
                         <h5 class="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-800">{{ categoria.nombre_categoria }}</h5>
                         {% if categoria.tipo_categoria == 'PU' or categoria.tipo_categoria == 'GR' or categoria.id in categorias_suscritas_ids %}
                         <!-- Botón para marcar/desmarcar categoría como favorita -->
-                        <button type="submit" class="circle-button" aria-label="Marcar como favorito" data-categoria-id="{{ categoria.id }}" data-action-url="{% url 'categoria_interes' categoria.id %}">
+                        <button type="submit" class="circle-button" aria-label="Marcar como favorito" data-categoria-id="{{ categoria.id }}" data-action-url="{% url 'categoria_interes' categoria.id %}" title="{% if categoria.id in categorias_interes_ids %}Eliminar de favoritos{% else %}Agregar a favoritos{% endif %}">
                             {% if categoria.id in categorias_interes_ids %}
                             <!-- Ícono de favorito (relleno) -->   
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ec4899" class="size-6">
