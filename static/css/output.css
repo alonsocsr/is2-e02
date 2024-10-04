@@ -742,11 +742,6 @@ video {
   margin-right: 0.5rem;
 }
 
-.mx-6{
-  margin-left: 1.5rem;
-  margin-right: 1.5rem;
-}
-
 .mx-auto{
   margin-left: auto;
   margin-right: auto;
@@ -1064,6 +1059,10 @@ video {
   width: 1rem;
 }
 
+.w-4\/6{
+  width: 66.666667%;
+}
+
 .w-40{
   width: 10rem;
 }
@@ -1169,10 +1168,6 @@ video {
 }
 
 .flex-shrink-0{
-  flex-shrink: 0;
-}
-
-.shrink-0{
   flex-shrink: 0;
 }
 
@@ -1539,11 +1534,6 @@ video {
   border-color: rgb(255 255 255 / var(--tw-border-opacity));
 }
 
-.bg-black{
-  --tw-bg-opacity: 1;
-  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
-}
-
 .bg-gray-100{
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
@@ -1651,6 +1641,11 @@ video {
 .bg-white{
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
+.bg-black{
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
 }
 
 .bg-opacity-50{
@@ -2131,10 +2126,6 @@ video {
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
-.opacity-0{
-  opacity: 0;
-}
-
 .opacity-75{
   opacity: 0.75;
 }
@@ -2446,11 +2437,6 @@ video {
   background-color: rgb(131 24 67 / var(--tw-bg-opacity));
 }
 
-.group[open] .group-open\:-rotate-180{
-  --tw-rotate: -180deg;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
 @media (min-width: 640px){
   .sm\:relative{
     position: relative;
@@ -2527,10 +2513,6 @@ video {
 }
 
 @media (min-width: 768px){
-  .md\:relative{
-    position: relative;
-  }
-
   .md\:ml-16{
     margin-left: 4rem;
   }
@@ -2541,19 +2523,6 @@ video {
 
   .md\:h-48{
     height: 12rem;
-  }
-
-  .md\:w-60{
-    width: 15rem;
-  }
-
-  .md\:w-auto{
-    width: auto;
-  }
-
-  .md\:translate-x-0{
-    --tw-translate-x: 0px;
-    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
   }
 
   .md\:grid-cols-2{
@@ -2577,12 +2546,6 @@ video {
   .md\:text-5xl{
     font-size: 3rem;
     line-height: 1;
-  }
-
-  .md\:shadow-none{
-    --tw-shadow: 0 0 #0000;
-    --tw-shadow-colored: 0 0 #0000;
-    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
   }
 }
 
@@ -2753,8 +2716,4 @@ video {
     --tw-text-opacity: 1;
     color: rgb(31 41 55 / var(--tw-text-opacity));
   }
-}
-
-.\[\&_summary\:\:-webkit-details-marker\]\:hidden summary::-webkit-details-marker{
-  display: none;
 }

@@ -174,7 +174,7 @@
             </div>
 
    
-            <button id="share-button" class="flex items-center space-x-1 text-gray-500 hover:text-pink-500">
+            <button id="share-button" onClick="share('{{ contenido.id }}', '{{contenido.slug}}')" class="flex items-center space-x-1 text-gray-500 hover:text-pink-500">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
                     <path fill-rule="evenodd"
                         d="M13.75 7h-3V3.66l1.95 2.1a.75.75 0 1 0 1.1-1.02l-3.25-3.5a.75.75 0 0 0-1.1 0L6.2 4.74a.75.75 0 0 0 1.1 1.02l1.95-2.1V7h-3A2.25 2.25 0 0 0 4 9.25v7.5A2.25 2.25 0 0 0 6.25 19h7.5A2.25 2.25 0 0 0 16 16.75v-7.5A2.25 2.25 0 0 0 13.75 7Zm-3 0h-1.5v5.25a.75.75 0 0 0 1.5 0V7Z"
@@ -183,50 +183,7 @@
                 <span>Compartir</span>
             </button>
 
-            <div id="share-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                <div id="contenido" data-contenido-id="{{ contenido.id }}" class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 space-y-4">
-                <div class="flex justify-between items-center border-b pb-3">
-                    <h4 class="text-lg font-semibold text-gray-900">Compartir</h4>
-                    <button class="modal-close text-gray-500 hover:text-gray-700">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                    </button>
-                </div>
-            
-                <p class="text-gray-600">Elija una opción para compartir o copiar al portapapeles.</p>
-            
-
-                <div class="space-y-2">
-                    <button id="copy-button" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded flex justify-center items-center">
-                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8 2a2 2 0 00-2 2v3h1V4a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-3v1h3a2 2 0 002-2V4a2 2 0 00-2-2H8z"></path>
-                        <path d="M3 6a2 2 0 00-2 2v7a2 2 0 002 2h7a2 2 0 002-2V8a2 2 0 00-2-2H3zm0 1h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V8a1 1 0 011-1z"></path>
-                    </svg>
-                        Copiar enlace
-                    </button>
-            
-                    <button id="facebook-share" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded flex justify-center items-center">
-                        <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 24 24">
-                            <path d="M17,3H7C4.791,3,3,4.791,3,7v10c0,2.209,1.791,4,4,4h5.621v-6.961h-2.343v-2.725h2.343V9.309 c0-2.324,1.421-3.591,3.495-3.591c0.699-0.002,1.397,0.034,2.092,0.105v2.43h-1.428c-1.13,0-1.35,0.534-1.35,1.322v1.735h2.7 l-0.351,2.725h-2.365V21H17c2.209,0,4-1.791,4-4V7C21,4.791,19.209,3,17,3z"></path>
-                        </svg>
-                        Compartir en Facebook
-                    </button>
-            
-                    <button id="x-share" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded flex justify-center items-center">
-                        <svg  class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 24 24">
-                            <path d="M 4.4042969 3 C 3.7572969 3 3.3780469 3.7287656 3.7480469 4.2597656 L 9.7363281 12.818359 L 3.7246094 19.845703 C 3.3356094 20.299703 3.6578594 21 4.2558594 21 L 4.9199219 21 C 5.2129219 21 5.4916406 20.871437 5.6816406 20.648438 L 10.919922 14.511719 L 14.863281 20.146484 C 15.238281 20.680484 15.849953 21 16.501953 21 L 19.835938 21 C 20.482937 21 20.862187 20.272188 20.492188 19.742188 L 14.173828 10.699219 L 19.900391 3.9902344 C 20.232391 3.6002344 19.955359 3 19.443359 3 L 18.597656 3 C 18.305656 3 18.027891 3.1276094 17.837891 3.3496094 L 12.996094 9.0097656 L 9.3945312 3.8554688 C 9.0205313 3.3194687 8.4098594 3 7.7558594 3 L 4.4042969 3 z"></path>
-                        </svg>
-                        Compartir en X
-                    </button>
-                </div>
-    
-                    <div class="pt-4 border-t">
-                        <button class="modal-close bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold py-2 px-4 rounded w-full">Cerrar</button>
-                    </div>
-                </div>
-            </div>
-
+            {% include 'includes/compartir.html' %}
 
             <div class="flex flex-col items-center">
                 <div id="rating" data-contenido-id="{{ contenido.id }}" class="flex space-x-1 cursor-pointer text-gray-500">
@@ -293,23 +250,7 @@
         </div>
     </div>
 
-
-    <div id="confirmInactivateModal"
-        class="hs-overlay hidden fixed top-0 start-0 z-50 w-full h-full bg-gray-500 bg-opacity-75">
-        <div class="flex justify-center items-center h-full">
-            <div class="bg-white rounded-lg shadow-md w-full max-w-md p-4">
-                <h3 class="text-lg font-semibold text-gray-800 mb-3">Confirmación</h3>
-                <p class="text-gray-600">¿Estás seguro de que deseas inactivar este contenido?</p>
-                <div class="flex justify-end mt-4 space-x-2">
-                    <button type="button" onclick="closeInactivateModal()"
-                        class="bg-gray-400 text-white hover:bg-gray-500 py-2 px-4 rounded-lg">Cancelar</button>
-                    <button id="confirmInactivateButton" type="button"
-                        class="bg-pink-800 text-white hover:bg-pink-700 py-2 px-4 rounded-lg">Confirmar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    {% include 'includes/inactivar.html' %}
 
     <script>
 
@@ -318,25 +259,10 @@
             document.getElementById('reportForm').action = "{% url 'detalle_contenido' slug='slug_placeholder' %}".replace('slug_placeholder', slug);
         }
 
-        
         function closeModal() {
             document.getElementById('reportModal').classList.add('hidden');
         }
 
-    
-        function openInactivateModal(formId) {
-            document.getElementById('confirmInactivateModal').classList.remove('hidden');
-            const confirmInactivateButton = document.getElementById('confirmInactivateButton');
-
-            confirmInactivateButton.onclick = function () {
-                document.getElementById(formId).submit();
-            };
-        }
-
-
-        function closeInactivateModal() {
-            document.getElementById('confirmInactivateModal').classList.add('hidden');
-        }
         setTimeout(function() {
             var mensajeBox = document.getElementById('mensaje_box');
             if (mensajeBox) {

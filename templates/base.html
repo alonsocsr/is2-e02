@@ -33,7 +33,7 @@
     {% endif %}
 
     <div class="flex flex-col flex-1 w-full">
-      {% if user.is_authenticated and  not is_only_suscriptor %}
+      {% if user.is_authenticated and not is_only_suscriptor %}
         <!-- botón para mostrar/ocultar el sidebar en pantallas pequeñas -->
         <div class="fixed top-3 left-16 z-30 px-4 sm:hidden">
           <button id="toggleSidebar" class="p-3 bg-pink-700 text-white rounded-full shadow-md">

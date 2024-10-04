@@ -48,13 +48,8 @@
 
     <!-- Carrusel  -->
     <section id="carousel-posts" class="hidden xl:block xl:w-3/5 w-full mt-10 xl:mt-0">
-<<<<<<< HEAD
         <div class="gallery border-2 rounded-xl mx-auto m-5 bg-white shadow-lg" style="width:750px;">
       
-=======
-        <div class="gallery border-2 rounded-xl mx-auto m-5 bg-white shadow-lg w-[750px]" style="width:750px;">
-            <!-- Título del contenido -->
->>>>>>> main
             <div class="top flex p-2 border-b select-none rounded-t-xl bg-gray-100">
                 <div class="heading text-gray-800 w-full pl-3 font-semibold my-auto"></div>
                 <div class="buttons ml-auto flex text-gray-600 mr-1">
@@ -89,15 +84,6 @@
                         {% endif %}  
                 
                                 <div class="main flex w-full p-8 cursor-pointer">
-<<<<<<< HEAD
-                             
-                                    <div class="sub w-4/6 my-auto">
-                                        <img class="w-full h-48 object-cover rounded-lg" src="{% if destacado.contenido.imagen %}{{ destacado.contenido.imagen.url }}{% else %}/static/default.jpg{% endif %}" alt="{{ destacado.contenido.titulo }}">
-                                    </div>
-                        
-                                    <div class="sub w-full my-auto px-4">
-                               
-=======
                                     <!-- Imagen -->
                                     <div class="sub w-2/5 my-auto">
                                         <img class="w-full h-48 object-cover rounded-lg" src="{% if destacado.contenido.imagen %}{{ destacado.contenido.imagen.url }}{% else %}/static/default.jpg{% endif %}" alt="{{ destacado.contenido.titulo }}">
@@ -105,7 +91,6 @@
                                     <!-- Información -->
                                     <div class="sub w-3/5 my-auto px-4">
                                         <!-- Autor y categoría -->
->>>>>>> main
                                         <div class="text-sm mb-4 flex items-center space-x-4">
                                             <img class="w-8 h-8 rounded-full" src="{% if destacado.contenido.autor.profile.image %}{{ destacado.contenido.autor.profile.image.url }}{% else %}/static/default.png{% endif %}" alt="{{ destacado.contenido.autor.username }}">
                                             <div>
@@ -236,12 +221,7 @@
 
 </script>
 
-<<<<<<< HEAD
 
-{% include 'includes/pago_categoria.html' with categoria=destacado.contenido.categoria %}
-=======
 {% include 'includes/pago_categoria.html' %}
->>>>>>> main
 {% include 'includes/iniciar_sesion.html' %}
 {% endblock content %}
-
