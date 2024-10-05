@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import PasswordChangeForm
+from django.views.generic import ListView
 
 
 class UpdateProfile(LoginRequiredMixin, FormView, PermissionRequiredMixin):
@@ -283,3 +284,40 @@ class EliminarCuentaView(LoginRequiredMixin, FormView):
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         return form
+    
+    
+class VerHistorialCompras(LoginRequiredMixin, PermissionRequiredMixin,ListView):
+
+    """
+    Vista para mostrar el historial de compras o suscripciones registradas en el sistema.
+
+    Muestra los registros de cambios de estado realizados por el usuario.
+
+    :cvar model: Modelo utilizado para almacenar los cambios de estado.
+    :cvar template_name: str - Nombre de la plantilla utilizada para renderizar la lista de cambios.
+    :cvar context_object_name: str - Nombre del contexto para la lista de cambios.
+    :cvar permission_required: str - Permiso requerido para acceder a esta vista.
+    :cvar paginate_by: int - Número de registros por página para la paginación.
+    """
+    model = Profile
+    template_name = 'profiles/ver_historial_pagos.html'
+    context_object_name = 'historial_pagos'
+    permission_required= 'permissions.ver_historial_compras'
+    paginate_by = 6  # Opcional: Paginar si es necesario
+
+    def get_queryset(self):
+        """ user=self.request.user
+        if user.groups.filter(name="Suscriptor").exists() and not user.groups.filter(name="Financiero").exists():
+           return Profile.objects.filter(suscripciones__isnull = False,user=user).distinct()
+        else: """
+        return Profile.objects.filter(suscripciones__isnull = False).distinct()
+        
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = self.request.user
+        context['is_suscr'] = self.request.user.is_authenticated and self.request.user.groups.filter(name="Suscriptor").exists()
+        context['is_fin'] = self.request.user.is_authenticated and self.request.user.groups.filter(name="Financiero").exists()
+        
+       
+        return context

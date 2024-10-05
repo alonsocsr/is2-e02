@@ -49,6 +49,7 @@ def crear_permisos(apps, schema_editor):
         ('visualizar_versiones_contenido', 'Visualizar versiones de Contenido'),
         ('restaurar_verisiones_contenido', 'Restaurar Versiones de Contenido'),
         ('destacar_contenido', 'Destacar Contenido'),
+        ('ver_historial_compras','Ver Historial de Compras'),
     ]
 
     content_type = ContentType.objects.get_for_model(
@@ -115,7 +116,7 @@ def configurar_roles_predefinidos(apps, schema_editor):
             'rol_por_defecto': True,
             'permisos': ['crear_contenido', 'visualizar_contenido', 'rechazar_contenido', 'editar_perfil', 'inactivar_contenido', 'cambiar_estado_contenido', 'ver_tablero_kanban', 'ver_reportes_contenido', 'ver_estadisticas_contenido', 'ver_cantidad_likes', 'ver_cantidad_dislikes', 'ver_cantidad_visualizaciones', 'ver_cantidad_compartidos', 'modificar_estado_contenido', 'visualizar_versiones_contenido', 'restaurar_verisiones_contenido', 'categoria_no_moderada', 'modificar_tablero_kanban'],
         },
-
+        
     ]
 
     for rol_data in roles_predeterminados:

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import UpdateProfile, categoria_interes, registrar_suscripcion, LikeView, DislikeView, EliminarCuentaView
+from .views import UpdateProfile, VerHistorialCompras, categoria_interes, registrar_suscripcion, LikeView, DislikeView, EliminarCuentaView
 
 
 
@@ -10,4 +10,5 @@ urlpatterns = [
     path('contenido/<int:id>/', LikeView.as_view(), name='like'),
     path('dislike/<int:id>/', DislikeView.as_view(), name='dislike'),
     path('eliminar_cuenta/', EliminarCuentaView.as_view(), name='eliminar_cuenta'),
+    path('historial-compras/', VerHistorialCompras.as_view(), name='ver_historial_compras'),
 ]
