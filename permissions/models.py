@@ -65,6 +65,7 @@ class Roles(models.Model):
             ('eliminar_estado_contenido','Eliminar Estado de Contenido'),
             ('visualizar_versiones_contenido','Visualizar versiones de Contenido'),
             ('restaurar_verisiones_contenido','Restaurar Versiones de Contenido'),
+            
         ]
         default_permissions = ()
 
