@@ -51,7 +51,7 @@
         "model": "profiles.Profile",
         "pk": 7,
         "fields": {
-            "user": 15,
+            "user": 7,
             "image": ""
         }
     }

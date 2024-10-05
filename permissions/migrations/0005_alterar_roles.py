@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
 
 
     dependencies = [
-        ('permissions', '0005_alter_roles_options'),
+        ('permissions', '0004_alter_roles_options'),
     ]
 
     operations = [

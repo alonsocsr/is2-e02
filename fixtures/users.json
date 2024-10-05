@@ -10,7 +10,7 @@
             "is_superuser": false,
             "is_active": true,
             "date_joined": "2024-08-30T12:34:56.789Z",
-            "groups": [1],  
+            "groups": [1, 7],  
             "user_permissions": []
         }
     },
@@ -91,7 +91,7 @@
     },
     {
         "model": "auth.user",
-        "pk": 15,
+        "pk": 7,
         "fields": {
             "username": "financiero",
             "password": "pbkdf2_sha256$600000$9hzNFn51opScwX1zBCj5CE$0aoVp/+uqOSZIJrhDN8DaBltM5+iySVPeFnzkKbrLaM=",
