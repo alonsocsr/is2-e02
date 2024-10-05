@@ -61,6 +61,7 @@
                             {% if perms.permissions.inactivar_contenido %}
                                 {% if contenido.autor == request.user or is_admin %}
                                     <form id="inactivateForm-{{ contenido.id }}" action="{% url 'inactivar_contenido' contenido.id %}" method="POST">
+                                        {% csrf_token %}
                                         {{ form.as_p }}
                                         <a type="button" onclick="openInactivateModal('inactivateForm-{{ contenido.id }}')" class="menu-close flex items-start w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-pink-700">Inactivar</a>
                                     </form>
