@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
         star.addEventListener('click', function () {
             event.preventDefault();
             if (!isUserAuthenticated()) {
-                window.location.href = `/login/?next=${encodeURIComponent(window.location.href)}`;
+                showModalLogin('Inicia Sesión', 'Esta función es exclusiva para usuarios autenticados. Si ya tienes una cuenta, inicia sesión. Si no, créala y después hablamos.');
             } else {
                 currentRating = this.getAttribute('data-value');
                 updateStars(currentRating);
@@ -67,5 +67,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             })
             .catch(error => console.error('Error:', error));
+    }
+    function showModalLogin(title, message) {
+        const modalLogin = document.getElementById('modalLogin');
+        if (modalLogin) {
+            modalLogin.classList.remove('hidden');
+            document.getElementById('closeButton').classList.remove('hidden');  // Mostrar el botón de cerrar
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            
+            
+        }
     }
 });

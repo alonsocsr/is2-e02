@@ -5,8 +5,8 @@
             
  
             <div class="flex-1 px-6 py-8 lg:p-12 bg-gray-100">
-                <h3 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Inicia Sesión para acceder</h3>
-                <p class="mt-4 text-base text-gray-700 sm:text-lg">
+                <h3 id="modal-title" class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Inicia Sesión</h3>
+                <p id="modal-message" class="mt-4 text-base text-gray-700 sm:text-lg">
                     Para acceder a este contenido exclusivo, es necesario que inicies sesión en tu cuenta. 
                     Si no tienes una cuenta, puedes registrarte fácilmente.
                 </p>
@@ -50,7 +50,7 @@
                 </div>
             </div>
 
-            <button id="closeButton" onClick="closeModal()" class="absolute top-3 right-14 text-gray-700 text-2xl hover:text-gray-900 transition ease-in duration-200">
+            <button id="closeButton" onClick="closeModalLogin()" class="absolute top-3 right-14 text-gray-700 text-2xl hover:text-gray-900 transition ease-in duration-200" title="Cerrar">
                 &times;
             </button>
 
@@ -59,7 +59,7 @@
 </div>
 
 <script>
-    function closeModal() {
-    document.getElementById('modalLogin').classList.add('hidden');
+    function closeModalLogin() {
+        document.getElementById('modalLogin').classList.add('hidden');
     }
 </script>
