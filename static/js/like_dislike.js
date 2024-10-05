@@ -5,7 +5,7 @@ const dislikeButton = document.getElementById('dislike-button');
 likeButton.addEventListener('click', function (event) {
     event.preventDefault(); 
     if (!isUserAuthenticated()) {
-        window.location.href = `/login/?next=${encodeURIComponent(window.location.href)}`;
+        showModalLogin('Inicia Sesión', 'Esta función es exclusiva para usuarios autenticados. Si ya tienes una cuenta, inicia sesión. Si no, créala y después hablamos.');
     } else {
         const actionUrl = likeButton.getAttribute('data-action-url');
         sendAjaxRequest(actionUrl, 'like');
@@ -15,7 +15,7 @@ likeButton.addEventListener('click', function (event) {
 dislikeButton.addEventListener('click', function (event) {
     event.preventDefault(); 
     if (!isUserAuthenticated()) {
-        window.location.href = `/login/?next=${encodeURIComponent(window.location.href)}`;
+        showModalLogin('Inicia Sesión', 'Esta función es exclusiva para usuarios autenticados. Si ya tienes una cuenta, inicia sesión. Si no, créala y después hablamos.');
     } else {
         const actionUrl = dislikeButton.getAttribute('data-action-url');
         sendAjaxRequest(actionUrl, 'dislike');
@@ -23,7 +23,7 @@ dislikeButton.addEventListener('click', function (event) {
 });
 
 function isUserAuthenticated() {
-    return document.body.classList.contains('authenticated'); // Asegúrate de que esta clase esté presente en el cuerpo si el usuario está autenticado
+    return document.body.classList.contains('authenticated');
 }
 
 function sendAjaxRequest(url, action) {
@@ -40,7 +40,7 @@ function sendAjaxRequest(url, action) {
             if (data.success) {
                 updateButtonStyles(action, data.liked, data.disliked, data.like_count, data.dislike_count);
             } else {
-                console.log('Error processing the action.');
+                console.log('Error en el proceso de la acción.');
             }
         })
         .catch(error => {
@@ -62,5 +62,17 @@ function updateButtonStyles(action, liked, disliked, likeCount, dislikeCount) {
 
 function getCSRFToken() {
     return document.querySelector('[name=csrfmiddlewaretoken]').value;
+}
+
+function showModalLogin(title, message) {
+    const modalLogin = document.getElementById('modalLogin');
+    if (modalLogin) {
+        modalLogin.classList.remove('hidden');
+        document.getElementById('closeButton').classList.remove('hidden');  // Mostrar el botón de cerrar
+        document.getElementById('modal-title').textContent = title;
+        document.getElementById('modal-message').textContent = message;
+        
+        
+    }
 }
 

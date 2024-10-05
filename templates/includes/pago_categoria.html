@@ -1,35 +1,54 @@
 
 <div id="modalPago" class="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
-    <div class="relative max-w-7xl mx-auto">
-        <div class="max-w-lg mx-auto rounded-lg shadow-lg overflow-hidden lg:max-w-none lg:flex bg-pink-800">
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white max-w-4xl mx-auto rounded-lg shadow-lg overflow-hidden lg:max-w-none lg:flex border border-gray-300">
             <!-- Contenido del Modal -->
-            <div class="flex-1 px-6 py-8 lg:p-12">
-                <h3 id="modalCategoriaNombre" class="text-2xl font-extrabold text-white sm:text-3xl"></h3>
-                <p id="modalCategoriaDescripcion" class="mt-6 text-base text-white sm:text-lg"></p>
-                <div class="mt-8">
-                    <div class="flex items-center">
-                        <div class="flex-1 border-t-2 border-pink-400"></div>
+            <div class="flex-1 px-6 py-8 lg:p-12 bg-gray-100">
+                <h3 id="modalCategoriaNombre" class="text-3xl font-extrabold text-gray-900 sm:text-4xl"></h3>
+                <p id="modalCategoriaDescripcion" class="mt-6 text-base text-gray-700 sm:text-lg"></p>
+                <div class="mt-6">
+                    <div class="flex items-center justify-center">
+                        <div class="flex-1 border-t-2 border-gray-300"></div>
                     </div>
-                    <ul role="list" class="mt-8 space-y-5 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-5">
-                        <!-- Aquí puedes agregar características específicas si tienes más detalles -->
+                    <ul role="list" class="mt-6 space-y-5 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-5">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <p class="ml-3 text-base text-gray-700">Acceso exclusivo a una amplia variedad de contenidos premium</p>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <p class="ml-3 text-base text-gray-700">Acceso ilimitado a las actualizaciones continuas..</p>
+                        </li>
                     </ul>
                 </div>
             </div>
             <!-- Precio y Acciones del Modal -->
-            <div class="py-8 px-6 text-center lg:flex-shrink-0 lg:flex lg:flex-col lg:justify-center lg:p-12 bg-pink-600">
-                <p class="text-lg leading-6 font-medium text-white">Pago único de</p>
-                <div class="mt-4 flex items-center justify-center text-5xl font-extrabold text-white ">
-                    <span id="modalCategoriaPrecio"></span><span class="ml-3 text-xl font-medium text-white">GS</span>
-                </div>
-                <div class="mt-6">
-                    <div class="rounded-md shadow flex items-center justify-center">
-                        <button id="checkout-button" class="flex items-center justify-center py-5 px-12 bg-pink-100 hover:bg-pink-900 hover:text-pink-200 text-pink-800 p-2 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500 mt-4">Suscribirse</button>
+            <div class="py-8 px-6 text-center lg:flex-shrink-0 lg:flex lg:flex-col lg:justify-center lg:p-12 bg-white">
+                <div class="border border-gray-300 rounded-lg p-6 bg-gray-50 shadow-md">
+                    <p class="text-lg leading-6 font-medium text-gray-700">Pago único de</p>
+                    <div class="mt-4 flex items-center justify-center text-5xl font-extrabold text-gray-900 ">
+                        <span id="modalCategoriaPrecio"></span><span class="ml-3 text-xl font-medium text-gray-700">GS</span>
                     </div>
-                    <p class="text-gray-800 text-sm mt-3">100% real no fake</p>
+                    <div class="mt-6">
+                        <div class="rounded-md shadow flex items-center justify-center">
+                            <button id="checkout-button" class="flex items-center justify-center px-16 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-lg tracking-wide cursor-pointer transition ease-in duration-300">
+                                Suscribirse
+                            </button>
+                        </div>
+                        <p class="text-gray-500 text-sm mt-3">100% real no fake</p>
+                    </div>
                 </div>
             </div>
             <!-- Botón de cierre del modal -->
-            <button onclick="cerrarModalPago()" class="absolute top-0 right-0 mt-4 mr-4 text-gray-800 text-2xl">
+            <button onclick="cerrarModalPago()" class="absolute top-3 right-14 text-gray-700 text-2xl hover:text-gray-900 transition ease-in duration-200" title="Cerrar">
                 &times;
             </button>
         </div>
