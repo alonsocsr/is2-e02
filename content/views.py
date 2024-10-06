@@ -715,32 +715,25 @@ class UpdatePostStatusView(LoginRequiredMixin, PermissionRequiredMixin, View):
             # Obtener el contenido y actualizar su estado
             post = Contenido.objects.get(id=post_id)
             estado_anterior = post.estado
-            ban = 0
 
             if new_status == 'Borrador':
                 post.estado = 'Borrador'
                 #Se utiliza la función que crea el historial de cambio
-                if ban == 0:
-                    log_status_change(post, estado_anterior, 'Borrador', self.request.user)
-                    ban = 1
+                log_status_change(post, estado_anterior, 'Borrador', self.request.user)  
             
             elif new_status == 'Edicion':
                 post.estado = 'Edicion'
-                if ban == 0:
-                    log_status_change(post, estado_anterior, 'Edicion', self.request.user)
-                    ban = 1
+                log_status_change(post, estado_anterior, 'Edicion', self.request.user)
+
             elif new_status == 'Publicacion':
                 post.estado = 'Publicar'
-                if ban == 0:
-                    post.usuario_editor = self.request.user
-                    log_status_change(post, estado_anterior, 'Publicar', self.request.user)
-                    ban = 1
+                post.usuario_editor = self.request.user
+                log_status_change(post, estado_anterior, 'Publicar', self.request.user)
+
             elif new_status == 'Publicado':
                 post.estado = 'Publicado'
                 post.mensaje_rechazo = ''
-                if ban == 0:
-                    log_status_change(post, estado_anterior, 'Publicado', self.request.user)
-                    ban = 1
+                log_status_change(post, estado_anterior, 'Publicado', self.request.user)
                 
                 if post.fecha_publicacion is not None and post.fecha_publicacion > timezone.now().date():
                     post.activo = False
@@ -750,9 +743,7 @@ class UpdatePostStatusView(LoginRequiredMixin, PermissionRequiredMixin, View):
             elif new_status == 'Inactivo':
                 post.estado = 'Inactivo'
                 post.activo = False
-                if ban == 0:
-                    log_status_change(post, estado_anterior, 'Inactivo', self.request.user)
-                    ban = 1
+                log_status_change(post, estado_anterior, 'Inactivo', self.request.user)
 
             post.save()
 
