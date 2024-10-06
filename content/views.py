@@ -188,7 +188,7 @@ class ContenidoInactivadoList(LoginRequiredMixin, PermissionRequiredMixin,ListVi
         user=self.request.user
         if user.groups.filter(name="Admin").exists():
            return Contenido.objects.filter(estado='Inactivo').order_by('fecha_modificacion')
-        elif user.groups.filter(name="Autor").exists():
+        elif user.has_perm('permissions.inactivar_contenido'):
             return Contenido.objects.filter(autor=self.request.user, estado='Inactivo').order_by('fecha_modificacion')
         else:
             return Contenido.objects.none()

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load static %}
+
+{% block title %}Historial | Stark {% endblock title %}
+
+{% block content %}
+    <div class="p-6 mt-6">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl text-center font-bold text-gray-800 mb-6">Historial de pagos</h2>
+            <div class="overflow-x-auto relative">
+                {% for pago in historial_pagos %}
+                {% for suscripcion in pago.suscripciones.all %}
+                <div class="py-4 px-6 flex">
+                    <div class="flex">
+                        <!-- perfil del usuario -->
+                        <div class="w-20 h-20 flex-shrink-0">
+                            {% if pago.image %}
+                            {% thumbnail pago.image "80x80" crop="center" as im %}
+                            <img class="rounded-full border-4 border-white shadow-md" src="{{ im.url }}"
+                                width="{{ im.width }}" height="{{ im.height }}">
+                            {% endthumbnail %}
+                            {% else %}
+                            <img src="{% static 'default.png' %}" alt="Default Profile Picture"
+                                class="w-20 h-20 rounded-full border-4 border-white shadow-md">
+                            {% endif %}
+                        </div>
+
+                        <div class="flex-col p-2 m-auto">
+                            <div class="px-2">
+                                {% if pago.user %}
+                                <span class="font-medium text-gray-900">{{ pago.user.username }}</span>
+
+                                {% else %}
+                                <span class="text-red-500">Unknown</span>
+                                {% endif %}
+                                <span class="text-gray-500">ha realizado un pago de la categoria</span>
+                                <ul>
+                                    <li>
+                                        <span class="font-medium text-gray-900">"{{ suscripcion.nombre_categoria }}"</span>
+                                        <span class="text-gray-500">por un valor de {{ suscripcion.precio }} GS</span>
+                                    </li>
+
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% empty %}
+                <div>
+                    <p colspan="3" class="py-4 px-6 text-center text-gray-500">
+                        No existen pagos realizados en el sistema
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+            
+
+
+            {% if is_paginated %}
+            <div class="mt-6 flex justify-center rounded-sm">
+                <nav class="relative z-0 inline-flex shadow-sm -space-x-px" aria-label="Pagination">
+                    {% if page_obj.has_previous %}
+                    <a href="?page=1"
+                        class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        &laquo; Primera
+                    </a>
+                    <a href="?page={{ page_obj.previous_page_number }}"
+                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        Anterior
+                    </a>
+                    {% endif %}
+                    <span
+                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                        Pág {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                    </span>
+                    {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}"
+                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        Siguiente
+                    </a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}"
+                        class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        Última &raquo;
+                    </a>
+                    {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+
+{% endblock content %}
