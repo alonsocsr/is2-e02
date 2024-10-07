@@ -58,7 +58,8 @@
             "descripcion_corta": "CN",
             "estado":true,
             "moderada":true,
-            "tipo_categoria":"PU"
+            "tipo_categoria":"PA",
+            "precio": 30000
 		}
     },
     {

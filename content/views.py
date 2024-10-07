@@ -16,7 +16,10 @@ from .models import StatusChangeLog
 from django.utils import timezone
 from django.db.models import Avg
 from django.http import JsonResponse
+from decouple import config
+import stripe
 
+stripe.api_key = config('STRIPE_SECRET_KEY')
 
 class VistaAllContenidos(ListView):
     """
@@ -114,8 +117,11 @@ class VistaContenido(FormMixin, DetailView):
         else:
             context['liked'] = False
             context['disliked'] = False
-            
+
+        context['STRIPE_PUBLIC_KEY'] = config('STRIPE_PUBLIC_KEY')
+
         return context
+    
     
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -677,10 +683,10 @@ class TableroKanbanView(LoginRequiredMixin, PermissionRequiredMixin, TemplateVie
         else:    
             contenido = Contenido.objects.all()
             
-        context['borrador'] = contenido.filter(estado='Borrador').order_by('fecha_creacion')
-        context['edicion'] = contenido.filter(estado='Edicion').order_by('fecha_creacion')
-        context['publicacion'] = contenido.filter(estado='Publicar').order_by('fecha_creacion')
-        context['publicado'] = contenido.filter(estado='Publicado').order_by('fecha_creacion')
+        context['borrador'] = contenido.exclude(vigencia__lte=timezone.now().date()).filter(estado='Borrador').order_by('fecha_creacion')
+        context['edicion'] = contenido.exclude(vigencia__lte=timezone.now().date()).filter(estado='Edicion').order_by('fecha_creacion')
+        context['publicacion'] = contenido.exclude(vigencia__lte=timezone.now().date()).filter(estado='Publicar').order_by('fecha_creacion')
+        context['publicado'] = contenido.exclude(vigencia__lte=timezone.now().date()).filter(estado='Publicado').order_by('fecha_creacion')
         context['inactivo'] = contenido.exclude(vigencia__lte=timezone.now().date()).filter(estado='Inactivo').order_by('fecha_creacion')
         context['archivado'] = contenido.filter(vigencia__lte=timezone.now().date()).order_by('vigencia')
                  
@@ -715,6 +721,7 @@ class UpdatePostStatusView(LoginRequiredMixin, PermissionRequiredMixin, View):
             # Obtener el contenido y actualizar su estado
             post = Contenido.objects.get(id=post_id)
             estado_anterior = post.estado
+            fecha_actual = timezone.now().date()  
 
             if new_status == 'Borrador':
                 post.estado = 'Borrador'
@@ -735,7 +742,7 @@ class UpdatePostStatusView(LoginRequiredMixin, PermissionRequiredMixin, View):
                 post.mensaje_rechazo = ''
                 log_status_change(post, estado_anterior, 'Publicado', self.request.user)
                 
-                if post.fecha_publicacion is not None and post.fecha_publicacion > timezone.now().date():
+                if post.fecha_publicacion is not None and post.fecha_publicacion > fecha_actual:
                     post.activo = False
                 else:
                     post.activo = True
@@ -755,10 +762,10 @@ def log_status_change(contenido, anterior, nuevo, user=None):
     Función utilitaria que se encarga de guardar el historial de cambio de estado
     
     Parametros:
-    :param contenido: The content object whose status is changing.
-    :param anterior: The previous status of the content.
-    :param nuevo: The new status of the content.
-    :param user: The user responsible for the status change (can be None for anonymous or system actions).
+    :param contenido: El contenido que ha cambiado de estado.
+    :param anterior: El estado anterior del contenido.
+    :param nuevo: El nuevo estado del contenido.
+    :param user: El usuario responsable del cambio de estado.
     """
     if anterior != nuevo:
         StatusChangeLog.objects.create(

@@ -34,7 +34,7 @@
                                         <span class="text-red-500">Unknown</span>
                                     {% endif %}
                                     <span class="text-gray-500">ha modificado</span>
-                                    <a href="{% url 'detalle_contenido' log.contenido.slug %}" class="hover:text-pink-600 font-medium text-gray-900">"{{log.contenido.titulo}}"</a>
+                                    <a href="{% url 'detalle_contenido' log.contenido.slug %}?is_staff=true" class="hover:text-pink-600 font-medium text-gray-900">"{{log.contenido.titulo}}"</a>
                                     <span class="text-gray-500">de {{ log.anterior_estado }} a </span>
                                     <span class="font-semibold text-gray-900">{{ log.nuevo_estado }}</span>
                                 </div>

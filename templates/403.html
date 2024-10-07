@@ -39,7 +39,7 @@
         </p>
 
         
-        <a href="/" class="w-full flex justify-center bg-pink-800 hover:bg-pink-700 text-pink-100 p-4 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500 animate__animated animate__fadeInUp animate__delay-2s">
+        <a id="button" href="/" class="w-full flex justify-center bg-pink-800 hover:bg-pink-700 text-pink-100 p-4 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500 animate__animated animate__fadeInUp animate__delay-2s">
           Volver al Inicio
         </a>
       </div>
@@ -60,6 +60,24 @@
     </div>
   </div>
 
-</body>
+  {% include 'includes/pago_categoria.html' %}
 
+  <script>
+    function mostrarModalPago(event, categoriaId, categoriaNombre, categoriaDescripcion, categoriaPrecio) {
+      event.preventDefault();  
+      event.stopPropagation();  
+    
+      document.getElementById('modalCategoriaNombre').textContent = categoriaNombre;
+      document.getElementById('modalCategoriaDescripcion').textContent = categoriaDescripcion;
+      document.getElementById('modalCategoriaPrecio').textContent = categoriaPrecio;
+      document.getElementById('checkout-button').setAttribute('onclick', `procesarPago('${categoriaId}')`);
+    
+      const modal = document.getElementById('modalPago');
+      modal.classList.remove('hidden');
+    }
+  </script>
+  
+  
+</body>
 </html>
+  

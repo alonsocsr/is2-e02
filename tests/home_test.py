@@ -1,6 +1,6 @@
 import pytest
 from django.urls import reverse
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group,Permission
 
 
 def test_home(client, transactional_db):
