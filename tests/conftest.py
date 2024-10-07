@@ -19,7 +19,7 @@ def setup(client, monkeypatch):
 
     permiso = Permission.objects.create(
         codename='test', content_type_id=1, name='test permiso')
-
+    
     data = {
         'nombre_rol': 'test_rol',
         'rol_por_defecto': False,

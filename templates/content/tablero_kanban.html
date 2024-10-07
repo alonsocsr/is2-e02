@@ -1,6 +1,9 @@
 {% extends "base.html" %}
-
 {% load static %}
+
+{% block script %}
+  <script defer src="{% static 'js/kanban.js' %}"></script>
+{% endblock script%}
 
 {% block title %}
     Tablero Kanban | Stark

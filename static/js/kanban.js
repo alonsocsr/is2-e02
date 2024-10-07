@@ -138,8 +138,8 @@ document.addEventListener('DOMContentLoaded', function () {
     guardarRechazoBtn.addEventListener('click', ocultarModalRechazo);
 
     cancelarRechazoBtn.addEventListener('click', function () {
-        revertirCambios();
         ocultarModalRechazo();
+        revertirCambios();
     });
     
 
@@ -165,8 +165,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     cancelarConfirmacionBtn.addEventListener('click', function(){
-        revertirCambios();
         ocultarModalConfirmacion();
+        revertirCambios();
     });
 
     

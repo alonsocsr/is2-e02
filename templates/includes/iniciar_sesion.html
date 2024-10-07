@@ -41,7 +41,7 @@
                     <p class="text-lg leading-6 font-medium text-gray-900">Inicia sesión para continuar</p>
                     <div class="mt-6">
                         <div class="rounded-md shadow flex items-center justify-center">
-                            <button id="login-button" onclick="window.location.href = {% url 'account_login' %}" class="flex items-center justify-center px-16 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-lg tracking-wide cursor-pointer transition ease-in duration-300">
+                            <button id="login-button" onclick="redirectToLogin()" class="flex items-center justify-center px-16 py-3 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-lg tracking-wide cursor-pointer transition ease-in duration-300">
                                 Iniciar Sesión
                             </button>
                         </div>
@@ -61,5 +61,11 @@
 <script>
     function closeModalLogin() {
         document.getElementById('modalLogin').classList.add('hidden');
+    }
+
+    function redirectToLogin() {
+        const currentUrl = window.location.href;
+        const loginUrl = "{% url 'account_login' %}?next=" + encodeURIComponent(currentUrl);
+        window.location.href = loginUrl;
     }
 </script>

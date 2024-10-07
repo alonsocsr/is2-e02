@@ -23,7 +23,11 @@
 
     {% elif contenido.categoria.tipo_categoria == 'PA' and contenido.categoria.id not in categorias_suscritas_ids and not contenido.autor == request.user and not request.GET.is_staff == 'true' %}
         {% include '403.html' %}
-        
+        <script>
+            document.getElementById('button').textContent = 'Suscríbete';
+            document.getElementById('button').setAttribute('onclick', "mostrarModalPago(event, '{{ contenido.categoria.id }}', '{{ contenido.categoria.nombre_categoria }}', '{{ contenido.categoria.descripcion }}', '{{ contenido.categoria.precio }}')");
+        </script>  
+          
     {% else %}
     <div class="max-w-screen-lg m-auto">
         <!-- Mensajes de avisos/exitos -->
