@@ -2,7 +2,7 @@
 <div class="w-full bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl overflow-hidden flex flex-col md:flex-row relative">
 
     {% if contenido.categoria.tipo_categoria in categorias_restringidas and not user.is_authenticated %}
-    <a href="#" onClick="mostrarModalLogin(event)">
+    <a href="#" onClick="mostrarModalLogin(event, '{{contenido.slug}}')">
     {% elif contenido.categoria.tipo_categoria == 'PA' and contenido.categoria.id not in categorias_suscritas_ids %}
     <a href="#" onclick="mostrarModalPago(event, '{{ contenido.categoria.id }}', '{{ contenido.categoria.nombre_categoria }}', '{{ contenido.categoria.descripcion }}', '{{ contenido.categoria.precio }}')">
     {% else %}
@@ -113,10 +113,15 @@
         modal.classList.remove('hidden');
     }
 
-    function mostrarModalLogin(event) {
+    function mostrarModalLogin(event, slugPar) {
         event.preventDefault();  
         event.stopPropagation();  
         const modal = document.getElementById('modalLogin');
+        const slug = slugPar;
+
+        nextUrl = window.location.origin + '/detalle-contenido/' + slug;
+
+        modal.setAttribute('data-next-url', nextUrl);
         modal.classList.remove('hidden');
     }
     

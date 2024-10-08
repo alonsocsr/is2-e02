@@ -74,7 +74,7 @@
                     {% for destacado in destacados %}
                         {% if destacado.contenido.categoria.tipo_categoria in categorias_restringidas and not user.is_authenticated %}
                             <div class="each-frame border-box flex-none h-full" title="{{ destacado.contenido.titulo }}">
-                                <a href="#" onClick="mostrarModalLogin(event)">
+                                <a href="#" onClick="mostrarModalLogin(event, '{{destacado.contenido.slug}}')">
                         {% elif destacado.contenido.categoria.tipo_categoria == 'PA' and destacado.contenido.categoria.id not in categorias_suscritas_ids %}
                             <div class="each-frame border-box flex-none h-full" title="{{ destacado.contenido.titulo }}">
                                 <a href="#" onClick="mostrarModalCarrusel(event,'{{destacado.contenido.categoria.id}}', '{{ destacado.contenido.categoria.nombre_categoria }}', '{{destacado.contenido.categoria.descripcion}}', '{{destacado.contenido.categoria.precio}}')">
@@ -211,10 +211,15 @@
     }
 
     
-    function mostrarModalLogin(event) {
+    function mostrarModalLogin(event, slugPar) {
         event.preventDefault();  
         event.stopPropagation();  
         const modal = document.getElementById('modalLogin');
+        const slug = slugPar;
+
+        nextUrl = window.location.origin + '/detalle-contenido/' + slug;
+
+        modal.setAttribute('data-next-url', nextUrl);
         modal.classList.remove('hidden');
     }
 

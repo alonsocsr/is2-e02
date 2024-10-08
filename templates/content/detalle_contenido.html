@@ -7,8 +7,6 @@
 {% endblock %}
 
 {% block script %}
-    <script defer src="{% static 'js/compartir_modal.js' %}"></script>
-    <script defer src="{% static 'js/compartir_action.js' %}"></script>
     <script src="{% static 'js/calificacion.js' %}"></script>
     <script defer src="{% static 'js/like_dislike.js' %}"></script>
 {% endblock script%}
@@ -26,6 +24,9 @@
         <script>
             document.getElementById('button').textContent = 'Suscríbete';
             document.getElementById('button').setAttribute('onclick', "mostrarModalPago(event, '{{ contenido.categoria.id }}', '{{ contenido.categoria.nombre_categoria }}', '{{ contenido.categoria.descripcion }}', '{{ contenido.categoria.precio }}')");
+            document.getElementById('titulo').textContent = 'Este contenido es de pago.';
+            document.getElementById('subtitulo').textContent = 'Debes suscribirte a la categoría para acceder a este contenido.';
+            document.getElementById('subtitulo').classList.add('mt-2');
         </script>  
           
     {% else %}

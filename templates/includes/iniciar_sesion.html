@@ -64,8 +64,19 @@
     }
 
     function redirectToLogin() {
+        const nextUrl = document.getElementById('modalLogin').getAttribute('data-next-url');
         const currentUrl = window.location.href;
-        const loginUrl = "{% url 'account_login' %}?next=" + encodeURIComponent(currentUrl);
-        window.location.href = loginUrl;
+        const urlSegments = currentUrl.split('/');
+        const previousUrl = urlSegments.slice(0,-2).join('/');
+
+        if ((currentUrl == window.location.origin + '/') || (previousUrl == window.location.origin + '/categorias') || (previousUrl == window.location.origin)) {
+            const loginUrl = "{% url 'account_login' %}?next=" + encodeURIComponent(nextUrl);
+            window.location.href = loginUrl;
+        }
+
+        else {
+            const loginUrl = "{% url 'account_login' %}?next=" + encodeURIComponent(currentUrl);
+            window.location.href = loginUrl;
+        }
     }
 </script>
