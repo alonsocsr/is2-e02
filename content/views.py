@@ -1,12 +1,13 @@
 from django.conf import settings
 from django.db.models import Case, When, IntegerField
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
 from django.urls import reverse
 from django.db.models import Q
 from django.views.generic import ListView, DetailView, TemplateView, View
 from django.views.generic.edit import FormView, FormMixin, UpdateView
+import requests
 from .forms import ContenidoForm, EditarContenidoForm, RechazarContenidoForm, ContenidoReportadoForm
 from .models import ContenidoSeleccionado, Version, Contenido, ContenidoReportado,Valoracion   
 import re, json
@@ -18,6 +19,11 @@ from django.db.models import Avg
 from django.http import JsonResponse
 from decouple import config
 import stripe
+import matplotlib.pyplot as plt
+import io
+import urllib, base64
+import pandas as pa
+import numpy as np
 
 stripe.api_key = config('STRIPE_SECRET_KEY')
 
@@ -86,6 +92,10 @@ class VistaContenido(FormMixin, DetailView):
 
     def get_object(self, queryset=None):
         slug = self.kwargs.get(self.slug_url_kwarg)
+        contenido = get_object_or_404(Contenido, slug=slug)
+        if contenido.estado == "Publicado" and contenido.activo:
+            contenido.cantidad_vistas += 1
+            contenido.save(update_fields=['cantidad_vistas'])
         return get_object_or_404(Contenido, slug=slug)
     
     def get_context_data(self, **kwargs):
@@ -96,6 +106,8 @@ class VistaContenido(FormMixin, DetailView):
         disqus_shortname = settings.DISQUS_WEBSITE_SHORTNAME
         disqus_identifier = contenido.slug 
         disqus_url = self.request.build_absolute_uri()  
+        
+        
 
        
         context['disqus_shortname'] = disqus_shortname
@@ -129,6 +141,7 @@ class VistaContenido(FormMixin, DetailView):
         return kwargs
 
     def get_success_url(self):
+        
         return reverse('detalle_contenido', kwargs={'slug': self.object.slug})
 
     def post(self, request, *args, **kwargs):
@@ -871,3 +884,127 @@ class IncrementShareCountView(View):
             'status': 'ok',
             'share_count': contenido.cantidad_compartidos
         })
+        
+API_KEY = config("DISQUS_PUBLIC_KEY")
+FORUM_SHORTNAME = 'cmsis2'
+
+def contador_comentarios(full_url):
+    api_url = f"https://disqus.com/api/3.0/threads/list.json"
+    params = {
+        'api_key': API_KEY,
+        'forum': FORUM_SHORTNAME,
+        'thread:link': full_url,  
+    }
+
+
+    response = requests.get(api_url, params=params)
+    data = response.json()
+
+ 
+    if 'response' in data and isinstance(data['response'], list) and len(data['response']) > 0:
+        thread = data['response'][0]  
+        if 'posts' in thread:
+            comment_count = thread['posts']
+            
+            return comment_count
+        else:
+           
+            return 0
+    else:
+       
+        return 0
+
+
+class EstadisticasContenido(LoginRequiredMixin,PermissionRequiredMixin,ListView):
+    template_name = 'content/estadistica_contenido.html'
+    permission_required="permissions.ver_estadisticas_contenido"
+    model = Contenido  
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+     
+        slug = self.kwargs.get('slug')
+        contenido = get_object_or_404(Contenido, slug=slug)
+
+
+        full_url = self.request.build_absolute_uri(reverse('detalle_contenido', kwargs={'slug': slug}))
+
+ 
+        comment_count = contador_comentarios(full_url)  
+        
+        context['contenido'] = contenido
+        context['comment_count'] = comment_count
+
+        return context
+
+   
+class Reportes(LoginRequiredMixin,PermissionRequiredMixin,TemplateView):
+    template_name = 'content/reportes_sistema.html'
+    permission_required="permissions.ver_reportes_contenido"
+    
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+        grafico1=self.grafico_contenidos_por_categoria()
+        context['contenido_por_categorias']=grafico1
+        return context
+    
+    
+    def grafico_contenidos_por_categoria(self):
+        #1) Reporte 1: Cantidad de contenidos por categoria
+        contenidos=Contenido.objects.filter(estado="Publicado",activo=True)
+        contenidos_categoria={}
+        
+        for contenido in contenidos:
+            #obtener la categoria del contenido
+            categoria=contenido.categoria.nombre_categoria
+            
+            if categoria not in contenidos_categoria:
+                #se agrega una clave al diccionario y se inicializa a 0 el contador
+                contenidos_categoria[categoria]=1
+            else:
+                #se actualiza la clave de la key categoria
+                contenidos_categoria[categoria]+=1
+                
+        
+        grafico_panda = pa.DataFrame.from_dict(contenidos_categoria, orient='index', columns=['Cantidad'])
+        
+    
+       
+        plt.figure(figsize=(9, 9))  
+        wedges, texts, autotexts = plt.pie(
+        grafico_panda['Cantidad'],
+        labels=grafico_panda.index,
+        autopct=lambda p: '{:.1f}%'.format(p) if p > 0 else '',  
+        startangle=90,
+        colors=plt.cm.Paired(np.arange(len(grafico_panda))),
+        explode=[0.1] * len(grafico_panda),
+        labeldistance=1.2  
+        )
+        
+      
+        for text in texts:
+            text.set_fontsize(14)
+            text.set_color('black')
+
+        for autotext in autotexts:
+            autotext.set_fontsize(12)
+            autotext.set_color('white')
+
+        plt.title('Contenidos por Categoría', fontsize=16, fontweight='bold')
+
+        plt.axis('equal')  
+        
+       
+        buffer = io.BytesIO()
+        plt.savefig(buffer, format='png', bbox_inches='tight')  
+        buffer.seek(0)
+        
+       
+        grafico = base64.b64encode(buffer.read()).decode('utf-8')
+        link_grafico = f"data:image/png;base64,{grafico}"
+        
+        plt.close()
+        
+        return link_grafico
+    
