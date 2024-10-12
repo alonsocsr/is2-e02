@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{%load static%}
+{% block content %}
+    <!-- Mensajes de avisos/exitos -->
+    <div class="mx-1 mb-4">
+        {% if messages %}
+            <div id="mensaje_box" class="space-y-3">
+                {% for message in messages %}
+                    <div class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    {% if user.is_authenticated %}
+    <div class="flex flex-col items-center gap-6 mb-6 pt-5">
+    
+        <div class="flex flex-col md:flex-row gap-6">
+            <!-- Card 1: Likes -->
+            <div class="bg-pink-50 shadow-lg border border-pink-300 rounded-lg p-6 w-64 text-center">
+                <h2 class="text-pink-600 font-semibold text-sm">Likes</h2>
+                <p class="text-3xl font-bold text-black">{{contenido.cantidad_likes}}</p>
+                <span class="text-gray-500 text-xs mt-1 block">Número de likes del contenido</span>
+            </div>
+    
+            <!-- Card 2: Dislikes -->
+            <div class="bg-pink-50 shadow-lg border border-pink-300 rounded-lg p-6 w-64 text-center">
+                <h2 class="text-pink-600 font-semibold text-sm">Dislikes</h2>
+                <p class="text-3xl font-bold text-black">{{contenido.cantidad_dislikes}}</p>
+                <span class="text-gray-500 text-xs mt-1 block">Número de dislikes del contenido</span>
+            </div>
+        </div>
+
+    
+        <div class="flex flex-col md:flex-row gap-6">
+            <!-- Card 3: Valoracion -->
+            <div class="bg-pink-50 shadow-lg border border-pink-300 rounded-lg p-6 w-64 text-center">
+                <h2 class="text-pink-600 font-semibold text-sm">Valoración</h2>
+                <p class="text-3xl font-bold text-black">{{contenido.cantidad_valoraciones}}</p>
+                <span class="text-gray-500 text-xs mt-1 block">Promedio de valoración del contenido</span>
+            </div>
+
+            <!-- Card 4: Visualizaciones -->
+            <div class="bg-pink-50 shadow-lg border border-gray-300 rounded-lg p-6 w-64 text-center">
+                <h2 class="text-pink-600 font-semibold text-sm">Visualizaciones</h2>
+                <p class="text-3xl font-bold text-black">{{contenido.cantidad_vistas}}</p>
+                <span class="text-gray-500 text-xs mt-1 block">Visualizaciones del contenido</span>
+            </div>
+        </div>
+
+      
+        <div class="flex flex-col md:flex-row gap-6">
+            <!-- Card 5: Comentarios -->
+            <div class="bg-pink-50 shadow-lg border border-gray-300 rounded-lg p-6 w-64 text-center">
+                <h2 class="text-pink-600 font-semibold text-sm">Comentarios</h2>
+                <p class="text-3xl font-bold text-black">{{ comment_count }}</p>
+                <span class="text-gray-500 text-xs mt-1 block">Cantidad de comentarios del contenido</span>
+            </div>
+            <div class="bg-pink-50 shadow-lg border border-gray-300 rounded-lg p-6 w-64 text-center">
+                <h2 class="text-pink-600 font-semibold text-sm">Compartidos</h2>
+                <p class="text-3xl font-bold text-black">{{ contenido.cantidad_compartidos }}</p>
+                <span class="text-gray-500 text-xs mt-1 block">Cantidad de veces que el contenido se compartió</span>
+            </div>
+        </div>
+        
+
+    </div>
+{% endif %}
+   
+    
+
+
+{% endblock content %}

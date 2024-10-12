@@ -1,6 +1,6 @@
 from django.views.generic import FormView, View, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-
+import requests
 from .forms import ProfileForm, ConfirmDeleteAccountForm
 from .models import Profile
 from django.contrib import messages
@@ -321,3 +321,6 @@ class VerHistorialCompras(LoginRequiredMixin, PermissionRequiredMixin,ListView):
         
        
         return context
+    
+    
+
