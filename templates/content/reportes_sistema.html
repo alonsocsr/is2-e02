@@ -10,9 +10,8 @@
     <select id="reporte" class="h-12 border border-gray-300 text-gray-600 text-base rounded-lg block w-full py-2.5 px-4 focus:outline-none" onchange="mostrarReporte()">
         <option value="" disabled selected>Selecciona un reporte</option>
         <option value="reporte1">Cantidad de contenidos por categorías</option>
-        <option value="reporte2">Contenidos por Autor</option>
-        <option value="reporte3">Reporte 3</option>
-        <option value="reporte4">Reporte 4</option>
+        <option value="reporte2">Estadisticas globales de visualizaciones de contenido</option>
+       
     </select>
 </div>
 
@@ -29,15 +28,44 @@
     </div>
 </div>
 
-<div class="mt-4" id="reporte1" style="text-align: center; display: none;">
-    <h1 class="text-3xl font-extrabold text-gray-800 mt-2 mb-8 mr-36 text-center">Cantidad total de contenidos publicados y activos por categoría</h1>
-    <p>
-        <strong>Descripción:</strong> Este gráfico muestra la cantidad total de contenidos publicados y activos del CMS en forma de un gráfico de torta. Los totales están representados mediante porcentajes.</
-    </p>
-    <div class="row" style="display: inline-block; text-align: center;">
-        <div class="col-md-6" style="max-width: 100%; margin-top: 10px;">
-            <img src="{{ contenido_por_categorias }}" alt="Gráfico de Torta de los contenidos por categoría" style="max-width: 90%; height: auto; display: block; margin: 0 auto;">
+<div class="mt-4" id="reporte2" style="text-align: center; display: none;">
+    <h1 class="text-3xl font-extrabold text-gray-800 mt-2 mb-8 mr-36 text-center">ESTADISTICAS GLOBALES DE VISUALIZACIONES DE CONTENIDO</h1>
+    <div>
+        <h2 class="text-3xl font-extrabold text-gray-600 mt-2 mb-8 mr-36 text-center">Promedio de visualizaciones de contenidos por categoria</h2>
+        <p>
+            <strong>Descripción:</strong> Este gráfico muestra la distribucion de las visualizaciones de contenidos entre las distintas categorias de contenido existentes en el sitio.
+        </p>
+        <div class="row" style="display: inline-block; text-align: center;">
+            <div class="col-md-6" style="max-width: 100%; margin-top: 10px;">
+                <img src="{{ reporte_visualizaciones.avg_por_categoria }}" alt="Gráfico de Torta de los contenidos por categoría" style="max-width: 90%; height: auto; display: block; margin: 0 auto;">
+            </div>
         </div>
+    </div>
+    
+    
+    <div>
+        {% for categoria, contenidos in reporte_visualizaciones.contenidos_puntuados.items %}
+            <div class="w-full bg-white shadow-md rounded-lg p-6 mb-8">
+                <h2 class="text-xl font-bold mb-4">Categoria: {{ categoria }}</h2>
+                <div class="w-full md:w-1/3 bg-white shadow-md rounded-lg p-6 mb-4">
+                    <h3 class="text-lg font-bold mb-2">Mejor Contenido:</h3>
+                    <img class="rounded-md w-full h-48 object-cover mb-4" src="{{ contenidos.mejor_contenido.imagen.url }}" alt="{{ contenidos.mejor_contenido.titulo }}">
+                    <p class="text-sm text-gray-500 mb-2">Autor: {{ contenidos.mejor_contenido.autor }}</p>
+                    <p class="text-sm text-gray-500 mb-4">Publicado el: {{ contenidos.mejor_contenido.fecha_creacion|date:"d M Y" }}</p>
+                    <h2 class="text-lg font-bold mb-2">{{ contenidos.mejor_contenido.titulo }}</h2>
+                    <p class="text-sm text-gray-600">{{ contenidos.mejor_contenido.resumen }}</p>
+                </div>
+    
+                <div class="w-full md:w-1/3 bg-white shadow-md rounded-lg p-6">
+                    <h3 class="text-lg font-bold mb-2">Peor Contenido:</h3>
+                    <img class="rounded-md w-full h-48 object-cover mb-4" src="{{ contenidos.peor_contenido.imagen.url }}" alt="{{ contenidos.peor_contenido.titulo }}">
+                    <p class="text-sm text-gray-500 mb-2">Autor: {{ contenidos.peor_contenido.autor }}</p>
+                    <p class="text-sm text-gray-500 mb-4">Publicado el: {{ contenidos.peor_contenido.fecha_creacion|date:"d M Y" }}</p>
+                    <h2 class="text-lg font-bold mb-2">{{ contenidos.peor_contenido.titulo }}</h2>
+                    <p class="text-sm text-gray-600">{{ contenidos.peor_contenido.resumen }}</p>
+                </div>
+            </div>
+        {% endfor %}
     </div>
 </div>
 

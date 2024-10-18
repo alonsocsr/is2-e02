@@ -1,13 +1,12 @@
 from .base import *
 
+from django.core.files.storage import FileSystemStorage
 
 SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = False
 DISQUS_DEVELOPER = False
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.now.sh']
-
-#STATICFILES_STORAGES = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
@@ -28,3 +27,16 @@ CLOUDINARY_STORAGE = {
     'API_KEY' : config('CLOUD_API_KEY'),
     'API_SECRET' : config('CLOUD_API_SECRET')
 }
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-sorl-thumbnail-cache",
+    }
+}
+
+THUMBNAIL_CACHE = 'default'
+THUMBNAIL_CACHE_TIMEOUT = 3600
+
+
+THUMBNAIL_STORAGE = 'django.core.files.storage.FileSystemStorage'
