@@ -1,3 +1,4 @@
+from datetime import date
 from django.conf import settings
 from django.db.models import Case, When, IntegerField
 from django.shortcuts import get_object_or_404, redirect, render
@@ -8,6 +9,8 @@ from django.db.models import Q
 from django.views.generic import ListView, DetailView, TemplateView, View
 from django.views.generic.edit import FormView, FormMixin, UpdateView
 import requests
+
+from categories.models import Categorias
 from .forms import ContenidoForm, EditarContenidoForm, RechazarContenidoForm, ContenidoReportadoForm
 from .models import ContenidoSeleccionado, Version, Contenido, ContenidoReportado,Valoracion   
 import re, json
@@ -20,6 +23,7 @@ from django.http import JsonResponse
 from decouple import config
 import stripe
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 import io
 import urllib, base64
 import pandas as pa
@@ -349,6 +353,7 @@ class CambiarEstadoView(UpdateView):
                     contenido.activo=False
                     messages.info(self.request, f"El contenido se publicará el {contenido.fecha_publicacion}.")
                 else:
+                    contenido.fecha_publicacion = date.today()
                     contenido.activo=True
                     messages.success(self.request, "El contenido ha sido publicado.")
 
@@ -758,6 +763,7 @@ class UpdatePostStatusView(LoginRequiredMixin, PermissionRequiredMixin, View):
                 if post.fecha_publicacion is not None and post.fecha_publicacion > fecha_actual:
                     post.activo = False
                 else:
+                    post.fecha_publicacion = date.today()
                     post.activo = True
 
             elif new_status == 'Inactivo':
@@ -905,24 +911,29 @@ def contador_comentarios(full_url):
         thread = data['response'][0]  
         if 'posts' in thread:
             comment_count = thread['posts']
-            
             return comment_count
         else:
-           
             return 0
     else:
-       
         return 0
 
 
 class EstadisticasContenido(LoginRequiredMixin,PermissionRequiredMixin,ListView):
+    """ Vista para mostrar las estadisticas generales de un contenido.
+
+    Muestra las estadisticas generales de un contenido.
+
+    :cvar model: Modelo utilizado para almacenar las estadisticas.
+    :cvar template_name: str - Nombre de la plantilla utilizada para renderizar las estadisticas.
+    :cvar context_object_name: str - Nombre del contexto para las estadisticas.
+    :cvar permission_required: str - Permiso requerido para acceder a esta vista.
+    """
     template_name = 'content/estadistica_contenido.html'
     permission_required="permissions.ver_estadisticas_contenido"
     model = Contenido  
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
      
         slug = self.kwargs.get('slug')
         contenido = get_object_or_404(Contenido, slug=slug)
@@ -940,18 +951,26 @@ class EstadisticasContenido(LoginRequiredMixin,PermissionRequiredMixin,ListView)
 
    
 class Reportes(LoginRequiredMixin,PermissionRequiredMixin,TemplateView):
+    """ Vista para mostrar los reportes y graficos estdisticos del sitio web.
+
+    Muestra las estadisticas globales del sitio web CMS.
+    :cvar template_name: str - Nombre de la plantilla utilizada para renderizar las estadisticas.
+    :cvar context_object_name: str - Nombre del contexto para las estadisticas.
+    :cvar permission_required: str - Permiso requerido para acceder a esta vista.
+    """
     template_name = 'content/reportes_sistema.html'
     permission_required="permissions.ver_reportes_contenido"
     
     def get_context_data(self, **kwargs):
         context=super().get_context_data(**kwargs)
         grafico1=self.grafico_contenidos_por_categoria()
+        grafico_visualizaciones=self.grafico_reporte_visualizaciones()
         context['contenido_por_categorias']=grafico1
+        context['reporte_visualizaciones']=grafico_visualizaciones 
+        
         return context
     
-    
-    def grafico_contenidos_por_categoria(self):
-        #1) Reporte 1: Cantidad de contenidos por categoria
+    def contenidos_total_categoria(self):
         contenidos=Contenido.objects.filter(estado="Publicado",activo=True)
         contenidos_categoria={}
         
@@ -966,6 +985,11 @@ class Reportes(LoginRequiredMixin,PermissionRequiredMixin,TemplateView):
                 #se actualiza la clave de la key categoria
                 contenidos_categoria[categoria]+=1
                 
+        return contenidos_categoria
+    def grafico_contenidos_por_categoria(self):
+        #1) Reporte 1: Cantidad de contenidos por categoria
+        
+        contenidos_categoria=self.contenidos_total_categoria()
         
         grafico_panda = pa.DataFrame.from_dict(contenidos_categoria, orient='index', columns=['Cantidad'])
         
@@ -1008,3 +1032,122 @@ class Reportes(LoginRequiredMixin,PermissionRequiredMixin,TemplateView):
         
         return link_grafico
     
+    def contenidos_por_categoria(self,categoria):
+        return Contenido.objects.filter(estado="Publicado",activo=True,categoria__nombre_categoria=categoria)
+    def calificacion(self,contenidos_ordenados):
+        return contenidos_ordenados[1]
+    
+    def grafico_reporte_visualizaciones(self):
+        reporte_visualizacion=self.reportes_visualizaciones()
+        
+        reportes={}
+        
+        categorias = list(reporte_visualizacion['avg_por_categoria'].keys())
+        calificaciones = list(reporte_visualizacion['avg_por_categoria'].values())
+        """ print(f'categorias | {categorias}')
+        print(f'calificaciones | {calificaciones}') """
+        
+      
+        bar_labels = [f'Color {i + 1}' for i in range(len(categorias))]  
+        colormap = cm.get_cmap('tab10', len(categorias))  
+        bar_colors = [colormap(i) for i in range(len(categorias))]
+
+    
+        fig, ax = plt.subplots()
+        ax.bar(categorias, calificaciones, label=bar_labels, color=bar_colors)
+
+        
+        ax.set_xticklabels(categorias, rotation=45, ha='right')
+        ax.set_ylabel('Calificación')
+        ax.set_title('Calificación promedio de las visualizaciones por categoría')
+
+    
+        plt.tight_layout()
+  
+        buffer = io.BytesIO()
+        plt.savefig(buffer, format='png', bbox_inches='tight')
+        buffer.seek(0)
+
+   
+        grafico = base64.b64encode(buffer.read()).decode('utf-8')
+        link_grafico = f"data:image/png;base64,{grafico}"
+
+
+        plt.close()
+        
+        reportes['avg_por_categoria']=link_grafico
+        reportes['contenidos_puntuados']=reporte_visualizacion['contenidos_puntuados']
+        reportes['mejor_contenido']=reporte_visualizacion['mejor_contenido']
+        reportes['peor_contenido']=reporte_visualizacion['peor_contenido']
+        
+        """ print(reportes['contenidos_puntuados'])
+        print(reportes['mejor_contenido'])
+        print(reportes['peor_contenido']) """
+        return reportes
+    
+    def reportes_visualizaciones(self):
+        #que es trending? se asignan pesos a las reacciones de un contenido. Se puntua sobre el 100, compartir:0.3, comentar: 0.3, like: 0.2, dislike:0.1, visualizar: 0.1
+        categorias=Categorias.objects.all()
+        reporte_visualizacion={
+        'avg_por_categoria': {},
+        'contenidos_puntuados': {},
+        'mejor_contenido': None,
+        'peor_contenido': None
+        }
+        contenidos_ordenados=[]
+        
+        promedio=0.0
+        mejor_contenido=None
+        peor_contenido=None
+        
+        for categoria in categorias:
+            #1) promedio de visualizaciones por categoria
+            
+            #obtener los contenidos por categoria
+            contenidos_por_categoria=self.contenidos_por_categoria(categoria.nombre_categoria)
+            total_suma = 0
+            #iterar sobre los contenidos y sumar todas las visualizaciones
+            for c in contenidos_por_categoria:
+                total_suma+=c.cantidad_vistas
+                
+            total=len(contenidos_por_categoria)
+            #calcular el promedio
+            if total != 0:
+                promedio=total_suma/total
+            
+            #agregar la puntuacion promedio de la categoria en el diccionario de puntuacion promedio
+            reporte_visualizacion['avg_por_categoria'][categoria.nombre_categoria]=promedio
+            
+            
+            #obtener la calificacion de los contenidos y ordenarlos de mayor a menor
+            
+            contenidos_ordenados_cat=[]
+            for contenido in contenidos_por_categoria:
+                full_url = self.request.build_absolute_uri(reverse('detalle_contenido', kwargs={'slug': contenido.slug}))
+                
+                cal=(0.3*contenido.cantidad_compartidos+0.2*contenido.cantidad_likes+0.1*contenido.cantidad_dislikes+0.1*contenido.cantidad_vistas+0.3*contador_comentarios(full_url))
+                
+                contenidos_ordenados_cat.append((contenido,cal))
+                contenidos_ordenados.append((contenido,cal))
+                
+                
+            #ordenar los contenidos de mejor a peor calificado
+            contenidos_ordenados_cat.sort(key=self.calificacion,reverse=True)
+            if contenidos_ordenados_cat:
+                #guardar en el diccionario de reportes un diccionario con key: nombre de la categoria y value como un diccionario con dos elementos, el contenido mejor y peor puntuado de esa categoria
+                reporte_visualizacion['contenidos_puntuados'][categoria.nombre_categoria] = {
+                'mejor_contenido': contenidos_ordenados_cat[0][0],   
+                'peor_contenido': contenidos_ordenados_cat[-1][0]
+                }     
+        
+        #ordenar los contenidos globales
+        contenidos_ordenados.sort(key=lambda x:x[1],reverse=True)
+            
+        reporte_visualizacion['mejor_contenido']=contenidos_ordenados[0][0]
+        reporte_visualizacion['peor_contenido']=contenidos_ordenados[-1][0]
+        
+        
+        return reporte_visualizacion
+            
+            
+                   
