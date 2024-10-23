@@ -1,5 +1,4 @@
 {% load static %}
-
 <!doctype html>
 <html>
 
@@ -7,8 +6,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}{% endblock %}</title>
+
   <link href="{% static 'css/output.css' %}" rel="stylesheet">
+  
   <script src="{% static 'js/categorias.js' %}"></script>
+  <script src="{% static 'js/mensajes.js' %}"></script>
   {% block script %}{% endblock %}
 </head>
 

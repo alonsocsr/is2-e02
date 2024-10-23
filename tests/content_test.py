@@ -286,3 +286,103 @@ def test_redireccion_lista_destacados(setup, client):
     response = client.get(url)
     
     assert response.status_code == 200
+
+@pytest.mark.django_db
+def test_compartir(client,setup):
+    user, rol_creado = setup
+    
+     
+    categoria = Categorias.objects.create(nombre_categoria="TestCategoria")
+    contenido = Contenido.objects.create(
+        titulo='Nuevo Contenido',
+        resumen='Este es un resumen del contenido',
+        cuerpo='<p>Este es el cuerpo del contenido</p>',
+        categoria=categoria,
+        estado='Publicado',
+        activo=True,
+        fecha_publicacion=timezone.now().date(),
+        vigencia=timezone.now().date() + timezone.timedelta(days=30),
+        slug='nuevo-contenido',
+        usuario_editor=user,
+        cantidad_compartidos=0
+    )
+    print(f'Cantidad de compartidos antes de la accion: {contenido.cantidad_compartidos}') 
+
+    
+    url = reverse('increment_share_count')
+    response = client.post(url, {'contenido_id': contenido.pk}, follow=True)
+
+    
+
+    contenido.refresh_from_db() 
+    print(f'Cantidad de compartidos luego de la accion: {contenido.cantidad_compartidos}')  
+    assert response.status_code == 200  
+    assert contenido.cantidad_compartidos>=1
+    
+@pytest.mark.django_db
+def test_calificar(client,setup):
+    user, rol_creado = setup
+    
+     
+    categoria = Categorias.objects.create(nombre_categoria="TestCategoria")
+    contenido = Contenido.objects.create(
+        titulo='Nuevo Contenido',
+        resumen='Este es un resumen del contenido',
+        cuerpo='<p>Este es el cuerpo del contenido</p>',
+        categoria=categoria,
+        estado='Publicado',
+        activo=True,
+        fecha_publicacion=timezone.now().date(),
+        vigencia=timezone.now().date() + timezone.timedelta(days=30),
+        slug='nuevo-contenido',
+        usuario_editor=user,
+        cantidad_valoraciones=0
+    )
+    print(f'Cantidad de valoraciones antes de la accion: {contenido.cantidad_valoraciones}') 
+
+    
+    url = reverse('calificar_contenido', kwargs={'contenido_id': contenido.pk})
+    response = client.post(url, {'puntuacion': 5}, follow=True)
+
+
+    contenido.refresh_from_db() 
+    print(f'Cantidad de valoraciones luego de la accion: {contenido.cantidad_valoraciones}')  
+    assert response.status_code == 200  
+    assert contenido.cantidad_valoraciones>=1
+    
+@pytest.mark.django_db
+def test_visualizacion(client,setup):
+    user, rol_creado = setup
+    
+    with tempfile.NamedTemporaryFile(suffix=".jpg") as tmp_img:
+        
+        image = Image.new('RGB', (100, 100), color='red')
+        image.save(tmp_img, format='JPEG')
+        tmp_img.seek(0)  
+
+        image_file = SimpleUploadedFile(tmp_img.name, tmp_img.read(), content_type='image/jpeg')
+    categoria = Categorias.objects.create(nombre_categoria="TestCategoria")
+    contenido = Contenido.objects.create(
+        titulo='Nuevo Contenido',
+        resumen='Este es un resumen del contenido',
+        cuerpo='<p>Este es el cuerpo del contenido</p>',
+        categoria=categoria,
+        estado='Publicado',
+        activo=True,
+        fecha_publicacion=timezone.now().date(),
+        vigencia=timezone.now().date() + timezone.timedelta(days=30),
+        slug='nuevo-contenido',
+        usuario_editor=user,
+        cantidad_vistas=0,
+        imagen=image_file
+    )
+    print(f'Cantidad de vistas antes de la accion: {contenido.cantidad_vistas}') 
+
+    
+    url = reverse('detalle_contenido', kwargs={'slug': contenido.slug})
+    response = client.post(url, follow=True)
+
+    contenido.refresh_from_db() 
+    print(f'Cantidad de vistas luego de la accion: {contenido.cantidad_vistas}')  
+    assert response.status_code == 200  
+    assert contenido.cantidad_vistas>=1
