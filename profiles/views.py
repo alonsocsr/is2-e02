@@ -310,15 +310,20 @@ class VerHistorialCompras(LoginRequiredMixin, PermissionRequiredMixin,ListView):
         if user.groups.filter(name="Suscriptor").exists() and not user.groups.filter(name="Financiero").exists():
            return Profile.objects.filter(suscripciones__isnull = False,user=user).distinct()
         else: """
-        return Profile.objects.filter(suscripciones__isnull = False).distinct()
-        
+        queryset = Profile.objects.filter(suscripciones__isnull=False).distinct()
+        categoria = self.request.GET.get('categoria')
+        if categoria:
+            # filtrar los perfiles por la categoría de suscripcion
+            queryset = queryset.filter(suscripciones__id=categoria)
+        return queryset           
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['user'] = self.request.user
         context['is_suscr'] = self.request.user.is_authenticated and self.request.user.groups.filter(name="Suscriptor").exists()
         context['is_fin'] = self.request.user.is_authenticated and self.request.user.groups.filter(name="Financiero").exists()
-        
+        context['categorias'] = Categorias.objects.filter(tipo_categoria='PA')   #  todas las categorías para el filtro
+        context['categoria_seleccionada'] = self.request.GET.get('categoria', '')  #  seleccionada actualmente
        
         return context
     
