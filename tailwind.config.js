@@ -6,6 +6,7 @@ module.exports = {
     '../templates/**/*.html',
     '../../templates/**/*.html',
     '../../**/templates/**/*.html',
+    './node_modules/flowbite/**/*.js',
   ],
   theme: {
     extend: {
@@ -14,7 +15,11 @@ module.exports = {
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require('flowbite/plugin')({
+      charts: true,
+    }),
+  ],
 }
 
 

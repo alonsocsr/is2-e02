@@ -315,7 +315,7 @@ class VerHistorialCompras(LoginRequiredMixin, PermissionRequiredMixin,ListView):
         if categoria:
             # filtrar los perfiles por la categoría de suscripcion
             queryset = queryset.filter(suscripciones__id=categoria)
-        return queryset           
+        return queryset.order_by("suscripciones")           
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
