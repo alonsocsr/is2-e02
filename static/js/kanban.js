@@ -148,6 +148,10 @@ document.addEventListener('DOMContentLoaded', function () {
     function ocultarModalConfirmacion() { confirmModal.classList.add('hidden'); }
 
     confirmarCambiosBtn.addEventListener('click', function () {
+        confirmarCambiosBtn.disabled = true;
+        confirmarCambiosBtn.classList.add('bg-pink-900', 'cursor-not-allowed');
+        confirmarCambiosBtn.classList.remove('bg-pink-700');
+
         fetch(`/update-post-status/`, {
             method: 'POST',
             headers: {
