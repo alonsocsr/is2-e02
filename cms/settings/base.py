@@ -187,6 +187,7 @@ ACCOUNT_RATE_LIMITS = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+ACCOUNT_EMAIL_SUBJECT_PREFIX = "Stark CMS - "
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
