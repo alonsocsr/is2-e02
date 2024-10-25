@@ -155,6 +155,9 @@ Mis borradores | Stark
 
   
       confirmButton.onclick = function() {
+          confirmButton.disabled = true;
+          confirmButton.classList.add('bg-pink-900', 'cursor-not-allowed');
+          confirmButton.classList.remove('bg-pink-800', 'hover:bg-pink-700');
           document.getElementById(formId).submit();
       };
   }

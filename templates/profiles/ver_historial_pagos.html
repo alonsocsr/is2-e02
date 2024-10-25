@@ -53,13 +53,12 @@
                             {% else %}
                             <span class="text-red-500">Unknown</span>
                             {% endif %}
-                            <span class="text-gray-500">ha realizado un pago de la categoría</span>
-                            <ul>
-                                <li>
-                                    <span class="font-medium text-gray-900">"{{ suscripcion.nombre_categoria }}"</span>
-                                    <span class="text-gray-500">por un valor de {{ suscripcion.precio }} GS</span>
-                                </li>
-                            </ul>
+                            <span class="text-gray-700">ha realizado un pago de la categoría</span>
+                            <a href="{% url 'categories:detalle' suscripcion.id %}" class="font-medium text-gray-900 hover:text-pink-600"> "{{ suscripcion.nombre_categoria }}" </a>
+                        </div>
+                        <div class="px-2">
+                            <span class="text-gray-700">por un valor de </span>
+                            <span class="font-semibold text-gray-900">{{ suscripcion.precio }} Gs</span>
                         </div>
                     </div>
                 </div>
