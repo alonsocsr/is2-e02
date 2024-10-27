@@ -1,7 +1,6 @@
-from datetime import date
 from django.conf import settings
 from django.db.models import Case, When, IntegerField
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
 from django.urls import reverse
@@ -17,17 +16,13 @@ import re, json
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from .models import StatusChangeLog
-from django.utils import timezone
 from django.db.models import Avg
 from django.http import JsonResponse
 from decouple import config
 import stripe
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-import io
-import urllib, base64
-import pandas as pa
-import numpy as np
+from datetime import date
+from django.utils import timezone
+from datetime import timedelta
 
 stripe.api_key = config('STRIPE_SECRET_KEY')
 
@@ -325,6 +320,7 @@ class CambiarEstadoView(UpdateView):
                 contenido.activo=False
                 messages.info(self.request, f"El contenido se publicará el {contenido.fecha_publicacion}.")
             else:
+                contenido.fecha_publicacion = date.today()
                 contenido.activo=True
                 messages.success(self.request, "El contenido ha sido publicado.")
 
@@ -963,74 +959,39 @@ class Reportes(LoginRequiredMixin,PermissionRequiredMixin,TemplateView):
     
     def get_context_data(self, **kwargs):
         context=super().get_context_data(**kwargs)
-        grafico1=self.grafico_contenidos_por_categoria()
+        datos1=self.grafico_contenidos_por_categoria()
         grafico_visualizaciones=self.grafico_reporte_visualizaciones()
-        context['contenido_por_categorias']=grafico1
+        context['contenido_por_categorias']=datos1
         context['reporte_visualizaciones']=grafico_visualizaciones 
-        
         return context
     
-    def contenidos_total_categoria(self):
-        contenidos=Contenido.objects.filter(estado="Publicado",activo=True)
-        contenidos_categoria={}
-        
-        for contenido in contenidos:
-            #obtener la categoria del contenido
-            categoria=contenido.categoria.nombre_categoria
-            
-            if categoria not in contenidos_categoria:
-                #se agrega una clave al diccionario y se inicializa a 0 el contador
-                contenidos_categoria[categoria]=1
-            else:
-                #se actualiza la clave de la key categoria
-                contenidos_categoria[categoria]+=1
-                
-        return contenidos_categoria
-    def grafico_contenidos_por_categoria(self):
+    
+    def grafico_contenidos_por_categoria(self, start_date=None, end_date=None):
         #1) Reporte 1: Cantidad de contenidos por categoria
         
-        contenidos_categoria=self.contenidos_total_categoria()
-        
-        grafico_panda = pa.DataFrame.from_dict(contenidos_categoria, orient='index', columns=['Cantidad'])
-        
+        contents = Contenido.objects.filter(estado="Publicado", activo=True)
     
-       
-        plt.figure(figsize=(9, 9))  
-        wedges, texts, autotexts = plt.pie(
-        grafico_panda['Cantidad'],
-        labels=grafico_panda.index,
-        autopct=lambda p: '{:.1f}%'.format(p) if p > 0 else '',  
-        startangle=90,
-        colors=plt.cm.Paired(np.arange(len(grafico_panda))),
-        explode=[0.1] * len(grafico_panda),
-        labeldistance=1.2  
-        )
+        if start_date and end_date:
+            contents = contents.filter(fecha_publicacion__range=(start_date, end_date))
+        else:
+            #por defecto los últimos 7 días
+            today = timezone.now().date()
+            contents = contents.filter(fecha_publicacion__range=(today - timedelta(days=7), today))
         
-      
-        for text in texts:
-            text.set_fontsize(14)
-            text.set_color('black')
+        contents_by_category = {}
+        for content in contents:
+            category = content.categoria.nombre_categoria
+            contents_by_category[category] = contents_by_category.get(category, 0) + 1
+        
+        categorias = list(contents_by_category.keys())
+        values = list(contents_by_category.values())
 
-        for autotext in autotexts:
-            autotext.set_fontsize(12)
-            autotext.set_color('white')
-
-        plt.title('Contenidos por Categoría', fontsize=16, fontweight='bold')
-
-        plt.axis('equal')  
-        
-       
-        buffer = io.BytesIO()
-        plt.savefig(buffer, format='png', bbox_inches='tight')  
-        buffer.seek(0)
-        
-       
-        grafico = base64.b64encode(buffer.read()).decode('utf-8')
-        link_grafico = f"data:image/png;base64,{grafico}"
-        
-        plt.close()
-        
-        return link_grafico
+        total = sum(values)
+        porcentajes = [(value / total) * 100 for value in values]
+        return {
+            'labels': categorias,
+            'series': porcentajes
+        }
     
     def contenidos_por_categoria(self,categoria):
         return Contenido.objects.filter(estado="Publicado",activo=True,categoria__nombre_categoria=categoria)
@@ -1039,50 +1000,26 @@ class Reportes(LoginRequiredMixin,PermissionRequiredMixin,TemplateView):
     
     def grafico_reporte_visualizaciones(self):
         reporte_visualizacion=self.reportes_visualizaciones()
-        
         reportes={}
-        
-        categorias = list(reporte_visualizacion['avg_por_categoria'].keys())
-        calificaciones = list(reporte_visualizacion['avg_por_categoria'].values())
-        """ print(f'categorias | {categorias}')
-        print(f'calificaciones | {calificaciones}') """
-        
-      
-        bar_labels = [f'Color {i + 1}' for i in range(len(categorias))]  
-        colormap = cm.get_cmap('tab10', len(categorias))  
-        bar_colors = [colormap(i) for i in range(len(categorias))]
+        series = []
+        colors = ["#E4007C", "#FDBA8C", "#34D399", "#F97316", "#E11D48", "#0EA5E9", "#1A56DB"]
+        total_views = 0
 
-    
-        fig, ax = plt.subplots()
-        ax.bar(categorias, calificaciones, label=bar_labels, color=bar_colors)
+        for idx, (category, views) in enumerate(reporte_visualizacion['avg_por_categoria'].items()):
+            if views != 0:
+                series.append({
+                    'name': category, 
+                    'color': colors[idx % len(colors)],
+                    'data': views,
+                })
+                total_views += views
 
-        
-        ax.set_xticklabels(categorias, rotation=45, ha='right')
-        ax.set_ylabel('Calificación')
-        ax.set_title('Calificación promedio de las visualizaciones por categoría')
-
-    
-        plt.tight_layout()
-  
-        buffer = io.BytesIO()
-        plt.savefig(buffer, format='png', bbox_inches='tight')
-        buffer.seek(0)
-
-   
-        grafico = base64.b64encode(buffer.read()).decode('utf-8')
-        link_grafico = f"data:image/png;base64,{grafico}"
-
-
-        plt.close()
-        
-        reportes['avg_por_categoria']=link_grafico
+        reportes['total_views']=total_views
+        reportes['avg_por_categoria']=series
         reportes['contenidos_puntuados']=reporte_visualizacion['contenidos_puntuados']
         reportes['mejor_contenido']=reporte_visualizacion['mejor_contenido']
         reportes['peor_contenido']=reporte_visualizacion['peor_contenido']
-        
-        """ print(reportes['contenidos_puntuados'])
-        print(reportes['mejor_contenido'])
-        print(reportes['peor_contenido']) """
+
         return reportes
     
     def reportes_visualizaciones(self):
@@ -1097,9 +1034,7 @@ class Reportes(LoginRequiredMixin,PermissionRequiredMixin,TemplateView):
         contenidos_ordenados=[]
         
         promedio=0.0
-        mejor_contenido=None
-        peor_contenido=None
-        
+
         for categoria in categorias:
             #1) promedio de visualizaciones por categoria
             
@@ -1114,13 +1049,14 @@ class Reportes(LoginRequiredMixin,PermissionRequiredMixin,TemplateView):
             #calcular el promedio
             if total != 0:
                 promedio=total_suma/total
+            else:
+                promedio=0
             
             #agregar la puntuacion promedio de la categoria en el diccionario de puntuacion promedio
-            reporte_visualizacion['avg_por_categoria'][categoria.nombre_categoria]=promedio
+            reporte_visualizacion['avg_por_categoria'][categoria.nombre_categoria]=round(promedio)
             
             
             #obtener la calificacion de los contenidos y ordenarlos de mayor a menor
-            
             contenidos_ordenados_cat=[]
             for contenido in contenidos_por_categoria:
                 full_url = self.request.build_absolute_uri(reverse('detalle_contenido', kwargs={'slug': contenido.slug}))
@@ -1148,6 +1084,37 @@ class Reportes(LoginRequiredMixin,PermissionRequiredMixin,TemplateView):
         
         
         return reporte_visualizacion
-            
-            
-                   
+
+# funcion para el filtro de fechas para cada reporte
+def report_data(request):
+    rango = request.GET.get('range', 'Ultimos 7 dias')
+    report = int(request.GET.get('report', 1)) #nro de reporte
+    today = timezone.now().date()
+
+    if rango == 'Ayer':
+        start_date = today - timedelta(days=1)
+        end_date = today
+    elif rango == 'Hoy':
+        start_date = today
+        end_date = today
+    elif rango == 'Ultimos 7 dias':
+        start_date = today - timedelta(days=7)
+        end_date = today
+    elif rango == 'Ultimos 30 dias':
+        start_date = today - timedelta(days=30)
+        end_date = today
+    elif rango == 'Ultimos 90 dias':
+        start_date = today - timedelta(days=90)
+        end_date = today
+    else:
+        start_date, end_date = None, None
+
+    report_instance = Reportes()  # Crear una instancia para usar sus métodos
+    if report == 1:
+        data = report_instance.grafico_contenidos_por_categoria(start_date, end_date)
+    # elif report == 2:
+    #     data = report_instance.grafico_reporte_visualizaciones(start_date, end_date)
+    else:
+        data = {}
+
+    return JsonResponse(data)

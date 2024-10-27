@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import CambiarEstadoView, ContenidoBorradorList, ContenidoInactivadoList, CrearContenido, ContenidoEdicionList, EditarContenido, ContenidoPublicarList, EstadisticasContenido, RechazarContenido, Reportes, VistaAllContenidos, VistaContenido, InactivarContenido, VistaContenidosReportados, TableroKanbanView,  UpdatePostStatusView, ContentStatusHistoryView, CalificarContenidoView, DestacarContenido, IncrementShareCountView, VistaContenidosDestacados
-from . import views
+from .views import CambiarEstadoView, ContenidoBorradorList, ContenidoInactivadoList, CrearContenido, ContenidoEdicionList, EditarContenido, ContenidoPublicarList, EstadisticasContenido, RechazarContenido, Reportes, VistaAllContenidos, VistaContenido, InactivarContenido, VistaContenidosReportados, TableroKanbanView,  UpdatePostStatusView, ContentStatusHistoryView, CalificarContenidoView, DestacarContenido, IncrementShareCountView, VistaContenidosDestacados, report_data
+
 urlpatterns = [
     #autor
     path("mis-borradores/", ContenidoBorradorList.as_view(), name='lista_borradores'),
@@ -42,7 +42,6 @@ urlpatterns = [
     
     #estadisticas
     path('contenido/<slug:slug>/estadisticas', EstadisticasContenido.as_view(), name='estadisticas_contenido'),
-    path('reportes-estadisticos/', Reportes.as_view(), name='reportes'),
-    
-    
+    path('reportes/', Reportes.as_view(), name='reportes'),
+    path('report-data/', report_data, name='report_data'),
 ]

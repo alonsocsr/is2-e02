@@ -1,6 +1,6 @@
 {% load static %}
 <!doctype html>
-<html>
+<html lang="es">
 
 <head>
   <meta charset="UTF-8">
@@ -8,9 +8,8 @@
   <title>{% block title %}{% endblock %}</title>
 
   <link href="{% static 'css/output.css' %}" rel="stylesheet">
-  
-  <script src="{% static 'js/categorias.js' %}"></script>
   <script src="{% static 'js/mensajes.js' %}"></script>
+  
   {% block script %}{% endblock %}
 </head>
 
