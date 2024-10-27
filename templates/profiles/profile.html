@@ -41,7 +41,7 @@
                 <h2 class="font-semibold text-lg text-gray-800 mb-2">Datos</h2>
                 <div class="bg-gray-200 p-4 rounded-md">
                     <ul class="list-inside text-gray-700">
-                        <li class="text-lm text-black-700 font-bold">Correo: <span class="bg-pink-700 hover:bg-pink-700 text-pink-100 p-1 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500 mt-1">{{ user.email }}</span></li>                        
+                        <li class="text-lm text-black-700 font-bold">Correo: <span class="bg-pink-700 hover:bg-pink-700 text-pink-100 p-1 rounded-lg tracking-wide font-semibold transition ease-in duration-500 mt-1">{{ user.email }}</span></li>                        
                     </ul>
                 </div>
             </div>
@@ -52,7 +52,7 @@
                     <ul class="list-inside text-gray-700">
                         {% if user_roles %}
                             {% for role in user_roles %}
-                                <li class="text-sm text-gray-700 mb-5"><span class="bg-pink-800 hover:bg-pink-700 text-pink-100 p-2 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500 mt-4">{{ role.name }}</span></li>
+                                <li class="text-sm text-gray-700 mb-5"><span class="bg-pink-700 hover:bg-pink-700 text-pink-100 p-2 rounded-lg tracking-wide font-semibold transition ease-in duration-500 mt-4">{{ role.name }}</span></li>
                             {% endfor %}
                         {% else %}
                             <li class="text-sm text-gray-700">No se han asignado roles.</li>
@@ -68,7 +68,7 @@
                             {% for suscripcion in user.profile.suscripciones.all %}
                                 <li class="text-sm text-gray-700 mb-5">
                                     <span class="font-medium text-gray-900">
-                                        <a href="{% url 'categories:detalle' suscripcion.id %}" class="bg-pink-800 hover:bg-pink-700 text-pink-100 p-2 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500 mt-4">
+                                        <a href="{% url 'categories:detalle' suscripcion.id %}" class="bg-pink-700 hover:bg-pink-700 text-pink-100 p-2 rounded-lg tracking-wide font-semibold cursor-pointer transition ease-in duration-500 mt-4">
                                             {{ suscripcion.nombre_categoria }}
                                         </a>
                                     </span>

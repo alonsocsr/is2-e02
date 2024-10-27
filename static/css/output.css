@@ -1350,6 +1350,10 @@ input:checked + .toggle-bg{
   top: 0.75rem;
 }
 
+.top-full{
+  top: 100%;
+}
+
 .z-0{
   z-index: 0;
 }
@@ -1486,6 +1490,10 @@ input:checked + .toggle-bg{
 
 .me-4{
   margin-inline-end: 1rem;
+}
+
+.ml-1{
+  margin-left: 0.25rem;
 }
 
 .ml-2{
@@ -1710,12 +1718,24 @@ input:checked + .toggle-bg{
   height: 24rem;
 }
 
+.h-\[calc\(100vh-6rem\)\]{
+  height: calc(100vh - 6rem);
+}
+
+.h-auto{
+  height: auto;
+}
+
 .h-full{
   height: 100%;
 }
 
 .h-screen{
   height: 100vh;
+}
+
+.max-h-20{
+  max-height: 5rem;
 }
 
 .max-h-40{
@@ -1820,6 +1840,10 @@ input:checked + .toggle-bg{
 
 .w-6{
   width: 1.5rem;
+}
+
+.w-60{
+  width: 15rem;
 }
 
 .w-64{
@@ -1936,6 +1960,10 @@ input:checked + .toggle-bg{
 
 .border-collapse{
   border-collapse: collapse;
+}
+
+.origin-top-left{
+  transform-origin: top left;
 }
 
 .origin-top-right{
@@ -3631,6 +3659,14 @@ input:checked + .toggle-bg{
     top: 0px;
   }
 
+  .sm\:ml-6{
+    margin-left: 1.5rem;
+  }
+
+  .sm\:block{
+    display: block;
+  }
+
   .sm\:flex{
     display: flex;
   }
@@ -3797,6 +3833,10 @@ input:checked + .toggle-bg{
 
   .lg\:w-1\/4{
     width: 25%;
+  }
+
+  .lg\:w-2\/3{
+    width: 66.666667%;
   }
 
   .lg\:w-3\/4{
