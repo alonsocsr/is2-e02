@@ -36,19 +36,19 @@
         <div id="lastDaysdropdown-2" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
             <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
               <li>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Yesterday</a>
+                <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ayer</a>
               </li>
               <li>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Today</a>
+                <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Hoy</a>
               </li>
               <li>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 7 days</a>
+                <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ultimos 7 dias</a>
               </li>
               <li>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 30 days</a>
+                <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ultimos 30 dias</a>
               </li>
               <li>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 90 days</a>
+                <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ultimos 90 dias</a>
               </li>
             </ul>
         </div>
@@ -150,10 +150,57 @@
     },
   }
 
+  let chart2;
+
   if(document.getElementById("column-chart") && typeof ApexCharts !== 'undefined') {
-    const chart = new ApexCharts(document.getElementById("column-chart"), options2);
-    chart.render();
+    chart2 = new ApexCharts(document.getElementById("column-chart"), options2);
+    chart2.render();
   }
 
+  /*lógica para el filtro de fecha*/
+  document.addEventListener("DOMContentLoaded", () => {
+    const dropdownItems = document.querySelectorAll('#lastDaysdropdown-2 a');
+    const dateRangeButton = document.getElementById('dropdownDefaultButton-2');
+    const reportId = 2;
+
+    dropdownItems.forEach(item => {
+      item.addEventListener("click", (event) => {
+        event.preventDefault();
+  
+        // actualiza el label del botón
+        dateRangeButton.innerText = item.innerText;
+  
+        // Fetch data
+        const selectedRange = item.innerText;
+        fetchChartDataForRange2(selectedRange, reportId);
+      });
+    });
+  });
+
+  function fetchChartDataForRange2(range, reportId) {
+    // Función que llama a la api basado en el 'range'
+    // el segundo parámetro report es para el número de reporte que se filtra
+    fetch(`/report-data?range=${range}&report=${reportId}`)
+      .then(response => response.json())
+      .then(data => {
+        // el formato de los datos debe ser el mismo al inicial
+        updateChart2(data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }
+
+  function updateChart2(newData) {
+    // actualiza el chart con los nuevos datos
+    const data = newData.avg_por_categoria;
+    chart2.updateOptions({
+      colors: data.map((series) => series.color),
+      series: [{
+        data : data.map(series => series.data)
+      }],
+      xaxis: {
+        categories: data.map(series => series.name),
+      },
+    });
+  }
   
 </script>

@@ -10,6 +10,8 @@
 
   <link href="{% static 'css/output.css' %}" rel="stylesheet">
   <link href="{% static 'css/animate.css' %}" rel="stylesheet">
+  {% comment %} <link href="{% static 'flowbite/flowbite.css' %}" rel="stylesheet">
+  <link href="{% static 'apexcharts/apexcharts.css' %}" rel="stylesheet"> {% endcomment %}
   
   <script src="{% static 'js/mensajes.js' %}"></script>
   {% block script %}{% endblock %}
@@ -89,6 +91,6 @@
   
 </body>
 
-<script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+<script src="{% static 'flowbite/flowbite.min.js' %}"></script>
 
 </html>

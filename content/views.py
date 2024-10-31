@@ -959,10 +959,10 @@ class Reportes(LoginRequiredMixin,PermissionRequiredMixin,TemplateView):
     
     def get_context_data(self, **kwargs):
         context=super().get_context_data(**kwargs)
-        datos1=self.grafico_contenidos_por_categoria()
-        grafico_visualizaciones=self.grafico_reporte_visualizaciones()
-        context['contenido_por_categorias']=datos1
-        context['reporte_visualizaciones']=grafico_visualizaciones 
+        reporte1=self.grafico_contenidos_por_categoria()
+        reporte2=self.grafico_reporte_visualizaciones()
+        context['contenido_por_categorias']=reporte1
+        context['reporte_visualizaciones']=reporte2 
         return context
     
     
@@ -992,16 +992,37 @@ class Reportes(LoginRequiredMixin,PermissionRequiredMixin,TemplateView):
             'labels': categorias,
             'series': porcentajes
         }
-    
-    def contenidos_por_categoria(self,categoria):
-        return Contenido.objects.filter(estado="Publicado",activo=True,categoria__nombre_categoria=categoria)
-    def calificacion(self,contenidos_ordenados):
-        return contenidos_ordenados[1]
-    
-    def grafico_reporte_visualizaciones(self):
-        reporte_visualizacion=self.reportes_visualizaciones()
+
+
+    def grafico_reporte_visualizaciones(self,  start_date=None, end_date=None):
+        categorias=Categorias.objects.all()
+        reporte_visualizacion={
+            'avg_por_categoria': {},
+        }
         reportes={}
         series = []
+        promedio=0.0
+
+        for categoria in categorias:
+            contenidos = Contenido.objects.filter(estado="Publicado",activo=True,categoria__nombre_categoria=categoria)
+            if start_date and end_date:
+                contenidos = contenidos.filter(fecha_publicacion__range=(start_date, end_date))
+            else:
+                #por defecto los últimos 7 días
+                today = timezone.now().date()
+                contenidos = contenidos.filter(fecha_publicacion__range=(today - timedelta(days=7), today))
+            total_suma = 0
+            for c in contenidos:
+                total_suma+=c.cantidad_vistas
+                
+            total=len(contenidos)
+            if total != 0:
+                promedio=total_suma/total
+            else:
+                promedio=0
+            #agregar la puntuacion promedio de la categoria en el diccionario de puntuacion promedio
+            reporte_visualizacion['avg_por_categoria'][categoria.nombre_categoria]=round(promedio)
+            
         colors = ["#E4007C", "#FDBA8C", "#34D399", "#F97316", "#E11D48", "#0EA5E9", "#1A56DB"]
         total_views = 0
 
@@ -1016,74 +1037,8 @@ class Reportes(LoginRequiredMixin,PermissionRequiredMixin,TemplateView):
 
         reportes['total_views']=total_views
         reportes['avg_por_categoria']=series
-        reportes['contenidos_puntuados']=reporte_visualizacion['contenidos_puntuados']
-        reportes['mejor_contenido']=reporte_visualizacion['mejor_contenido']
-        reportes['peor_contenido']=reporte_visualizacion['peor_contenido']
-
         return reportes
-    
-    def reportes_visualizaciones(self):
-        #que es trending? se asignan pesos a las reacciones de un contenido. Se puntua sobre el 100, compartir:0.3, comentar: 0.3, like: 0.2, dislike:0.1, visualizar: 0.1
-        categorias=Categorias.objects.all()
-        reporte_visualizacion={
-        'avg_por_categoria': {},
-        'contenidos_puntuados': {},
-        'mejor_contenido': None,
-        'peor_contenido': None
-        }
-        contenidos_ordenados=[]
-        
-        promedio=0.0
 
-        for categoria in categorias:
-            #1) promedio de visualizaciones por categoria
-            
-            #obtener los contenidos por categoria
-            contenidos_por_categoria=self.contenidos_por_categoria(categoria.nombre_categoria)
-            total_suma = 0
-            #iterar sobre los contenidos y sumar todas las visualizaciones
-            for c in contenidos_por_categoria:
-                total_suma+=c.cantidad_vistas
-                
-            total=len(contenidos_por_categoria)
-            #calcular el promedio
-            if total != 0:
-                promedio=total_suma/total
-            else:
-                promedio=0
-            
-            #agregar la puntuacion promedio de la categoria en el diccionario de puntuacion promedio
-            reporte_visualizacion['avg_por_categoria'][categoria.nombre_categoria]=round(promedio)
-            
-            
-            #obtener la calificacion de los contenidos y ordenarlos de mayor a menor
-            contenidos_ordenados_cat=[]
-            for contenido in contenidos_por_categoria:
-                full_url = self.request.build_absolute_uri(reverse('detalle_contenido', kwargs={'slug': contenido.slug}))
-                
-                cal=(0.3*contenido.cantidad_compartidos+0.2*contenido.cantidad_likes+0.1*contenido.cantidad_dislikes+0.1*contenido.cantidad_vistas+0.3*contador_comentarios(full_url))
-                
-                contenidos_ordenados_cat.append((contenido,cal))
-                contenidos_ordenados.append((contenido,cal))
-                
-                
-            #ordenar los contenidos de mejor a peor calificado
-            contenidos_ordenados_cat.sort(key=self.calificacion,reverse=True)
-            if contenidos_ordenados_cat:
-                #guardar en el diccionario de reportes un diccionario con key: nombre de la categoria y value como un diccionario con dos elementos, el contenido mejor y peor puntuado de esa categoria
-                reporte_visualizacion['contenidos_puntuados'][categoria.nombre_categoria] = {
-                'mejor_contenido': contenidos_ordenados_cat[0][0],   
-                'peor_contenido': contenidos_ordenados_cat[-1][0]
-                }     
-        
-        #ordenar los contenidos globales
-        contenidos_ordenados.sort(key=lambda x:x[1],reverse=True)
-            
-        reporte_visualizacion['mejor_contenido']=contenidos_ordenados[0][0]
-        reporte_visualizacion['peor_contenido']=contenidos_ordenados[-1][0]
-        
-        
-        return reporte_visualizacion
 
 # funcion para el filtro de fechas para cada reporte
 def report_data(request):
@@ -1112,8 +1067,8 @@ def report_data(request):
     report_instance = Reportes()  # Crear una instancia para usar sus métodos
     if report == 1:
         data = report_instance.grafico_contenidos_por_categoria(start_date, end_date)
-    # elif report == 2:
-    #     data = report_instance.grafico_reporte_visualizaciones(start_date, end_date)
+    elif report == 2:
+        data = report_instance.grafico_reporte_visualizaciones(start_date, end_date)
     else:
         data = {}
 
