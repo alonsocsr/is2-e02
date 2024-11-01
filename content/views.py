@@ -20,9 +20,12 @@ from django.db.models import Avg
 from django.http import JsonResponse
 from decouple import config
 import stripe
-from datetime import date
+from datetime import date, datetime
 from django.utils import timezone
 from datetime import timedelta
+from django.db.models import Avg, Sum, FloatField
+from django.db.models.functions import Coalesce
+import random
 
 stripe.api_key = config('STRIPE_SECRET_KEY')
 
@@ -961,8 +964,14 @@ class Reportes(LoginRequiredMixin,PermissionRequiredMixin,TemplateView):
         context=super().get_context_data(**kwargs)
         reporte1=self.grafico_contenidos_por_categoria()
         reporte2=self.grafico_reporte_visualizaciones()
+        reporte3=self.grafico_reporte_likes_dislikes()
+        reporte4=self.grafico_promedio_compartidos_por_categoria()
+        reporte5=self.grafico_promedio_valoraciones_por_categoria()
         context['contenido_por_categorias']=reporte1
         context['reporte_visualizaciones']=reporte2 
+        context['likes_dislikes']=reporte3
+        context['avg_compartidos']=reporte4
+        context['avg_valoraciones']=reporte5
         return context
     
     
@@ -1038,7 +1047,129 @@ class Reportes(LoginRequiredMixin,PermissionRequiredMixin,TemplateView):
         reportes['total_views']=total_views
         reportes['avg_por_categoria']=series
         return reportes
+    
+    def grafico_reporte_likes_dislikes(self, start_date=None, end_date=None):
+        queryset = Contenido.objects.all()
 
+        if start_date and end_date:
+            queryset = queryset.filter(fecha_publicacion__range=(start_date, end_date))
+        else:
+            today = timezone.now().date()
+            queryset = queryset.filter(fecha_publicacion__range=(today - timedelta(days=7), today))
+        
+        # Obtener los promedios por categoría
+        promedios = (
+            queryset
+            .values("categoria__nombre_categoria")  # Obtener nombre de la categoría
+            .annotate(
+                promedio_likes=Coalesce(Avg("cantidad_likes",output_field=FloatField()), 0.0),
+                promedio_dislikes=Coalesce(Avg("cantidad_dislikes",output_field=FloatField()), 0.0)
+            )
+        )
+
+        # Dar formato a los datos para el gráfico
+        series_data = {
+            "likes": {
+                "name": "Likes",
+                "color": "#1A56DB",
+                "data": []
+            },
+            "dislikes": {
+                "name": "Dislikes",
+                "color": "#FDBA8C",
+                "data": []
+            }
+        }
+
+        for categoria in promedios:
+            series_data["likes"]["data"].append(
+                {"x": categoria["categoria__nombre_categoria"], "y": round(categoria["promedio_likes"], 2)}
+            )
+            series_data["dislikes"]["data"].append(
+                {"x": categoria["categoria__nombre_categoria"], "y": round(categoria["promedio_dislikes"], 2)}
+            )
+
+        return { "series": [series_data["likes"], series_data["dislikes"]]}
+
+    def grafico_promedio_compartidos_por_categoria(self, start_date=None, end_date=None):
+        # Obtener la promedio de compartidos por categoría
+        if not start_date or not end_date:
+            end_date = timezone.now().date()
+            start_date = end_date - timedelta(days=7)
+
+        promedios = (
+            Contenido.objects
+            .filter(fecha_publicacion__range=(start_date, end_date)) 
+            .values("categoria__nombre_categoria")  # Agrupar por nombre de la categoría
+            .annotate(promedio_compartidos=Coalesce(Avg("cantidad_compartidos", output_field=FloatField()), 0.0))
+        )
+
+        # Preparar datos para el gráfico de donut
+        series_data = []
+        labels = []
+        colors = []
+
+        for categoria in promedios:
+            labels.append(categoria["categoria__nombre_categoria"])
+            series_data.append(round(categoria["promedio_compartidos"], 2))  # Redondear a 2 decimales
+            colors.append(generar_color())  # Color aleatorio para cada categoría
+
+        return {
+            "series": series_data,
+            "labels": labels,
+            "colors": colors
+        }
+
+    def grafico_promedio_valoraciones_por_categoria(self, start_date=None, end_date=None):
+        # Obtener el promedio de valoraciones agrupado por categoría
+        if not start_date or not end_date:
+            end_date = timezone.now()
+            start_date = end_date - timedelta(days=7)
+
+        
+        # Asegurarse de que las fechas sean timezone-aware
+        start_date = timezone.make_aware(datetime.combine(start_date, datetime.min.time()))
+        end_date = timezone.make_aware(datetime.combine(end_date, datetime.max.time()))
+
+        promedios = (
+            Valoracion.objects
+            .filter(fecha__range=(start_date, end_date))
+            .values("contenido__categoria__nombre_categoria", "fecha__date")  # Obtener el nombre de la categoría
+            .annotate(
+                promedio_valoracion=Coalesce(Avg("puntuacion", output_field=FloatField()), 0.0)
+            )
+            .order_by("fecha__date")
+        )
+
+        total=promedios.count()
+        avg_global=0
+        series_data = []
+        categories_dict = {} 
+        
+        categories = []  # Lista de categorías para el eje X
+
+        for entry in promedios:
+            categoria = entry["contenido__categoria__nombre_categoria"]
+            promedio = round(entry["promedio_valoracion"], 2)
+
+            # Agregar datos por categoría y fecha
+            if categoria not in categories_dict:
+                categories_dict[categoria] = {
+                    "name": categoria,
+                    "data": [],
+                    "color": generar_color()
+                }
+            avg_global+=promedio
+            categories_dict[categoria]["data"].append(promedio)
+        # Convertir el diccionario en una lista de series
+        series_data = list(categories_dict.values())
+        # Extraer las fechas para el eje X desde el primer conjunto de datos
+        categories = sorted({entry["fecha__date"].strftime('%d %b') for entry in promedios})
+
+        return {"categories": categories, "series": series_data, "avg_global": round(avg_global/total, 2)}
+
+def generar_color():
+    return "#{:06x}".format(random.randint(0, 0xFFFFFF))
 
 # funcion para el filtro de fechas para cada reporte
 def report_data(request):
@@ -1069,6 +1200,12 @@ def report_data(request):
         data = report_instance.grafico_contenidos_por_categoria(start_date, end_date)
     elif report == 2:
         data = report_instance.grafico_reporte_visualizaciones(start_date, end_date)
+    elif report == 3:
+        data = report_instance.grafico_reporte_likes_dislikes(start_date, end_date)
+    elif report == 4:
+        data = report_instance.grafico_promedio_compartidos_por_categoria(start_date, end_date)
+    elif report == 5:
+        data = report_instance.grafico_promedio_valoraciones_por_categoria(start_date, end_date)
     else:
         data = {}
 

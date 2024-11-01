@@ -2,15 +2,8 @@
 <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800">
   <div class="flex justify-between p-4 md:p-6 pb-0 md:pb-0">
     <div>
-      <h5 class="leading-none text-3xl font-bold text-gray-900 dark:text-white pb-2">12,423</h5>
-      <p class="text-base font-normal text-gray-500 dark:text-gray-400">Valoraciones (por hacer)</p>
-    </div>
-    <div
-      class="flex items-center px-2.5 py-0.5 text-base font-semibold text-green-500 dark:text-green-500 text-center">
-      23%
-      <svg class="w-3 h-3 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 14">
-        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13V1m0 0L1 5m4-4 4 4"/>
-      </svg>
+      <h5 class="leading-none text-3xl font-bold text-gray-900 dark:text-white pb-2">{{ avg_valoraciones.avg_global }}</h5>
+      <p class="text-base font-normal text-gray-500 dark:text-gray-400">Promedio de valoraciones</p>
     </div>
   </div>
   <div id="labels-chart" class="px-2.5"></div>
@@ -23,7 +16,7 @@
         data-dropdown-placement="bottom"
         class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white"
         type="button">
-        Last 7 days
+        Ultimos 7 dias
         <svg class="w-2.5 m-2.5 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
         </svg>
@@ -32,19 +25,19 @@
       <div id="lastDaysdropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
           <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
             <li>
-              <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Yesterday</a>
+              <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ayer</a>
             </li>
             <li>
-              <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Today</a>
+              <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Hoy</a>
             </li>
             <li>
-              <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 7 days</a>
+              <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ultimos 7 dias</a>
             </li>
             <li>
-              <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 30 days</a>
+              <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ultimos 30 dias</a>
             </li>
             <li>
-              <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 90 days</a>
+              <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ultimos 90 dias</a>
             </li>
           </ul>
       </div>
@@ -53,12 +46,14 @@
 </div>
 
 <script>
+
+  const data5 = {{ avg_valoraciones|safe }}
   /*reporte 5: valoraciones*/
   const options5 = {
     // set the labels option to true to show the labels on the X and Y axis
     xaxis: {
       show: true,
-      categories: ['01 Feb', '02 Feb', '03 Feb', '04 Feb', '05 Feb', '06 Feb', '07 Feb'],
+      categories: data5.categories ,
       labels: {
         show: true,
         style: {
@@ -86,18 +81,7 @@
         }
       }
     },
-    series: [
-      {
-        name: "Developer Edition",
-        data: [150, 141, 145, 152, 135, 125],
-        color: "#1A56DB",
-      },
-      {
-        name: "Designer Edition",
-        data: [43, 13, 65, 12, 42, 73],
-        color: "#7E3BF2",
-      },
-    ],
+    series: data5.series,
     chart: {
       sparkline: {
         enabled: false
@@ -141,9 +125,53 @@
       show: false,
       },
     }
-    
-    if (document.getElementById("labels-chart") && typeof ApexCharts !== 'undefined') {
-      const chart = new ApexCharts(document.getElementById("labels-chart"), options5);
-      chart.render();
-    }
+
+  let chart5;
+  
+  if (document.getElementById("labels-chart") && typeof ApexCharts !== 'undefined') {
+    chart5 = new ApexCharts(document.getElementById("labels-chart"), options5);
+    chart5.render();
+  }
+
+    /*lógica para el filtro de fecha*/
+  document.addEventListener("DOMContentLoaded", () => {
+    const dropdownItems = document.querySelectorAll('#lastDaysdropdown a');
+    const dateRangeButton = document.getElementById('dropdownDefaultButton');
+    const reportId = 5;
+
+    dropdownItems.forEach(item => {
+      item.addEventListener("click", (event) => {
+        event.preventDefault();
+  
+        // actualiza el label del botón
+        dateRangeButton.innerText = item.innerText;
+  
+        // Fetch data
+        const selectedRange = item.innerText;
+        fetchChartDataForRange5(selectedRange, reportId);
+      });
+    });
+  });
+
+  function fetchChartDataForRange5(range, reportId) {
+    // Función que llama a la api basado en el 'range'
+    // el segundo parámetro report es para el número de reporte que se filtra
+    fetch(`/report-data?range=${range}&report=${reportId}`)
+      .then(response => response.json())
+      .then(data => {
+        // el formato de los datos debe ser el mismo al inicial
+        updateChart5(data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }
+
+  function updateChart5(newData) {
+    // actualiza el chart con los nuevos datos
+    chart5.updateOptions({
+      series: newData.series,
+      xaxis: {
+        categories: newData.categories,
+      }
+    })
+  }
 </script>

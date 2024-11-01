@@ -3,17 +3,9 @@
   <div class="flex justify-between pb-4 mb-4 border-b border-gray-200 dark:border-gray-700">
     <div class="flex items-center">
       <div>
-        <h5 class="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">Likes y dislikes (por hacer)</h5>
-        <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Leads generated per week</p>
+        <h5 class="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">Likes y Dislikes</h5>
+        <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Promedio por semana</p>
       </div>
-    </div>
-    <div>
-      <span class="bg-green-100 text-green-800 text-xs font-medium inline-flex items-center px-2.5 py-1 rounded-md dark:bg-green-900 dark:text-green-300">
-        <svg class="w-2.5 h-2.5 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 14">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13V1m0 0L1 5m4-4 4 4"/>
-        </svg>
-        42.5%
-      </span>
     </div>
   </div>
 
@@ -27,7 +19,7 @@
           data-dropdown-placement="bottom"
           class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white"
           type="button">
-          Last 7 days
+          Ultimos 7 dias
           <svg class="w-2.5 m-2.5 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
           </svg>
@@ -36,19 +28,19 @@
         <div id="lastDaysdropdown-3" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
             <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
               <li>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Yesterday</a>
+                <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ayer</a>
               </li>
               <li>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Today</a>
+                <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Hoy</a>
               </li>
               <li>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 7 days</a>
+                <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ultimos 7 dias</a>
               </li>
               <li>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 30 days</a>
+                <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ultimos 30 dias</a>
               </li>
               <li>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last 90 days</a>
+                <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ultimos 90 dias</a>
               </li>
             </ul>
           </div>
@@ -57,47 +49,22 @@
 </div>
 
 <script>
+  const data3 = {{ likes_dislikes|safe }}
   /*reporte 3: likes y dislikes*/
   const options3 = {
     colors: ["#1A56DB", "#FDBA8C"],
-    series: [
-      {
-        name: "Organic",
-        color: "#1A56DB",
-        data: [
-          { x: "Mon", y: 231 },
-          { x: "Tue", y: 122 },
-          { x: "Wed", y: 63 },
-          { x: "Thu", y: 421 },
-          { x: "Fri", y: 122 },
-          { x: "Sat", y: 323 },
-          { x: "Sun", y: 111 },
-        ],
-      },
-      {
-        name: "Social media",
-        color: "#FDBA8C",
-        data: [
-          { x: "Mon", y: 232 },
-          { x: "Tue", y: 113 },
-          { x: "Wed", y: 341 },
-          { x: "Thu", y: 224 },
-          { x: "Fri", y: 522 },
-          { x: "Sat", y: 411 },
-          { x: "Sun", y: 243 },
-        ],
-      },
-    ],
+    series: data3.series,
     chart: {
       type: "bar",
       height: "320px",
       fontFamily: "Inter, sans-serif",
       toolbar: {
-        show: false,
+        show: true,
       },
     },
     plotOptions: {
       bar: {
+        barHeight: '100%',
         horizontal: false,
         columnWidth: "70%",
         borderRadiusApplication: "end",
@@ -163,8 +130,49 @@
     },
   }
 
+  let chart3
   if(document.getElementById("column-chart-3") && typeof ApexCharts !== 'undefined') {
-    const chart = new ApexCharts(document.getElementById("column-chart-3"), options3);
-    chart.render();
+    chart3 = new ApexCharts(document.getElementById("column-chart-3"), options3);
+    chart3.render();
   }
+
+  /*lógica para el filtro de fecha*/
+  document.addEventListener("DOMContentLoaded", () => {
+    const dropdownItems = document.querySelectorAll('#lastDaysdropdown-3 a');
+    const dateRangeButton = document.getElementById('dropdownDefaultButton-3');
+    const reportId = 3;
+
+    dropdownItems.forEach(item => {
+      item.addEventListener("click", (event) => {
+        event.preventDefault();
+  
+        // actualiza el label del botón
+        dateRangeButton.innerText = item.innerText;
+  
+        // Fetch data
+        const selectedRange = item.innerText;
+        fetchChartDataForRange3(selectedRange, reportId);
+      });
+    });
+  });
+
+  function fetchChartDataForRange3(range, reportId) {
+    // Función que llama a la api basado en el 'range'
+    // el segundo parámetro report es para el número de reporte que se filtra
+    fetch(`/report-data?range=${range}&report=${reportId}`)
+      .then(response => response.json())
+      .then(data => {
+        // el formato de los datos debe ser el mismo al inicial
+        updateChart3(data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }
+
+  function updateChart3(newData) {
+    // actualiza el chart con los nuevos datos
+    chart3.updateOptions({
+      series: newData.series
+    })
+  }
+
 </script>
