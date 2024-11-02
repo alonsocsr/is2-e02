@@ -29,12 +29,35 @@ class Profile(models.Model):
     )
     image = ImageField(upload_to='profiles')
     categorias_interes = models.ManyToManyField(Categorias, blank=True, related_name='categorias_interes')
-    suscripciones = models.ManyToManyField(Categorias, blank=True, related_name='suscripciones')
     contenidos_like = models.ManyToManyField(Contenido, blank=True, related_name='contenidos_like')
     contenidos_dislike = models.ManyToManyField(Contenido, blank=True, related_name='contenidos_dislike')
     class Meta:
         default_permissions = ()
 
+PAYMENT_METHODS = [
+        ('TC', 'Tarjeta de Crédito'),
+        ('TD', 'Tarjeta de Débito'),
+        ('PP', 'PayPal'),
+        ('TR', 'Transferencia Bancaria'),
+    ]
+class Suscripcion(models.Model):
+    """
+    Modelo Suscripcion que almacena la relación entre un perfil de usuario y una categoría, 
+    además de la fecha en que se realiza el pago de la suscripción.
+
+    :cvar profile(ForeignKey): Relación con el modelo Profile que representa al usuario.
+    :cvar categoria(ForeignKey): Relación con el modelo Categorias.
+    :cvar fecha_pago(DateTimeField): Fecha en la que se realiza el pago de la suscripción.
+    """
+    
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='suscripciones')
+    categoria = models.ForeignKey(Categorias, on_delete=models.CASCADE)
+    fecha_pago = models.DateTimeField(auto_now_add=True)
+    monto = models.IntegerField(null=True)
+    medio_pago = models.CharField(max_length=2, choices=PAYMENT_METHODS)
+
+    class Meta:
+        unique_together = ('profile', 'categoria')
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

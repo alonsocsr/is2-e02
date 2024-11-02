@@ -1166,7 +1166,10 @@ class Reportes(LoginRequiredMixin,PermissionRequiredMixin,TemplateView):
         # Extraer las fechas para el eje X desde el primer conjunto de datos
         categories = sorted({entry["fecha__date"].strftime('%d %b') for entry in promedios})
 
-        return {"categories": categories, "series": series_data, "avg_global": round(avg_global/total, 2)}
+        # Verificar si total es diferente de cero antes de hacer la división
+        avg_global_value = round(avg_global / total, 2) if total > 0 else 0
+
+        return {"categories": categories, "series": series_data, "avg_global": avg_global_value}
 
 def generar_color():
     return "#{:06x}".format(random.randint(0, 0xFFFFFF))
