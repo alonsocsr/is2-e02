@@ -1,8 +1,9 @@
 from django.views.generic import FormView, View, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 import requests
+from django.db.models import Sum
 from .forms import ProfileForm, ConfirmDeleteAccountForm
-from .models import Profile
+from .models import Profile, Suscripcion
 from django.contrib import messages
 from django.contrib.auth import logout
 from categories.models import Categorias
@@ -13,6 +14,9 @@ from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views.generic import ListView
+from django.utils.dateparse import parse_date
+from django.utils.timezone import make_aware
+from datetime import datetime, time
 
 
 class UpdateProfile(LoginRequiredMixin, FormView, PermissionRequiredMixin):
@@ -286,7 +290,7 @@ class EliminarCuentaView(LoginRequiredMixin, FormView):
         return form
     
     
-class VerHistorialCompras(LoginRequiredMixin, PermissionRequiredMixin,ListView):
+class VerHistorialCompras(LoginRequiredMixin,ListView):
 
     """
     Vista para mostrar el historial de compras o suscripciones registradas en el sistema.
@@ -302,21 +306,40 @@ class VerHistorialCompras(LoginRequiredMixin, PermissionRequiredMixin,ListView):
     model = Profile
     template_name = 'profiles/ver_historial_pagos.html'
     context_object_name = 'historial_pagos'
-    permission_required= 'permissions.ver_historial_compras'
-    paginate_by = 6  # Opcional: Paginar si es necesario
+    #permission_required= 'permissions.ver_historial_compras'
 
     def get_queryset(self):
         """ user=self.request.user
         if user.groups.filter(name="Suscriptor").exists() and not user.groups.filter(name="Financiero").exists():
            return Profile.objects.filter(suscripciones__isnull = False,user=user).distinct()
         else: """
-        queryset = Profile.objects.filter(suscripciones__isnull=False).distinct()
+        user = self.request.user
+        
+        # Si el usuario tiene el rol 'Financiero', verá todas las suscripciones
+        if user.groups.filter(name="Financiero").exists():
+            queryset = Suscripcion.objects.all()  # Acceso completo
+        else:
+            # El usuario solo puede ver sus propias transacciones
+            queryset = Suscripcion.objects.filter(profile=user.profile)
+
         categoria = self.request.GET.get('categoria')
         if categoria:
-            # filtrar los perfiles por la categoría de suscripcion
-            queryset = queryset.filter(suscripciones__id=categoria)
-        return queryset.order_by("suscripciones")           
+            queryset = queryset.filter(categoria__id=categoria)
+        
+        fecha_desde = self.request.GET.get('fecha_desde')
+        fecha_hasta = self.request.GET.get('fecha_hasta')
 
+        if fecha_desde and fecha_hasta:
+            fecha_desde = parse_date(fecha_desde)
+            fecha_hasta = parse_date(fecha_hasta)
+
+            if fecha_desde <= fecha_hasta: 
+                fecha_hasta = datetime.combine(fecha_hasta, time.max)
+                fecha_hasta = make_aware(fecha_hasta)
+                queryset = queryset.filter(fecha_pago__range=(fecha_desde, fecha_hasta))
+        
+        return queryset.order_by("fecha_pago")         
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['user'] = self.request.user
@@ -324,8 +347,29 @@ class VerHistorialCompras(LoginRequiredMixin, PermissionRequiredMixin,ListView):
         context['is_fin'] = self.request.user.is_authenticated and self.request.user.groups.filter(name="Financiero").exists()
         context['categorias'] = Categorias.objects.filter(tipo_categoria='PA')   #  todas las categorías para el filtro
         context['categoria_seleccionada'] = self.request.GET.get('categoria', '')  #  seleccionada actualmente
-       
+
+        # Captura de fechas seleccionadas en el filtro para mostrar en el formulario
+        fecha_desde = self.request.GET.get('fecha_desde', '')
+        fecha_hasta = self.request.GET.get('fecha_hasta', '')
+        context['fecha_desde'] = fecha_desde
+        context['fecha_hasta'] = fecha_hasta
+
+
+        # Obtener el queryset para calcular el total de montos
+        total_general = self.get_queryset().aggregate(Sum('monto'))['monto__sum'] or 0
+        context['total_general'] = total_general
+
+        # Validación de fechas
+        if fecha_desde and fecha_hasta:
+            fecha_desde = parse_date(fecha_desde)
+            fecha_hasta = parse_date(fecha_hasta)
+
+            if fecha_desde and fecha_hasta and fecha_desde > fecha_hasta:
+                messages.error(self.request, "La fecha 'desde' no puede ser mayor que la fecha 'hasta'.", extra_tags="fecha_error")
+                # Asegúrate de que el queryset no esté alterando el flujo del programa
+                return context  # Salimos del contexto si hay error
+        
+        
+
         return context
-    
-    
 

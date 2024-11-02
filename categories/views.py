@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from .forms import CategoriaForm
 from .models import Categorias
+from profiles.models import Suscripcion
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic import View, TemplateView, DetailView
 from content.models import Contenido
@@ -280,7 +281,7 @@ class DetalleCategoriaView(DetailView):
         :return: JsonResponse - Respuesta JSON con el ID de la sesión de Stripe o un mensaje de error en caso de fallo.
         """
         categoria = self.get_object() 
-        print(f'Precio de la categoría {categoria.nombre_categoria}: {categoria.precio}')  # Depuración
+        #print(f'Precio de la categoría {categoria.nombre_categoria}: {categoria.precio}')  # Depuración
         try:
             # Crear una sesión de pago con Stripe
             session = stripe.checkout.Session.create(
@@ -345,10 +346,29 @@ class PaymentSuccessView(View):
             # Buscar la categoría basada en la descripción del producto (nombre de la categoría)
             categoria = get_object_or_404(Categorias, nombre_categoria=nombre_categoria)
 
+            # Recuperar el PaymentIntent
+            payment_intent = stripe.PaymentIntent.retrieve(session.payment_intent)
+            
+            if hasattr(payment_intent, 'charges') and payment_intent.charges.data:
+                stripe_payment_method = payment_intent.charges.data[0].payment_method_details.type
+                payment_method_map = {
+                    'card': 'TC' if payment_intent.charges.data[0].payment_method_details.card.brand == 'credit' else 'TD',
+                }
+                medio_pago = payment_method_map.get(stripe_payment_method, 'TC')
+            else:
+                #print("No hay datos de cargo disponibles.")
+                medio_pago = 'TC'
+
             # Asociar el usuario a la categoría
             if request.user.is_authenticated:
-                request.user.profile.suscripciones.add(categoria)
-                request.user.profile.save()
+                 Suscripcion.objects.create(
+                    profile=request.user.profile,
+                    categoria=categoria,
+                    monto=categoria.precio,
+                    medio_pago=medio_pago,
+                    fecha_pago=session.created  # Asigna la fecha de la sesión de Stripe como fecha de pago
+
+                )
 
             return render(request, 'categories/pago_completado.html', {'category': categoria})
         return redirect('/')

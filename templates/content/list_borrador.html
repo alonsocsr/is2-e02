@@ -26,8 +26,7 @@ Mis borradores | Stark
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     {% for contenido in borradores %}
 
-    <div
-      class="w-full bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl overflow-hidden flex flex-col md:flex-row">
+    <div class="w-full bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl overflow-hidden flex flex-col md:flex-row relative">
 
 
       <a href="{% url 'crear_contenido' contenido.id %}"
@@ -35,7 +34,9 @@ Mis borradores | Stark
         style="background-image: url('{% if contenido.imagen %}{{ contenido.imagen.url }}{% else %}/static/default.jpg{% endif %}'); object-fit: cover;">
       </a>
 
-
+      <div class="absolute top-2 right-2 bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full">
+        {{ contenido.categoria.nombre_categoria }}
+      </div>
       <div class="px-4 py-3 w-full flex flex-col justify-between leading-normal overflow-hidden">
 
 

@@ -1,4 +1,5 @@
 from categories.models import Categorias 
+from profiles.models import Suscripcion
 
 def categorias_context(request):
     """
@@ -11,7 +12,7 @@ def categorias_context(request):
     categorias_restringidas = ['GR', 'PA']
     if request.user.is_authenticated:
         categorias_interes_ids = request.user.profile.categorias_interes.values_list('id', flat=True)
-        categorias_suscritas_ids = request.user.profile.suscripciones.values_list('id', flat=True)
+        categorias_suscritas_ids = Suscripcion.objects.filter(profile=request.user.profile).values_list('categoria_id', flat=True)
 
 
     return {
