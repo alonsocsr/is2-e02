@@ -7,7 +7,7 @@
 {% block content %}
 <div class="p-6 mt-6">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-3xl font-bold text-gray-800 mb-6">Historial de pagos</h2>
+        <!-- <h2 class="text-3xl font-bold text-gray-800 mb-6">Historial de pagos</h2> -->
         
         <div class="mx-1 mb-4">
             {% if messages %}
@@ -23,26 +23,34 @@
                 {% endif %}
         </div>
 
-        <form method="get" class="mb-4">
-            <label for="fecha_desde" class="block text-sm font-medium text-gray-700">Fecha desde:</label>
-            <input type="date" id="fecha_desde" name="fecha_desde" class="mt-1 block w-48 pl-3 pr-10 py-2 text-sm border-gray-300 rounded-md" 
-                value="{{ fecha_desde }}">
-
-            <label for="fecha_hasta" class="block text-sm font-medium text-gray-700">Fecha hasta:</label>
-            <input type="date" id="fecha_hasta" name="fecha_hasta" class="mt-1 block w-48 pl-3 pr-10 py-2 text-sm border-gray-300 rounded-md" 
-                value="{{ fecha_hasta }}">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-3xl font-bold text-gray-800">Historial de pagos</h2>
             
-            <button type="submit"
-                class="mt-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-pink-800 hover:bg-pink-700">
-                Filtrar
-            </button>
+            <form method="get" class="flex items-center space-x-4">
+                <div>
+                    <label for="fecha_desde" class="block text-sm font-medium text-gray-700">Fecha desde:</label>
+                    <input type="date" id="fecha_desde" name="fecha_desde" class="mt-1 block w-48 pl-3 pr-10 py-2 text-sm border-gray-300 rounded-md" 
+                        value="{{ fecha_desde }}">
+                </div>
 
-            <!-- Enlace para borrar filtros -->
-            <a href="{% url 'ver_historial_compras' %}"
-            class="mt-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gray-400 hover:bg-gray-500 focus:outline-none">
-                Borrar Filtros
-            </a>
-        </form>
+                <div>
+                    <label for="fecha_hasta" class="block text-sm font-medium text-gray-700">Fecha hasta:</label>
+                    <input type="date" id="fecha_hasta" name="fecha_hasta" class="mt-1 block w-48 pl-3 pr-10 py-2 text-sm border-gray-300 rounded-md" 
+                        value="{{ fecha_hasta }}">
+                </div>
+
+                <button type="submit"
+                    class="inline-flex items-center mt-5 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-pink-800 hover:bg-pink-700">
+                    Filtrar
+                </button>
+
+                <!-- Enlace para borrar filtros -->
+                <a href="{% url 'ver_historial_compras' %}"
+                class="inline-flex items-center mt-5 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gray-400 hover:bg-gray-500 focus:outline-none">
+                    Borrar Filtros
+                </a>
+            </form>
+        </div>
         
         <div class="overflow-x-auto relative">
             <table class="min-w-full divide-y divide-gray-200">

@@ -28,7 +28,7 @@
                             <span class="font-semibold">{{ contenido.autor.username }}</span><br>
                             {% endif %}
                             <span class="text-gray-600">{{ contenido.categoria.nombre_categoria }}</span>
-                            <span class="text-gray-600"> - {{ contenido.fecha_creacion|date:"d M Y" }}</span>
+                            <span class="text-gray-600"> - {{ contenido.fecha_publicacion |date:"d M Y" }}</span>
                         </div>
                     </div>
                     <h3 class="text-2xl font-bold mb-2">{{ contenido.titulo }}</h3>
