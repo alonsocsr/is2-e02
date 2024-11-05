@@ -1,3 +1,4 @@
+from collections import defaultdict
 from django.views.generic import FormView, View, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 import requests
@@ -16,7 +17,8 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.views.generic import ListView
 from django.utils.dateparse import parse_date
 from django.utils.timezone import make_aware
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
+from django.utils import timezone
 
 
 class UpdateProfile(LoginRequiredMixin, FormView, PermissionRequiredMixin):
@@ -309,17 +311,13 @@ class VerHistorialCompras(LoginRequiredMixin,ListView):
     #permission_required= 'permissions.ver_historial_compras'
 
     def get_queryset(self):
-        """ user=self.request.user
-        if user.groups.filter(name="Suscriptor").exists() and not user.groups.filter(name="Financiero").exists():
-           return Profile.objects.filter(suscripciones__isnull = False,user=user).distinct()
-        else: """
+    
         user = self.request.user
         
-        # Si el usuario tiene el rol 'Financiero', verá todas las suscripciones
         if user.groups.filter(name="Financiero").exists():
-            queryset = Suscripcion.objects.all()  # Acceso completo
+            queryset = Suscripcion.objects.all() 
         else:
-            # El usuario solo puede ver sus propias transacciones
+    
             queryset = Suscripcion.objects.filter(profile=user.profile)
 
         categoria = self.request.GET.get('categoria')
@@ -332,7 +330,6 @@ class VerHistorialCompras(LoginRequiredMixin,ListView):
         if fecha_desde and fecha_hasta:
             fecha_desde = parse_date(fecha_desde)
             fecha_hasta = parse_date(fecha_hasta)
-
             if fecha_desde <= fecha_hasta: 
                 fecha_hasta = datetime.combine(fecha_hasta, time.max)
                 fecha_hasta = make_aware(fecha_hasta)
@@ -345,31 +342,132 @@ class VerHistorialCompras(LoginRequiredMixin,ListView):
         context['user'] = self.request.user
         context['is_suscr'] = self.request.user.is_authenticated and self.request.user.groups.filter(name="Suscriptor").exists()
         context['is_fin'] = self.request.user.is_authenticated and self.request.user.groups.filter(name="Financiero").exists()
-        context['categorias'] = Categorias.objects.filter(tipo_categoria='PA')   #  todas las categorías para el filtro
-        context['categoria_seleccionada'] = self.request.GET.get('categoria', '')  #  seleccionada actualmente
+        context['categorias'] = Categorias.objects.filter(tipo_categoria='PA')  
+        context['categoria_seleccionada'] = self.request.GET.get('categoria', '')  
 
-        # Captura de fechas seleccionadas en el filtro para mostrar en el formulario
         fecha_desde = self.request.GET.get('fecha_desde', '')
         fecha_hasta = self.request.GET.get('fecha_hasta', '')
         context['fecha_desde'] = fecha_desde
         context['fecha_hasta'] = fecha_hasta
-
-
-        # Obtener el queryset para calcular el total de montos
+        
         total_general = self.get_queryset().aggregate(Sum('monto'))['monto__sum'] or 0
+        
         context['total_general'] = total_general
+        
+        totales_categoria=self.grafico_totales_categoria()
+        reporte_pagos=self.grafico_montos_pago_por_fecha()
+        reportes_categoria=self.grafico_datos_montos_por_categoria()
+        context['grafico1']=totales_categoria
+        context['montos_fecha']=reporte_pagos
+        context['montos_categoria']=reportes_categoria
 
-        # Validación de fechas
         if fecha_desde and fecha_hasta:
             fecha_desde = parse_date(fecha_desde)
             fecha_hasta = parse_date(fecha_hasta)
 
             if fecha_desde and fecha_hasta and fecha_desde > fecha_hasta:
                 messages.error(self.request, "La fecha 'desde' no puede ser mayor que la fecha 'hasta'.", extra_tags="fecha_error")
-                # Asegúrate de que el queryset no esté alterando el flujo del programa
-                return context  # Salimos del contexto si hay error
-        
-        
-
+                return context
         return context
 
+    def grafico_totales_categoria(self, start_date=None, end_date=None):
+
+        suscripciones = Suscripcion.objects.all()
+        
+
+        if start_date and end_date:
+            suscripciones = suscripciones.filter(fecha_pago__range=(start_date, end_date))
+        else:
+            today = timezone.now().date()
+            suscripciones = suscripciones.filter(fecha_pago__range=(today - timedelta(days=7), today))
+        
+        suscripcion_by_category = defaultdict(lambda: {'cantidad': 0})
+        for susc in suscripciones:
+            category = susc.categoria.nombre_categoria
+            suscripcion_by_category[category]['cantidad'] += 1
+        
+    
+        categorias = list(suscripcion_by_category.keys())
+        cantidades = [data['cantidad'] for data in suscripcion_by_category.values()]
+        
+
+        return {
+            'labels': categorias,
+            'series': cantidades
+        }
+        
+    def grafico_montos_pago_por_fecha(self, start_date=None, end_date=None):
+        if not start_date or not end_date:
+            end_date = timezone.now()
+            start_date = end_date - timedelta(days=7)
+
+        start_date = timezone.make_aware(datetime.combine(start_date, datetime.min.time()))
+        end_date = timezone.make_aware(datetime.combine(end_date, datetime.max.time()))
+
+        pagos_por_categoria = (
+            Suscripcion.objects
+            .filter(fecha_pago__range=(start_date, end_date))
+            .values("fecha_pago__date")
+            .annotate(total_monto=Sum("monto"))
+            .order_by("-fecha_pago__date")
+        )
+
+        fechas = []
+        montos=[]
+     
+        for entry in pagos_por_categoria:
+            monto = entry["total_monto"]
+            fecha = entry["fecha_pago__date"].strftime('%d %b') 
+            
+            fechas.append(fecha)
+            montos.append(monto)
+        return {
+            "fechas":fechas,
+            "montos":montos
+        }
+        
+    
+            
+    def grafico_datos_montos_por_categoria(self,start_date=None, end_date=None):
+        if not start_date or not end_date:
+            end_date = timezone.now()
+            start_date = end_date - timedelta(days=7)
+
+        start_date = timezone.make_aware(datetime.combine(start_date, datetime.min.time()))
+        end_date = timezone.make_aware(datetime.combine(end_date, datetime.max.time()))
+
+        pagos_por_fecha_categoria = (
+            Suscripcion.objects
+            .filter(fecha_pago__range=(start_date, end_date))
+            .values("fecha_pago__date", "categoria__nombre_categoria")
+            .annotate(total_monto=Sum("monto"))
+            .order_by("-fecha_pago__date")
+        )
+
+        fechas = set()
+        categorias_montos = defaultdict(lambda: [])
+
+        for entry in pagos_por_fecha_categoria:
+            fecha = entry["fecha_pago__date"].strftime('%d %b')
+            categoria = entry["categoria__nombre_categoria"]
+            monto = entry["total_monto"]
+
+            fechas.add(fecha)
+            categorias_montos[categoria].append((fecha, monto))
+
+        fechas = sorted(fechas,reverse=True)  
+        series = []
+        for categoria, data in categorias_montos.items():
+            montos = [next((m for f, m in data if f == fecha), 0) for fecha in fechas]
+            series.append({
+                "name": categoria,
+                "data": montos,
+            })
+
+        print(fechas)
+        print(series)
+        return {
+            "fechas": fechas,
+            "series": series,
+        }
+    

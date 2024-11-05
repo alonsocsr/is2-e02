@@ -1,0 +1,133 @@
+<!--Reporte de Montos Totales por Fecha-->
+<div class="w-full bg-white rounded-lg shadow dark:bg-gray-800">
+    <div class="flex justify-between p-4 md:p-6 pb-0 md:pb-0">
+        <div>
+            <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white me-1">Montos Totales</h5>
+            <p class="text-base font-normal text-gray-500 dark:text-gray-400">Pagos por Fecha</p>
+        </div>
+    </div>
+    <div id="bar-chart" class="px-2.5"></div>
+    <div class="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between mt-5 p-4 md:p-6 pt-0 md:pt-0">
+        <div class="flex justify-between items-center pt-5">
+            <button
+                id="dropdownDefaultButton"
+                data-dropdown-toggle="lastDaysdropdown"
+                data-dropdown-placement="bottom"
+                class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white"
+                type="button">
+                Ultimos 7 dias
+                <svg class="w-2.5 m-2.5 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                </svg>
+            </button>
+            <div id="lastDaysdropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                    <li><a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ayer</a></li>
+                    <li><a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Hoy</a></li>
+                    <li><a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ultimos 7 dias</a></li>
+                    <li><a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ultimos 30 dias</a></li>
+                    <li><a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ultimos 90 dias</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const fecha = {{ montos_fecha.fechas|safe }}; 
+    const monto = {{ montos_fecha.montos|safe }}; 
+
+    const options = {
+        series: [
+            {
+                name: "Monto Total",
+                color: "#31C48D",
+                data: monto,
+            },
+        ],
+        chart: {
+            sparkline: {
+                enabled: false,
+            },
+            type: "bar",
+            width: "100%",
+            height: 400,
+            toolbar: {
+                show: false,
+            }
+        },
+        fill: {
+            opacity: 1,
+        },
+        plotOptions: {
+            bar: {
+                horizontal: true,
+                columnWidth: "100%",
+                borderRadiusApplication: "end",
+                borderRadius: 6,
+                dataLabels: {
+                    position: "top",
+                },
+            },
+        },
+        legend: {
+            show: true,
+            position: "bottom",
+        },
+        dataLabels: {
+            enabled: false,
+        },
+        tooltip: {
+            shared: true,
+            intersect: false,
+            formatter: function (value) {
+                return value + " GS";
+            }
+        },
+        xaxis: {
+            labels: {
+                show: true,
+                style: {
+                    fontFamily: "Inter, sans-serif",
+                    cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
+                },
+                formatter: function(value) {
+                    return value + " GS";
+                }
+            },
+            categories: fecha, 
+            axisTicks: {
+                show: false,
+            },
+            axisBorder: {
+                show: false,
+            },
+        },
+        yaxis: {
+            labels: {
+                show: true,
+                style: {
+                    fontFamily: "Inter, sans-serif",
+                    cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
+                }
+            }
+        },
+        grid: {
+            show: true,
+            strokeDashArray: 4,
+            padding: {
+                left: 2,
+                right: 2,
+                top: -20
+            },
+        },
+        fill: {
+            opacity: 1,
+        }
+    }
+
+    if (document.getElementById("bar-chart") && typeof ApexCharts !== 'undefined') {
+        const chart = new ApexCharts(document.getElementById("bar-chart"), options);
+        chart.render();
+    }
+</script>

@@ -4,6 +4,10 @@
 
 {% block title %}Historial | Stark {% endblock title %}
 
+{% block script %}
+  <script src="{% static 'apexcharts/apexcharts.js' %}"></script>
+{% endblock script %}
+
 {% block content %}
 <div class="p-6 mt-6">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -56,25 +60,25 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-pink-700 rounded-lg sticky top-0 z-10">
                     <tr class="text-sm font-semibold text-pink-100">
-                        <th class="p-2 text-left">Usuario</th>
-                        <th class="p-2 text-left">Categoría</th>
-                        <th class="p-2 text-left">Fecha del Pago</th>
-                        <th class="p-2 text-left">Hora del Pago</th>
-                        <th class="p-2 text-left">Monto</th>
-                        <th class="p-2 text-left">Medio de Pago</th>
+                        <th class="p-2 text-center">Usuario</th>
+                        <th class="p-2 text-center">Categoría</th>
+                        <th class="p-2 text-center">Fecha del Pago</th>
+                        <th class="p-2 text-center">Hora del Pago</th>
+                        <th class="p-2 text-center">Monto</th>
+                        <th class="p-2 text-center">Medio de Pago</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     {% for pago in historial_pagos %}
                     <tr>
-                        <td class="p-2">{{ pago.profile.user.username }}</td>
-                        <td class="p-2">
+                        <td class="p-2 text-center">{{ pago.profile.user.username }}</td>
+                        <td class="p-2 text-center">
                             <a href="{% url 'categories:detalle' pago.categoria.id %}" class="text-gray-900 hover:text-pink-600">{{ pago.categoria.nombre_categoria }}</a>
                         </td>
-                        <td class="p-2">{{ pago.fecha_pago|date:"Y-m-d" }}</td>
-                        <td class="p-2">{{ pago.fecha_pago|time:"H:i" }}</td>
-                        <td class="p-2">{{ pago.monto }} Gs</td>
-                        <td class="p-2">{{ pago.medio_pago }}</td>
+                        <td class="p-2 text-center">{{ pago.fecha_pago|date:"Y-m-d" }}</td>
+                        <td class="p-2 text-center">{{ pago.fecha_pago|time:"H:i" }}</td>
+                        <td class="p-2 text-center">{{ pago.monto }} Gs</td>
+                        <td class="p-2 text-center">{{ pago.medio_pago }}</td>
                     </tr>
                     {% empty %}
                     <tr>
@@ -87,10 +91,35 @@
         
         <!-- Total general -->
         <div class="mt-4">
-            <h3 class="text-lg font-semibold text-gray-800">Total General: {{ total_general }} Gs</h3>
+            <h3 class="text-lg text-center font-semibold text-gray-800">Total General: {{ total_general }} GS</h3>
         </div>
         
     </div>
 </div>
+<div class="container mx-auto px-4 py-6 mt-2">
+    <h2 class="text-3xl font-bold text-gray-800 mb-6">Estadísticas financieras</h2>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      {% include "stats/reporte_financiero.html" %}
+      {% include "stats/reporte_montos.html" %}
+    </div>
+    <div class="flex gap-4 mt-4">
+        {% include "stats/reporte_categoria_pago.html" %}  
+      </div>
+</div>
 
+<script>
+
+    document.querySelectorAll('[data-dropdown-toggle]').forEach((button) => {
+      const targetId = button.getAttribute('data-dropdown-toggle');
+      const dropdownElement = document.getElementById(targetId);
+    
+      if (dropdownElement) {
+        new Dropdown(dropdownElement, {
+          triggerType: 'click',
+          placement: button.getAttribute('data-dropdown-placement') || 'bottom',
+        });
+      }
+    });
+
+</script>
 {% endblock content %}
