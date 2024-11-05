@@ -175,8 +175,8 @@ class BuscarContenidoView(ListView):
         :return: QuerySet - Un queryset de contenido filtrado por los parámetros de búsqueda.
         """
         query = self.request.GET.get('q', '')
-        categorias = self.request.GET.getlist('categorias')
-        autores = self.request.GET.getlist('autores')
+        categorias = self.request.GET.getlist('categorias[]')
+        autores = self.request.GET.getlist('autores[]')
 
         # Filtrar por estado 'Publicado'
         resultados = Contenido.objects.filter(estado='Publicado', activo=True)
@@ -217,14 +217,16 @@ class BuscarContenidoView(ListView):
         else:
             context['sugerencias'] = []
 
-        # Pasar el resto del contexto adicional
+        # Añadir información de contexto adicional
         context['query'] = self.request.GET.get('q', '')
         context['categorias'] = Categorias.objects.all()
         context['autores'] = User.objects.filter(contenido__isnull=False).distinct()
-        
+        context['categorias_seleccionadas'] = [int(c) for c in self.request.GET.getlist('categorias[]')]
+        context['autores_seleccionados'] = self.request.GET.getlist('autores[]')
         context['STRIPE_PUBLIC_KEY'] = config('STRIPE_PUBLIC_KEY')
 
         return context
+
 
 
 def ordenar_contenidos(queryset, seleccionado=False,favorito=False):
