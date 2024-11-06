@@ -23,41 +23,6 @@
     <!-- Line Chart -->
     <div class="py-6" id="pie-chart"></div>
   
-    <div class="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between">
-      <div class="flex justify-between items-center pt-5">
-        <!-- Button -->
-        <button
-          id="dropdownDefaultButton-1"
-          data-dropdown-toggle="lastDaysdropdown-1"
-          data-dropdown-placement="bottom"
-          class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white"
-          type="button">
-          Ultimos 7 dias
-          <svg class="w-2.5 m-2.5 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-          </svg>
-        </button>
-        <div id="lastDaysdropdown-1" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-              <li>
-                <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ayer</a>
-              </li>
-              <li>
-                <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Hoy</a>
-              </li>
-              <li>
-                <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ultimos 7 dias</a>
-              </li>       
-              <li>
-                <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ultimos 30 dias</a>
-              </li>
-              <li>
-                <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ultimos 90 dias</a>
-              </li>
-            </ul>
-        </div>
-      </div>
-    </div>
   </div>
   
   <script>
@@ -126,38 +91,7 @@
       }
     }
   
-    /*lógica para el filtro de fecha*/
-    document.addEventListener("DOMContentLoaded", () => {
-      const dropdownItems = document.querySelectorAll('#lastDaysdropdown-1 a');
-      const dateRangeButton = document.getElementById('dropdownDefaultButton-1');
-      const reportId = 1;
-  
-      dropdownItems.forEach(item => {
-        item.addEventListener("click", (event) => {
-          event.preventDefault();
     
-          // actualiza el label del botón
-          dateRangeButton.innerText = item.innerText;
-    
-          // Fetch data
-          const selectedRange = item.innerText;
-          fetchChartDataForRange(selectedRange, reportId);
-        });
-      });
-    });
-  
-    function fetchChartDataForRange(range, reportId) {
-      // Función que llama a la api basado en el 'range'
-      // el segundo parámetro report es para el número de reporte que se filtra
-      // en este caso el reporte 1
-      fetch(`/report-data?range=${range}&report=${reportId}`)
-        .then(response => response.json())
-        .then(data => {
-          // el formato de los datos debe ser el mismo al inicial
-          updateChart(data);
-        })
-        .catch(error => console.error('Error fetching data:', error));
-    }
   
     /*se instancia el gráfico*/
     if (document.getElementById("pie-chart") && typeof ApexCharts !== 'undefined') {

@@ -41,7 +41,11 @@
                         Mis favoritos
                     </a>
                     {%endif%}
-                  
+                    {% if is_only_suscriptor %}
+                    <a href="{% url 'ver_historial_compras' %}" class="gray-900 hover:bg-gray-200 hover:text-pink-800 px-3 py-2 rounded-md text-sm font-medium transition duration-300">
+                        Mis pagos
+                    </a>
+                    {% endif %}
                 </div>
             </div>
 

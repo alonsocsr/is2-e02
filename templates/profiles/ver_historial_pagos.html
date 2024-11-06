@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load thumbnail %}
 {% load static %}
 
 {% block title %}Historial | Stark {% endblock title %}
@@ -10,8 +9,7 @@
 
 {% block content %}
 <div class="p-6 mt-6">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- <h2 class="text-3xl font-bold text-gray-800 mb-6">Historial de pagos</h2> -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div class="mx-1 mb-4">
             {% if messages %}
@@ -27,8 +25,9 @@
                 {% endif %}
         </div>
 
+        <h2 class="text-3xl font-bold text-gray-800 mb-4">Historial de pagos</h2>
+
         <div class="flex items-center justify-between mb-6">
-            <h2 class="text-3xl font-bold text-gray-800">Historial de pagos</h2>
             
             <form method="get" class="flex items-center space-x-4">
                 <div>
@@ -43,6 +42,32 @@
                         value="{{ fecha_hasta }}">
                 </div>
 
+                {% if perms.permissions.ver_historial_compras %}
+                    <div>
+                        <label for="categoria" class="block text-sm font-medium text-gray-700">Categoría:</label>
+                        <select id="categoria" name="categoria" class="mt-1 block w-48 pl-3 pr-10 py-2 text-sm border-gray-300 rounded-md">
+                            <option value="">Todas</option>
+                            {% for cat in categorias %}
+                                <option value="{{ cat.id }}" {% if cat.id|stringformat:"s" == categoria_seleccionada %}selected{% endif %}>
+                                    {{ cat.nombre_categoria }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                
+                    <div>
+                        <label for="usuario" class="block text-sm font-medium text-gray-700">Usuario:</label>
+                        <select id="usuario" name="usuario" class="mt-1 block w-48 pl-3 pr-10 py-2 text-sm border-gray-300 rounded-md">
+                            <option value="">Todos</option>
+                            {% for usuario in usuarios %}
+                                <option value="{{ usuario.id }}" {% if usuario.id|stringformat:"s" == usuario_seleccionado %}selected{% endif %}>
+                                    {{ usuario.username }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endif %}
+
                 <button type="submit"
                     class="inline-flex items-center mt-5 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-pink-800 hover:bg-pink-700">
                     Filtrar
@@ -53,6 +78,9 @@
                 class="inline-flex items-center mt-5 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gray-400 hover:bg-gray-500 focus:outline-none">
                     Borrar Filtros
                 </a>
+                <!--Enlace para exporta a excel-->
+                <a href="{% url 'exportar_compras_xlsx' %}?categoria={{ request.GET.categoria }}&fecha_desde={{ request.GET.fecha_desde }}&fecha_hasta={{ request.GET.fecha_hasta }}" class="inline-flex items-center mt-5 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gray-400 hover:bg-gray-500 focus:outline-none">Exportar a XLSX</a>
+
             </form>
         </div>
         
@@ -96,16 +124,18 @@
         
     </div>
 </div>
-<div class="container mx-auto px-4 py-6 mt-2">
-    <h2 class="text-3xl font-bold text-gray-800 mb-6">Estadísticas financieras</h2>
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-      {% include "stats/reporte_financiero.html" %}
-      {% include "stats/reporte_montos.html" %}
+{% if perms.permissions.ver_historial_compras %}
+    <div class="container mx-auto px-4 py-6 mt-2">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Estadísticas financieras</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {% include "stats/reporte_financiero.html" %}
+        {% include "stats/reporte_montos.html" %}
+        </div>
+        <div class="flex gap-4 mt-4">
+            {% include "stats/reporte_categoria_pago.html" %}  
+        </div>
     </div>
-    <div class="flex gap-4 mt-4">
-        {% include "stats/reporte_categoria_pago.html" %}  
-      </div>
-</div>
+{% endif %}
 
 <script>
 

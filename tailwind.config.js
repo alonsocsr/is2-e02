@@ -12,6 +12,9 @@ module.exports = {
     extend: {
       fontFamily:{
         'sans': ["Figtree", "serif"],
+      },
+      maxWidth: {
+        '8xl': '96rem',
       }
     },
   },

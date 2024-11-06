@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.contrib.auth import logout
 from categories.models import Categorias
 from content.models import Contenido
-from django.shortcuts import reverse, redirect, get_object_or_404
+from django.shortcuts import get_list_or_404, reverse, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.urls import reverse_lazy
@@ -19,7 +19,10 @@ from django.utils.dateparse import parse_date
 from django.utils.timezone import make_aware
 from datetime import datetime, time, timedelta
 from django.utils import timezone
-
+import openpyxl
+from django.http import HttpResponse
+from django.contrib.auth.models import User
+from django.db.models import Exists, OuterRef
 
 class UpdateProfile(LoginRequiredMixin, FormView, PermissionRequiredMixin):
     """
@@ -317,7 +320,6 @@ class VerHistorialCompras(LoginRequiredMixin,ListView):
         if user.groups.filter(name="Financiero").exists():
             queryset = Suscripcion.objects.all() 
         else:
-    
             queryset = Suscripcion.objects.filter(profile=user.profile)
 
         categoria = self.request.GET.get('categoria')
@@ -335,6 +337,11 @@ class VerHistorialCompras(LoginRequiredMixin,ListView):
                 fecha_hasta = make_aware(fecha_hasta)
                 queryset = queryset.filter(fecha_pago__range=(fecha_desde, fecha_hasta))
         
+        # Filtro de usuario
+        usuario_id = self.request.GET.get('usuario')
+        if usuario_id:
+            queryset = queryset.filter(profile__user__id=usuario_id)
+        
         return queryset.order_by("fecha_pago")         
     
     def get_context_data(self, **kwargs):
@@ -345,21 +352,25 @@ class VerHistorialCompras(LoginRequiredMixin,ListView):
         context['categorias'] = Categorias.objects.filter(tipo_categoria='PA')  
         context['categoria_seleccionada'] = self.request.GET.get('categoria', '')  
 
-        fecha_desde = self.request.GET.get('fecha_desde', '')
-        fecha_hasta = self.request.GET.get('fecha_hasta', '')
+        # Obtener solo los usuarios con suscripciones
+        usuarios_con_suscripcion = User.objects.filter(
+            Exists(Suscripcion.objects.filter(profile__user=OuterRef('pk')))
+        )
+        context['usuarios'] = usuarios_con_suscripcion
+        context['usuario_seleccionado'] = self.request.GET.get('usuario', '')
+
+        categoria = self.request.GET.get('categoria', None)
+        usuario = self.request.GET.get('usuario', None)
+
+
+        fecha_desde = self.request.GET.get('fecha_desde', None)
+        fecha_hasta = self.request.GET.get('fecha_hasta', None)
         context['fecha_desde'] = fecha_desde
         context['fecha_hasta'] = fecha_hasta
         
         total_general = self.get_queryset().aggregate(Sum('monto'))['monto__sum'] or 0
         
         context['total_general'] = total_general
-        
-        totales_categoria=self.grafico_totales_categoria()
-        reporte_pagos=self.grafico_montos_pago_por_fecha()
-        reportes_categoria=self.grafico_datos_montos_por_categoria()
-        context['grafico1']=totales_categoria
-        context['montos_fecha']=reporte_pagos
-        context['montos_categoria']=reportes_categoria
 
         if fecha_desde and fecha_hasta:
             fecha_desde = parse_date(fecha_desde)
@@ -368,13 +379,25 @@ class VerHistorialCompras(LoginRequiredMixin,ListView):
             if fecha_desde and fecha_hasta and fecha_desde > fecha_hasta:
                 messages.error(self.request, "La fecha 'desde' no puede ser mayor que la fecha 'hasta'.", extra_tags="fecha_error")
                 return context
+            else:
+                fecha_hasta = make_aware(datetime.combine(fecha_hasta, time.max))
+            
+        totales_categoria=self.grafico_totales_categoria(fecha_desde, fecha_hasta, categoria, usuario)
+        reporte_pagos=self.grafico_montos_pago_por_fecha(fecha_desde, fecha_hasta, categoria, usuario)
+        reportes_categoria=self.grafico_datos_montos_por_categoria(fecha_desde, fecha_hasta, categoria, usuario)
+        context['grafico1']=totales_categoria
+        context['montos_fecha']=reporte_pagos
+        context['montos_categoria']=reportes_categoria
         return context
 
-    def grafico_totales_categoria(self, start_date=None, end_date=None):
-
+    def grafico_totales_categoria(self, start_date=None, end_date=None, categoria=None, usuario=None):
         suscripciones = Suscripcion.objects.all()
-        
+        if categoria:
+            suscripciones = suscripciones.filter(categoria__id=categoria)
 
+        if usuario:
+            suscripciones = suscripciones.filter(profile__user__id=usuario)
+        
         if start_date and end_date:
             suscripciones = suscripciones.filter(fecha_pago__range=(start_date, end_date))
         else:
@@ -396,13 +419,11 @@ class VerHistorialCompras(LoginRequiredMixin,ListView):
             'series': cantidades
         }
         
-    def grafico_montos_pago_por_fecha(self, start_date=None, end_date=None):
+    def grafico_montos_pago_por_fecha(self, start_date=None, end_date=None, categoria=None, usuario=None):
+        
         if not start_date or not end_date:
             end_date = timezone.now()
             start_date = end_date - timedelta(days=7)
-
-        start_date = timezone.make_aware(datetime.combine(start_date, datetime.min.time()))
-        end_date = timezone.make_aware(datetime.combine(end_date, datetime.max.time()))
 
         pagos_por_categoria = (
             Suscripcion.objects
@@ -411,7 +432,11 @@ class VerHistorialCompras(LoginRequiredMixin,ListView):
             .annotate(total_monto=Sum("monto"))
             .order_by("-fecha_pago__date")
         )
-
+        if categoria:
+            pagos_por_categoria = pagos_por_categoria.filter(categoria__id=categoria)
+        
+        if usuario:
+            pagos_por_categoria = pagos_por_categoria.filter(profile__user__id=usuario)
         fechas = []
         montos=[]
      
@@ -428,13 +453,10 @@ class VerHistorialCompras(LoginRequiredMixin,ListView):
         
     
             
-    def grafico_datos_montos_por_categoria(self,start_date=None, end_date=None):
+    def grafico_datos_montos_por_categoria(self,start_date=None, end_date=None, categoria=None, usuario=None):
         if not start_date or not end_date:
             end_date = timezone.now()
             start_date = end_date - timedelta(days=7)
-
-        start_date = timezone.make_aware(datetime.combine(start_date, datetime.min.time()))
-        end_date = timezone.make_aware(datetime.combine(end_date, datetime.max.time()))
 
         pagos_por_fecha_categoria = (
             Suscripcion.objects
@@ -443,6 +465,11 @@ class VerHistorialCompras(LoginRequiredMixin,ListView):
             .annotate(total_monto=Sum("monto"))
             .order_by("-fecha_pago__date")
         )
+        if categoria:
+            pagos_por_fecha_categoria = pagos_por_fecha_categoria.filter(categoria__id=categoria)
+
+        if usuario:
+            pagos_por_fecha_categoria = pagos_por_fecha_categoria.filter(profile__user__id=usuario)
 
         fechas = set()
         categorias_montos = defaultdict(lambda: [])
@@ -464,10 +491,57 @@ class VerHistorialCompras(LoginRequiredMixin,ListView):
                 "data": montos,
             })
 
-        print(fechas)
-        print(series)
         return {
             "fechas": fechas,
             "series": series,
         }
-    
+
+def exportar_compras_xlsx(request):
+    # Crear el archivo Excel
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active
+    sheet.title = 'Historial de Compras'
+
+    # Agregar encabezados
+    headers = ['Usuario', 'Categoría', 'Fecha del Pago', 'Hora del Pago', 'Monto', 'Medio de Pago']
+    sheet.append(headers)
+
+    # Obtener queryset filtrado (reutilizando la lógica de get_queryset)
+    user = request.user
+    if user.groups.filter(name="Financiero").exists():
+        queryset = Suscripcion.objects.all()
+    else:
+        queryset = Suscripcion.objects.filter(profile=user.profile)
+
+    # Aplicar filtros
+    categoria = request.GET.get('categoria')
+    if categoria:
+        queryset = queryset.filter(categoria__id=categoria)
+
+    fecha_desde = request.GET.get('fecha_desde')
+    fecha_hasta = request.GET.get('fecha_hasta')
+    if fecha_desde and fecha_hasta:
+        fecha_desde = parse_date(fecha_desde)
+        fecha_hasta = parse_date(fecha_hasta)
+        if fecha_desde <= fecha_hasta:
+            fecha_hasta = datetime.combine(fecha_hasta, time.max)
+            fecha_hasta = make_aware(fecha_hasta)
+            queryset = queryset.filter(fecha_pago__range=(fecha_desde, fecha_hasta))
+
+    # Agregar los datos a la hoja de Excel
+    for compra in queryset:
+        row = [
+            compra.profile.user.username,
+            compra.categoria.nombre_categoria,
+            compra.fecha_pago.strftime("%Y-%m-%d"),
+            compra.fecha_pago.strftime("%H:%M"),
+            compra.monto,
+            compra.medio_pago
+        ]
+        sheet.append(row)
+
+    # Configurar la respuesta para descargar el archivo
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=historial_compras.xlsx'
+    workbook.save(response)
+    return response

@@ -31,6 +31,7 @@ django-select2==8.2.1
 django-sphinxdoc==2.0.0
 docutils==0.20.1
 dulwich==0.21.7
+et_xmlfile==2.0.0
 exceptiongroup==1.2.2
 fastjsonschema==2.20.0
 filelock==3.16.1
@@ -52,6 +53,7 @@ mock==5.1.0
 more-itertools==10.5.0
 msgpack==1.1.0
 numpy==2.1.2
+openpyxl==3.1.5
 packaging==24.1
 pandas==2.2.3
 pexpect==4.9.0
@@ -77,8 +79,10 @@ python-decouple==3.8
 python-dotenv==1.0.1
 pytz==2024.2
 RapidFuzz==3.10.0
+rcssmin==1.1.2
 requests==2.32.3
 requests-toolbelt==1.0.0
+rjsmin==1.2.2
 SecretStorage==3.3.3
 shellingham==1.5.4
 simplejson==3.19.3
