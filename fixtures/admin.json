@@ -1,0 +1,35 @@
+[
+    {
+        "model": "auth.user",
+        "pk": 1,
+        "fields": {
+            "username": "admin",
+            "password": "pbkdf2_sha256$870000$chFfg12xkwqp1UEgKX4t64$phY1jEB5RfuXn04KcDrkWGZuf/ba34MGG1Sc8R5EOY0=",
+            "email": "admin@gmail.com",
+            "is_staff": true,
+            "is_superuser": false,
+            "is_active": true,
+            "date_joined": "2024-08-30T12:34:56.789Z",
+            "groups": [1, 7],  
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "profiles.Profile",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "image": ""
+        }
+    },
+    {
+        "model": "account.emailaddress",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "email": "admin@gmail.com",
+            "verified": true,
+            "primary": true
+        }
+    }
+]
