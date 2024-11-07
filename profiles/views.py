@@ -400,9 +400,7 @@ class VerHistorialCompras(LoginRequiredMixin,ListView):
         
         if start_date and end_date:
             suscripciones = suscripciones.filter(fecha_pago__range=(start_date, end_date))
-        else:
-            today = timezone.now().date()
-            suscripciones = suscripciones.filter(fecha_pago__range=(today - timedelta(days=7), today))
+        
         
         suscripcion_by_category = defaultdict(lambda: {'cantidad': 0})
         for susc in suscripciones:
@@ -421,17 +419,22 @@ class VerHistorialCompras(LoginRequiredMixin,ListView):
         
     def grafico_montos_pago_por_fecha(self, start_date=None, end_date=None, categoria=None, usuario=None):
         
-        if not start_date or not end_date:
-            end_date = timezone.now()
-            start_date = end_date - timedelta(days=7)
-
-        pagos_por_categoria = (
-            Suscripcion.objects
-            .filter(fecha_pago__range=(start_date, end_date))
-            .values("fecha_pago__date")
-            .annotate(total_monto=Sum("monto"))
-            .order_by("-fecha_pago__date")
-        )
+        if start_date and end_date:
+            pagos_por_categoria = (
+                Suscripcion.objects
+                .filter(fecha_pago__range=(start_date, end_date))
+                .values("fecha_pago__date")
+                .annotate(total_monto=Sum("monto"))
+                .order_by("-fecha_pago__date")
+            )
+        else:
+            pagos_por_categoria = (
+                Suscripcion.objects
+                .values("fecha_pago__date")
+                .annotate(total_monto=Sum("monto"))
+                .order_by("-fecha_pago__date")
+            )
+        
         if categoria:
             pagos_por_categoria = pagos_por_categoria.filter(categoria__id=categoria)
         
@@ -455,16 +458,21 @@ class VerHistorialCompras(LoginRequiredMixin,ListView):
             
     def grafico_datos_montos_por_categoria(self,start_date=None, end_date=None, categoria=None, usuario=None):
         if not start_date or not end_date:
-            end_date = timezone.now()
-            start_date = end_date - timedelta(days=7)
-
-        pagos_por_fecha_categoria = (
-            Suscripcion.objects
-            .filter(fecha_pago__range=(start_date, end_date))
-            .values("fecha_pago__date", "categoria__nombre_categoria")
-            .annotate(total_monto=Sum("monto"))
-            .order_by("-fecha_pago__date")
-        )
+            pagos_por_fecha_categoria = (
+                Suscripcion.objects
+                .values("fecha_pago__date", "categoria__nombre_categoria")
+                .annotate(total_monto=Sum("monto"))
+                .order_by("-fecha_pago__date")
+            )
+        else:
+            pagos_por_fecha_categoria = (
+                Suscripcion.objects
+                .filter(fecha_pago__range=(start_date, end_date))
+                .values("fecha_pago__date", "categoria__nombre_categoria")
+                .annotate(total_monto=Sum("monto"))
+                .order_by("-fecha_pago__date")
+            )
+        
         if categoria:
             pagos_por_fecha_categoria = pagos_por_fecha_categoria.filter(categoria__id=categoria)
 
@@ -517,6 +525,10 @@ def exportar_compras_xlsx(request):
     categoria = request.GET.get('categoria')
     if categoria:
         queryset = queryset.filter(categoria__id=categoria)
+
+    usuario = request.GET.get('usuario', None)
+    if usuario:
+        queryset = queryset.filter(profile__user__id=usuario)     
 
     fecha_desde = request.GET.get('fecha_desde')
     fecha_hasta = request.GET.get('fecha_hasta')

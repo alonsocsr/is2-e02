@@ -101,7 +101,7 @@
                   const sum = w.globals.seriesTotals.reduce((a, b) => {
                     return a + b
                   }, 0)
-                  return '' + sum + ''
+                  return '' + Math.round(sum) + ''
                 },
               },
               value: {

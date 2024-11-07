@@ -79,7 +79,7 @@
                     Borrar Filtros
                 </a>
                 <!--Enlace para exporta a excel-->
-                <a href="{% url 'exportar_compras_xlsx' %}?categoria={{ request.GET.categoria }}&fecha_desde={{ request.GET.fecha_desde }}&fecha_hasta={{ request.GET.fecha_hasta }}" class="inline-flex items-center mt-5 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gray-400 hover:bg-gray-500 focus:outline-none">Exportar a XLSX</a>
+                <a href="{% url 'exportar_compras_xlsx' %}?categoria={{ request.GET.categoria }}&usuario={{ request.GET.usuario }}&fecha_desde={{ request.GET.fecha_desde }}&fecha_hasta={{ request.GET.fecha_hasta }}" class="inline-flex items-center mt-5 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gray-400 hover:bg-gray-500 focus:outline-none">Exportar a XLSX</a>
 
             </form>
         </div>

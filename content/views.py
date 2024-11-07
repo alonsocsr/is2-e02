@@ -1145,12 +1145,12 @@ class Reportes(LoginRequiredMixin,PermissionRequiredMixin,TemplateView):
         avg_global=0
         series_data = []
         categories_dict = {} 
-        
-        categories = []  # Lista de categorías para el eje X
+        categories_dates = []
 
         for entry in promedios:
             categoria = entry["contenido__categoria__nombre_categoria"]
             promedio = round(entry["promedio_valoracion"], 2)
+            fecha = entry["fecha__date"].strftime('%d %b') 
 
             # Agregar datos por categoría y fecha
             if categoria not in categories_dict:
@@ -1159,17 +1159,37 @@ class Reportes(LoginRequiredMixin,PermissionRequiredMixin,TemplateView):
                     "data": [],
                     "color": generar_color()
                 }
-            avg_global+=promedio
-            categories_dict[categoria]["data"].append(promedio)
+            
+            avg_global += promedio
+
+            if fecha not in categories_dates:
+                categories_dates.append(fecha)
+            
+        # Ordenar las fechas de las categorías (de forma ascendente)
+        categories_dates = sorted(categories_dates, key=lambda x: datetime.strptime(x, '%d %b'))
+
+        # Segunda iteración: llenar los promedios para cada fecha
+        for categoria in categories_dict.values():
+            # Inicializar los promedios de cada fecha con 0
+            categoria["data"] = [0] * len(categories_dates)  # Lista de 0s por cada fecha
+
+        # Llenar los promedios en las fechas correspondientes
+        for entry in promedios:
+            categoria = entry["contenido__categoria__nombre_categoria"]
+            promedio = round(entry["promedio_valoracion"], 2)
+            fecha = entry["fecha__date"].strftime('%d %b')
+            fecha_index = categories_dates.index(fecha)  # Encontrar el índice de la fecha
+
+            # Asignar el promedio correspondiente en la categoría
+            categories_dict[categoria]["data"][fecha_index] = promedio
+
         # Convertir el diccionario en una lista de series
         series_data = list(categories_dict.values())
-        # Extraer las fechas para el eje X desde el primer conjunto de datos
-        categories = sorted({entry["fecha__date"].strftime('%d %b') for entry in promedios})
 
         # Verificar si total es diferente de cero antes de hacer la división
         avg_global_value = round(avg_global / total, 2) if total > 0 else 0
 
-        return {"categories": categories, "series": series_data, "avg_global": avg_global_value}
+        return {"categories": categories_dates, "series": series_data, "avg_global": avg_global_value}
 
 def generar_color():
     return "#{:06x}".format(random.randint(0, 0xFFFFFF))
