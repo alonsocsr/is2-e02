@@ -1,7 +1,7 @@
 import pytest
 from django.urls import reverse
 from django.contrib.auth.models import Permission,User
-from content.models import Contenido
+from content.models import Contenido, Valoracion
 from categories.models import Categorias
 from django.utils import timezone
 from datetime import timedelta
@@ -11,7 +11,7 @@ from unittest import TestCase
 from PIL import Image
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from content.views import EditarContenido
+from content.views import EditarContenido, Reportes, report_data
 @pytest.mark.django_db
 def test_autor_crea_contenido(client, setup, transactional_db):
     """
@@ -386,3 +386,234 @@ def test_visualizacion(client,setup):
     print(f'Cantidad de vistas luego de la accion: {contenido.cantidad_vistas}')  
     assert response.status_code == 200  
     assert contenido.cantidad_vistas>=1
+
+@pytest.mark.django_db
+def test_reporte_permiso(client,setup):
+    user, rol_creado = setup
+    permiso_verreportados = Permission.objects.get(codename='ver_reportes_contenido')
+    user.user_permissions.add(permiso_verreportados)
+    url = reverse('reportes')
+    response = client.get(url)
+    assert response.status_code == 200,print(f'Acceso correcto a los reportes de contenido')
+
+@pytest.mark.django_db
+def test_reporte_data_function(client, setup):
+    user, rol_creado = setup
+    permiso_verreportados = Permission.objects.get(codename='ver_reportes_contenido')
+    user.user_permissions.add(permiso_verreportados)
+    url = reverse('reportes')
+    response = client.get(url, {'range': 'Ultimos 7 dias', 'report': '1'})
+    assert response.status_code == 200
+    
+@pytest.mark.django_db
+def test_403(client, setup):
+    user, rol_creado = setup
+    url = reverse('reportes')
+    response = client.get(url, {'range': 'Ultimos 7 dias', 'report': '1'})
+    assert response.status_code == 403
+
+@pytest.mark.django_db
+def test_grafico_contenidos_por_categoria(client,setup):
+    user, rol_creado = setup
+    
+    with tempfile.NamedTemporaryFile(suffix=".jpg") as tmp_img:
+        image = Image.new('RGB', (100, 100), color='red')
+        image.save(tmp_img, format='JPEG')
+        tmp_img.seek(0)  
+
+        image_file = SimpleUploadedFile(tmp_img.name, tmp_img.read(), content_type='image/jpeg')
+    categoria = Categorias.objects.create(nombre_categoria="Test Categoria")
+    contenido = Contenido.objects.create(
+        titulo='Nuevo Contenido',
+        resumen='Este es un resumen del contenido',
+        cuerpo='<p>Este es el cuerpo del contenido</p>',
+        categoria=categoria,
+        estado='Publicado',
+        activo=True,
+        fecha_publicacion=timezone.now().date(),
+        vigencia=timezone.now().date() + timezone.timedelta(days=30),
+        slug='nuevo-contenido',
+        usuario_editor=user,
+        cantidad_vistas=10,
+        imagen=image_file
+    )
+
+
+    reportes = Reportes()
+    result = reportes.grafico_contenidos_por_categoria()
+    assert 'labels' in result
+    assert 'series' in result
+    assert len(result['labels']) == 1
+    assert len(result['series']) == 1
+    assert result['labels'][0] == 'Test Categoria'
+
+@pytest.mark.django_db
+def test_grafico_reporte_visualizaciones(client,setup):
+
+    user, rol_creado = setup
+    
+    with tempfile.NamedTemporaryFile(suffix=".jpg") as tmp_img:
+        image = Image.new('RGB', (100, 100), color='red')
+        image.save(tmp_img, format='JPEG')
+        tmp_img.seek(0)  
+
+        image_file = SimpleUploadedFile(tmp_img.name, tmp_img.read(), content_type='image/jpeg')
+    categoria = Categorias.objects.create(nombre_categoria="Test Categoria")
+    contenido = Contenido.objects.create(
+        titulo='Nuevo Contenido',
+        resumen='Este es un resumen del contenido',
+        cuerpo='<p>Este es el cuerpo del contenido</p>',
+        categoria=categoria,
+        estado='Publicado',
+        activo=True,
+        fecha_publicacion=timezone.now().date(),
+        vigencia=timezone.now().date() + timezone.timedelta(days=30),
+        slug='nuevo-contenido',
+        usuario_editor=user,
+        cantidad_vistas=10,
+        imagen=image_file
+    )
+    
+    contenido.save()
+    
+    with tempfile.NamedTemporaryFile(suffix=".jpg") as tmp_img:
+        image = Image.new('RGB', (100, 100), color='red')
+        image.save(tmp_img, format='JPEG')
+        tmp_img.seek(0)  
+
+        image_file_2 = SimpleUploadedFile(tmp_img.name, tmp_img.read(), content_type='image/jpeg')
+    contenido2 = Contenido.objects.create(
+        titulo='Nuevo Contenido',
+        resumen='Este es un resumen del contenido',
+        cuerpo='<p>Este es el cuerpo del contenido</p>',
+        categoria=categoria,
+        estado='Publicado',
+        activo=True,
+        fecha_publicacion=timezone.now().date(),
+        vigencia=timezone.now().date() + timezone.timedelta(days=30),
+        slug='nuevo-contenido-nuevo',
+        usuario_editor=user,
+        cantidad_vistas=20,
+        imagen=image_file_2
+    )
+
+    contenido2.save()
+    reportes = Reportes()
+    result = reportes.grafico_reporte_visualizaciones()
+    assert 'avg_por_categoria' in result
+    assert result['total_views'] == 15 
+
+
+@pytest.mark.django_db
+def test_grafico_promedio_compartidos_por_categoria(client, setup):
+    user, rol_creado = setup
+
+    with tempfile.NamedTemporaryFile(suffix=".jpg") as tmp_img:
+        image = Image.new('RGB', (100, 100), color='red')
+        image.save(tmp_img, format='JPEG')
+        tmp_img.seek(0)
+        image_file = SimpleUploadedFile(tmp_img.name, tmp_img.read(), content_type='image/jpeg')
+
+    categoria = Categorias.objects.create(nombre_categoria="Test Categoria")
+    contenido = Contenido.objects.create(
+        titulo='Contenido 1',
+        resumen='Resumen 1',
+        cuerpo='<p>Cuerpo del contenido 1</p>',
+        categoria=categoria,
+        estado='Publicado',
+        activo=True,
+        fecha_publicacion=timezone.now().date(),
+        vigencia=timezone.now().date() + timezone.timedelta(days=30),
+        slug='contenido-1',
+        usuario_editor=user,
+        cantidad_compartidos=10,
+        imagen=image_file
+    )
+
+
+    with tempfile.NamedTemporaryFile(suffix=".jpg") as tmp_img:
+        image = Image.new('RGB', (100, 100), color='blue')
+        image.save(tmp_img, format='JPEG')
+        tmp_img.seek(0)
+        image_file_2 = SimpleUploadedFile(tmp_img.name, tmp_img.read(), content_type='image/jpeg')
+
+    contenido2 = Contenido.objects.create(
+        titulo='Contenido 2',
+        resumen='Resumen 2',
+        cuerpo='<p>Cuerpo del contenido 2</p>',
+        categoria=categoria,
+        estado='Publicado',
+        activo=True,
+        fecha_publicacion=timezone.now().date(),
+        vigencia=timezone.now().date() + timezone.timedelta(days=30),
+        slug='contenido-2',
+        usuario_editor=user,
+        cantidad_compartidos=20,
+        imagen=image_file_2
+    )
+
+
+    reportes = Reportes()
+    result = reportes.grafico_promedio_compartidos_por_categoria()
+
+
+    assert 'series' in result
+    assert 'labels' in result
+    assert 'colors' in result
+    assert len(result['series']) == 1 
+    assert len(result['labels']) == 1
+    assert result['labels'][0] == 'Test Categoria'
+    assert result['series'][0] == 15.0  
+
+
+@pytest.mark.django_db
+def test_grafico_promedio_valoraciones_por_categoria(client, setup):
+    user, rol_creado = setup
+
+
+    with tempfile.NamedTemporaryFile(suffix=".jpg") as tmp_img:
+        image = Image.new('RGB', (100, 100), color='green')
+        image.save(tmp_img, format='JPEG')
+        tmp_img.seek(0)
+        image_file = SimpleUploadedFile(tmp_img.name, tmp_img.read(), content_type='image/jpeg')
+
+    categoria = Categorias.objects.create(nombre_categoria="Test Categoria")
+    contenido = Contenido.objects.create(
+        titulo='Contenido 1',
+        resumen='Resumen 1',
+        cuerpo='<p>Cuerpo del contenido 1</p>',
+        categoria=categoria,
+        estado='Publicado',
+        activo=True,
+        fecha_publicacion=timezone.now().date(),
+        vigencia=timezone.now().date() + timezone.timedelta(days=30),
+        slug='contenido-1',
+        usuario_editor=user,
+        imagen=image_file
+    )
+
+    Valoracion.objects.create(
+        contenido=contenido,
+        usuario=user,
+        puntuacion=4,
+        fecha=timezone.now()
+    )
+    Valoracion.objects.create(
+        contenido=contenido,
+        usuario=user,
+        puntuacion=2,
+        fecha=timezone.now() - timedelta(days=1)
+    )
+
+    reportes = Reportes()
+    result = reportes.grafico_promedio_valoraciones_por_categoria()
+
+ 
+    assert 'categories' in result
+    assert 'series' in result
+    assert 'avg_global' in result
+    assert len(result['categories']) >= 1  
+    assert len(result['series']) == 1  
+    assert result['series'][0]['name'] == 'Test Categoria'
+    assert result['avg_global'] == 3.0 
+    assert sum(result['series'][0]['data']) > 0  
