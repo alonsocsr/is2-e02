@@ -480,8 +480,9 @@ class VerHistorialCompras(LoginRequiredMixin,ListView):
             pagos_por_fecha_categoria = pagos_por_fecha_categoria.filter(profile__user__id=usuario)
 
         fechas = set()
-        categorias_montos = defaultdict(lambda: [])
+        categorias_montos = defaultdict(list)
 
+        # Primera iteración: obtener todas las fechas y montos por categoría
         for entry in pagos_por_fecha_categoria:
             fecha = entry["fecha_pago__date"].strftime('%d %b')
             categoria = entry["categoria__nombre_categoria"]
@@ -490,13 +491,24 @@ class VerHistorialCompras(LoginRequiredMixin,ListView):
             fechas.add(fecha)
             categorias_montos[categoria].append((fecha, monto))
 
-        fechas = sorted(fechas,reverse=True)  
+        # Ordenar las fechas en orden ascendente
+        fechas = sorted(fechas, key=lambda x: datetime.strptime(x, '%d %b'))
+
+        # Segunda iteración: llenar montos faltantes con 0 para cada fecha
         series = []
         for categoria, data in categorias_montos.items():
-            montos = [next((m for f, m in data if f == fecha), 0) for fecha in fechas]
+            # Inicializar todos los montos en 0
+            montos_por_fecha = {fecha: 0 for fecha in fechas}
+            
+            # Rellenar los montos existentes
+            for fecha, monto in data:
+                montos_por_fecha[fecha] = monto
+
+            # Ordenar los montos según las fechas y preparar la estructura para la serie
+            montos_ordenados = [montos_por_fecha[fecha] for fecha in fechas]
             series.append({
                 "name": categoria,
-                "data": montos,
+                "data": montos_ordenados,
             })
 
         return {

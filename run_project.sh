@@ -177,8 +177,9 @@ EOF
     #Permisos de lectura y escritura para los statics
     sudo chmod 775 -R /home/$USER/
 
-    # Cargamos los datos iniciales 
-    python3 manage.py loaddata fixtures/admin.json --settings=$DJANGO_SETTINGS_MODULE
+    # Cargamos los datos iniciales
+    python3 manage.py loaddata fixtures/users.json --settings=$DJANGO_SETTINGS_MODULE
+    python3 manage.py loaddata fixtures/profiles.json --settings=$DJANGO_SETTINGS_MODULE
 
     # Otorgar permisos
     echo "Otorgando permisos..."
