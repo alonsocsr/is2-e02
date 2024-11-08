@@ -2,6 +2,7 @@
 DB_USER="starkuser"
 DB_PASSWORD="starkpass"
 REPO_URL="https://github.com/alonsocsr/is2-e02.git"
+ENV_FILE="$(dirname "$(realpath "$0")")/.env"
 
 # Pedir al usuario que elija el entorno (desarrollo o producción)
 echo "Selecciona el entorno a ejecutar:"
