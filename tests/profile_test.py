@@ -1,10 +1,14 @@
+from datetime import datetime
+import profile
 from django.utils import timezone
 import pytest
 from django.urls import reverse
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission,Group
 from categories.models import Categorias
 from content.models import Contenido
-from profiles.models import Profile
+from profiles.models import Profile, Suscripcion
+import openpyxl
+from io import BytesIO
 
 @pytest.mark.django_db
 def test_update_profile_get(client,setup):
@@ -135,3 +139,38 @@ def test_eliminar_cuenta_view(client, setup):
     assert not Profile.objects.filter(user=user).exists(), "La cuenta no ha sido eliminada correctamente."
     assert response.status_code == 302  
     
+@pytest.mark.django_db
+def test_exportar_compras_xlsx(client,setup):
+    user, _ = setup
+
+    categoria = Categorias.objects.create(nombre_categoria="Test Categoria")
+    Suscripcion.objects.create(
+        profile=user.profile,
+        categoria=categoria,
+        fecha_pago=datetime.now(),
+        monto=100,
+        medio_pago='TC'
+    )
+
+    financiero_group = Group.objects.get(name='Financiero')
+    user.groups.add(financiero_group)
+
+    client.login(username=user.username, password='12345')  
+
+    url = reverse('exportar_compras_xlsx') 
+    response = client.get(url) 
+
+
+    assert response.status_code == 200
+    assert response['Content-Type'] == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    assert response['Content-Disposition'] == 'attachment; filename=historial_compras.xlsx'
+
+
+    workbook = openpyxl.load_workbook(BytesIO(response.content))
+    sheet = workbook.active
+    assert sheet.title == 'Historial de Compras'
+    headers = ['Usuario', 'Categoría', 'Fecha del Pago', 'Hora del Pago', 'Monto', 'Medio de Pago']
+    assert [cell.value for cell in sheet[1]] == headers
+
+    assert sheet.cell(row=2, column=1).value == 'testuser'
+    assert sheet.cell(row=2, column=2).value == 'Test Categoria'

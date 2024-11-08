@@ -342,7 +342,7 @@ class VerHistorialCompras(LoginRequiredMixin,ListView):
         if usuario_id:
             queryset = queryset.filter(profile__user__id=usuario_id)
         
-        return queryset.order_by("fecha_pago")         
+        return queryset.order_by("-fecha_pago")         
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
