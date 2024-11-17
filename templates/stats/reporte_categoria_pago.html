@@ -1,47 +1,103 @@
-
-<div class="max-w-screen-lg w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
-    <div class="flex justify-between pb-3">
-        <div>
-            <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white me-1">Montos Totales de Pago</h5>
-            <p class="text-base font-normal text-gray-500 dark:text-gray-400">Pagos por Categoria y por Fecha</p>
-        </div>
+<!--Monto totales de pago por categoría y fecha-->
+<div class="w-full bg-white rounded-lg shadow dark:bg-gray-800">
+    <div class="flex justify-between p-4 md:p-6 pb-0 md:pb-0">
+      <div>
+        <h5 class="leading-none text-3xl font-bold text-gray-900 dark:text-white pb-2">Monto Totales de Pago</h5>
+        <p class="text-base font-normal text-gray-500 dark:text-gray-400">Pagos por Categoria y por Fecha</p>
+      </div>
     </div>
-  
-    <div id="bar-chart1"></div>
-        
+    <div id="labels-chart" class="px-2.5"></div>
+
   </div>
   
-
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const fecha = {{ montos_categoria.fechas|safe }};
-        const series = {{ montos_categoria.series|safe }};
-        
-        const options = {
-            series: series.map((serie, index) => ({
-                name: serie.name,
-                data: serie.data,
-                color: "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, '0')
-            })),
-            chart: {
-                type: "bar",
-                height: 400,
-                toolbar: { show: true }
-            },
-            plotOptions: {
-                bar: { horizontal: true, borderRadius: 6 }
-            },
-            xaxis: {
-                categories: fecha,
-                labels: { formatter: (value) => value + " GS" }
-            },
-            tooltip: { y: { formatter: (value) => value + " GS" } }
-        };
-        
-        if (document.getElementById("bar-chart1")) {
-            const chart = new ApexCharts(document.getElementById("bar-chart1"), options);
-            chart.render();
+  
+    const dataPagos = {{ montos_categoria|safe }}
+    const optionsPagos = {
+      // set the labels option to true to show the labels on the X and Y axis
+      xaxis: {
+        show: true,
+        categories: dataPagos.categories ,
+        labels: {
+          show: true,
+          style: {
+            fontFamily: "Inter, sans-serif",
+            cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
+          }
+        },
+        axisBorder: {
+          show: false,
+        },
+        axisTicks: {
+          show: false,
+        },
+      },
+      yaxis: {
+        show: true,
+        labels: {
+          show: true,
+          style: {
+            fontFamily: "Inter, sans-serif",
+            cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
+          },
+          formatter: function (value) {
+            return '' + value;
+          },
+          tickAmount: 2,
+          min: 1,
+          max: Math.max(...dataPagos.series[0].data) * 1.5 
         }
-    });
-    </script>
+      },
+      series: dataPagos.series,
+      chart: {
+        sparkline: {
+          enabled: false
+        },
+        height: "400px",
+        width: "100%",
+        type: "area",
+        fontFamily: "Inter, sans-serif",
+        dropShadow: {
+          enabled: false,
+        },
+        toolbar: {
+          show: true,
+        },
+      },
+      tooltip: {
+        enabled: true,
+        x: {
+          show: false,
+        },
+      },
+      legend: {
+        show: true,
+      },
+      fill: {
+        type: "gradient",
+        gradient: {
+          opacityFrom: 0.55,
+          opacityTo: 0,
+          shade: "#1C64F2",
+          gradientToColors: ["#1C64F2"],
+        },
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      stroke: {
+        width: 6,
+      },
+      grid: {
+        show: false,
+        },
+      }
+  
+    let chartPagos;
     
+    if (document.getElementById("labels-chart") && typeof ApexCharts !== 'undefined') {
+        chartPagos = new ApexCharts(document.getElementById("labels-chart"), optionsPagos);
+        chartPagos.render();
+    }
+  
+  </script>

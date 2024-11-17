@@ -1,4 +1,5 @@
 from collections import defaultdict
+import random
 from django.views.generic import FormView, View, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 import requests
@@ -479,42 +480,50 @@ class VerHistorialCompras(LoginRequiredMixin,ListView):
         if usuario:
             pagos_por_fecha_categoria = pagos_por_fecha_categoria.filter(profile__user__id=usuario)
 
-        fechas = set()
-        categorias_montos = defaultdict(list)
+        series_data = []
+        categories_dict = {} 
+        categories_dates = []
 
         # Primera iteración: obtener todas las fechas y montos por categoría
         for entry in pagos_por_fecha_categoria:
             fecha = entry["fecha_pago__date"].strftime('%d %b')
             categoria = entry["categoria__nombre_categoria"]
-            monto = entry["total_monto"]
 
-            fechas.add(fecha)
-            categorias_montos[categoria].append((fecha, monto))
+            # Agregar datos por categoría y fecha
+            if categoria not in categories_dict:
+                categories_dict[categoria] = {
+                    "name": categoria,
+                    "data": [],
+                    "color": generar_color()
+                }
+            
+            if fecha not in categories_dates:
+                categories_dates.append(fecha)
 
-        # Ordenar las fechas en orden ascendente
-        fechas = sorted(fechas, key=lambda x: datetime.strptime(x, '%d %b'))
+        # Ordenar las fechas de las categorías (de forma ascendente)
+        categories_dates = sorted(categories_dates, key=lambda x: datetime.strptime(x, '%d %b'))
 
         # Segunda iteración: llenar montos faltantes con 0 para cada fecha
-        series = []
-        for categoria, data in categorias_montos.items():
-            # Inicializar todos los montos en 0
-            montos_por_fecha = {fecha: 0 for fecha in fechas}
+        for categoria in categories_dict.values():
+            # Inicializar los promedios de cada fecha con 0
+            categoria["data"] = [0] * len(categories_dates) 
             
-            # Rellenar los montos existentes
-            for fecha, monto in data:
-                montos_por_fecha[fecha] = monto
+        # Llenar los promedios en las fechas correspondientes
+        for entry in pagos_por_fecha_categoria:
+            categoria = entry["categoria__nombre_categoria"]
+            monto = entry["total_monto"]
+            fecha = entry["fecha_pago__date"].strftime('%d %b')
+            fecha_index = categories_dates.index(fecha)
+            # Asignar el monto correspondiente en la categoría
+            categories_dict[categoria]["data"][fecha_index] = monto
+        
+        # Convertir el diccionario en una lista de series
+        series_data = list(categories_dict.values())
 
-            # Ordenar los montos según las fechas y preparar la estructura para la serie
-            montos_ordenados = [montos_por_fecha[fecha] for fecha in fechas]
-            series.append({
-                "name": categoria,
-                "data": montos_ordenados,
-            })
+        return {"categories": categories_dates, "series": series_data}
 
-        return {
-            "fechas": fechas,
-            "series": series,
-        }
+def generar_color():
+    return "#{:06x}".format(random.randint(0, 0xFFFFFF))
 
 def exportar_compras_xlsx(request):
     # Crear el archivo Excel
