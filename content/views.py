@@ -985,7 +985,7 @@ class Reportes(LoginRequiredMixin,PermissionRequiredMixin,TemplateView):
         else:
             #por defecto los últimos 7 días
             today = timezone.now().date()
-            contents = contents.filter(fecha_publicacion__range=(today - timedelta(days=7), today))
+            contents = contents.filter(fecha_publicacion__range=(today - timedelta(days=90), today))
         
         contents_by_category = {}
         for content in contents:
@@ -1019,7 +1019,7 @@ class Reportes(LoginRequiredMixin,PermissionRequiredMixin,TemplateView):
             else:
                 #por defecto los últimos 7 días
                 today = timezone.now().date()
-                contenidos = contenidos.filter(fecha_publicacion__range=(today - timedelta(days=7), today))
+                contenidos = contenidos.filter(fecha_publicacion__range=(today - timedelta(days=90), today))
             total_suma = 0
             for c in contenidos:
                 total_suma+=c.cantidad_vistas
@@ -1055,7 +1055,7 @@ class Reportes(LoginRequiredMixin,PermissionRequiredMixin,TemplateView):
             queryset = queryset.filter(fecha_publicacion__range=(start_date, end_date))
         else:
             today = timezone.now().date()
-            queryset = queryset.filter(fecha_publicacion__range=(today - timedelta(days=7), today))
+            queryset = queryset.filter(fecha_publicacion__range=(today - timedelta(days=90), today))
         
         # Obtener los promedios por categoría
         promedios = (
@@ -1095,7 +1095,7 @@ class Reportes(LoginRequiredMixin,PermissionRequiredMixin,TemplateView):
         # Obtener la promedio de compartidos por categoría
         if not start_date or not end_date:
             end_date = timezone.now().date()
-            start_date = end_date - timedelta(days=7)
+            start_date = end_date - timedelta(days=90)
 
         promedios = (
             Contenido.objects
@@ -1124,7 +1124,7 @@ class Reportes(LoginRequiredMixin,PermissionRequiredMixin,TemplateView):
         # Obtener el promedio de valoraciones agrupado por categoría
         if not start_date or not end_date:
             end_date = timezone.now()
-            start_date = end_date - timedelta(days=7)
+            start_date = end_date - timedelta(days=90)
 
         
         # Asegurarse de que las fechas sean timezone-aware
