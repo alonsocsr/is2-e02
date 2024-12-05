@@ -20,9 +20,6 @@ sqlparse==0.5.1  # Procesamiento y formateo de consultas SQL.
 
 
 # Gestión de paquetes y dependencias:
-poetry==1.8.3  # Herramienta para gestión de dependencias.
-poetry-core==1.9.0  # Núcleo de la herramienta Poetry.
-poetry-plugin-export==1.8.0  # Plugin para exportar dependencias.
 virtualenv==20.26.6  # Creación de entornos virtuales.
 filelock==3.16.1  # Bloqueo de archivos para concurrencia.
 packaging==24.1  # Utilidades para manejo de paquetes.
@@ -52,3 +49,4 @@ et_xmlfile==2.0.0  # Soporte XML para OpenPyXL.
 
 charset-normalizer==3.4.0
 six==1.16.0
+sorl-thumbnail==12.10.0
