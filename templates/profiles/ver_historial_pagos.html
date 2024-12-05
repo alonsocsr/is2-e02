@@ -125,9 +125,9 @@
     </div>
 </div>
 {% if perms.permissions.ver_historial_compras %}
-    <div class="container mx-auto px-4 py-6 mt-2">
+    <div class="container mx-auto px-4 py-6 mt-2 max-w-7xl">
         <h2 class="text-3xl font-bold text-gray-800 mb-6">Estadísticas financieras</h2>
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {% include "stats/reporte_financiero.html" %}
         {% include "stats/reporte_montos.html" %}
         </div>

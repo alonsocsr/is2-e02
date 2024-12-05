@@ -38,8 +38,8 @@
         },
         plotOptions: {
             bar: {
-                horizontal: true,
-                columnWidth: "100%",
+                horizontal: false,
+                columnWidth: "80%",
                 borderRadiusApplication: "end",
                 borderRadius: 6,
                 dataLabels: {
@@ -58,7 +58,7 @@
             shared: true,
             intersect: false,
             formatter: function (value) {
-                return value + " GS";
+                return value + "";
             }
         },
         xaxis: {
@@ -67,9 +67,6 @@
                 style: {
                     fontFamily: "Inter, sans-serif",
                     cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
-                },
-                formatter: function(value) {
-                    return value + " GS";
                 }
             },
             categories: fecha, 
@@ -86,6 +83,9 @@
                 style: {
                     fontFamily: "Inter, sans-serif",
                     cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
+                },
+                formatter: function(value) {
+                    return value + " Gs";
                 }
             }
         },
