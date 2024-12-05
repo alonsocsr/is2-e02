@@ -29,7 +29,8 @@ echo "2) v2"
 echo "3) v3"
 echo "4) v4"
 echo "5) v5"
-read -p "Ingresa el número correspondiente (1-5) o presiona Enter para usar 'main': " TAG_OPTION
+echo "6) v6"
+read -p "Ingresa el número correspondiente (1-6) o presiona Enter para usar 'main': " TAG_OPTION
 
 if [ "$TAG_OPTION" = "1" ]; then
     TAG="v1"
@@ -46,6 +47,9 @@ elif [ "$TAG_OPTION" = "4" ]; then
 elif [ "$TAG_OPTION" = "5" ]; then
     TAG="v5"
     PROJECT_NAME="is2-e02-v5"
+elif [ "$TAG_OPTION" = "6" ]; then
+    TAG="v6"
+    PROJECT_NAME="is2-e02-v6"
 else
     TAG="main"
     PROJECT_NAME="is2-e02-main"
@@ -55,7 +59,6 @@ fi
 echo "Actualizando paquetes..."
 sudo systemctl stop unattended-upgrades
 sudo systemctl stop apparmor
-sudo apt-get update
 
 # Instalar git
 echo "Instalando Git..."
