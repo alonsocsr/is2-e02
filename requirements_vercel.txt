@@ -3,11 +3,8 @@ Django==4.2.15  # Framework principal para el desarrollo web.
 django-allauth==64.1.0  # Autenticación y registro de usuarios con integración social.
 django-ckeditor==6.5.0  # Editor de texto enriquecido para contenido dinámico.
 django-cloudinary-storage==0.3.0  # Almacenamiento de archivos en Cloudinary.
-django-filebrowser==4.0.3  # Explorador de archivos en el administrador de Django.
-django-grappelli==3.0.9  # Mejora de la interfaz del administrador de Django.
 cloudinary==1.41.0  # Gestión de imágenes en Cloudinary.
 django-select2==8.2.1  # Widgets para selección dinámica.
-django-extensions==3.2.3  # Herramientas adicionales para desarrollo.
 python-decouple==3.8
 
 # Motor de aplicaciones web en producción:
@@ -22,7 +19,6 @@ sqlparse==0.5.1  # Procesamiento y formateo de consultas SQL.
 # Gestión de paquetes y dependencias:
 virtualenv==20.26.6  # Creación de entornos virtuales.
 filelock==3.16.1  # Bloqueo de archivos para concurrencia.
-packaging==24.1  # Utilidades para manejo de paquetes.
 platformdirs==4.3.6  # Directorios para configuraciones y datos.
 
 
