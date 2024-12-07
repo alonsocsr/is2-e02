@@ -1,14 +1,9 @@
 {
-  "functions": {
-    "api/**": {
-      "excludeFiles": "{.next,*.cache,public,app}/**"
-    }
-  },
   "builds": [
     {
       "src": "cms/wsgi.py",
       "use": "@vercel/python",
-      "config": { "maxLambdaSize": "15mb", "runtime": "python3.9" }
+      "config": { "maxLambdaSize": "20mb", "runtime": "python3.9" }
     },
     {
       "src": "build_files.sh",
