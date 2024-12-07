@@ -1,5 +1,4 @@
 {% load static %}
-{% load thumbnail %}
 
 <nav class="bg-white shadow-lg fixed top-0 left-0 right-0 z-20">
     <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
@@ -53,9 +52,7 @@
                 {% if user.is_authenticated %}
                     <div class="flex items-center space-x-3">
                         {% if user.profile.image %}
-                            {% thumbnail user.profile.image "40x40" crop="center" as im %}
-                                <img src="{{ im.url }}" alt="Profile Picture" class="w-10 h-10 rounded-full border border-gray-300">
-                            {% endthumbnail %}
+                            <img src="{{ user.profile.image.url }}" alt="Profile Picture" class="w-10 h-10 rounded-full border border-gray-300">
                         {% else %}
                             <img src="{% static 'default.png' %}" alt="Default Profile Picture" class="w-10 h-10 rounded-full border border-gray-300">
                         {% endif %}

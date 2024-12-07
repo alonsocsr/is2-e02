@@ -21,9 +21,7 @@ sqlparse==0.5.1  # Procesamiento y formateo de consultas SQL.
 # Gestión de paquetes y dependencias:
 virtualenv==20.26.6  # Creación de entornos virtuales.
 filelock==3.16.1  # Bloqueo de archivos para concurrencia.
-
 platformdirs==4.3.6  # Directorios para configuraciones y datos.
-
 
 # Internacionalización y localización:
 babel==2.16.0  # Herramientas para localización.
@@ -48,4 +46,5 @@ et_xmlfile==2.0.0  # Soporte XML para OpenPyXL.
 
 charset-normalizer==3.4.0
 six==1.16.0
+stripe==10.11.0
 sorl-thumbnail==12.10.0
