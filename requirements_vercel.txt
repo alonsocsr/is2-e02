@@ -17,7 +17,7 @@ idna==3.10
 charset-normalizer==3.4.0
 
 # Security
-cryptography==43.0.1
+#cryptography==43.0.1
 cffi==1.17.1
 
 # Time Zones
@@ -27,7 +27,7 @@ pytz==2024.2
 openpyxl==3.1.5  # Manipulación de archivos Excel.
 et_xmlfile==2.0.0  # Soporte XML para OpenPyXL.
 
-stripe==10.11.0
+#stripe==10.11.0
 sorl-thumbnail==12.10.0
 pillow==10.4.0
 python-decouple==3.8
