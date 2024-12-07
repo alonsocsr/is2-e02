@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load thumbnail %}
 {% load static %}
 
 {% block title %}Historial | Stark {% endblock title %}
@@ -17,9 +16,7 @@
                             <!-- perfil del usuario -->
                             <div class="w-20 h-20 flex-shrink-0">
                                 {% if log.modificado_por.profile.image %}
-                                    {% thumbnail log.modificado_por.profile.image "80x80" crop="center" as im %}
-                                        <img class="rounded-full border-4 border-white shadow-md" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
-                                    {% endthumbnail %}
+                                    <img class="w-20 h-20 rounded-full border-4 border-white shadow-md" src="{{ log.modificado_por.profile.image.url }}">
                                 {% else %}
                                     <img src="{% static 'default.png' %}" alt="Default Profile Picture" class="w-20 h-20 rounded-full border-4 border-white shadow-md">
                                 {% endif %}

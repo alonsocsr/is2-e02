@@ -14,28 +14,28 @@ VENV_DIR="venv"
 
 # Crear y activar el entorno virtual
 echo "Creando entorno virtual..."
-python3 -m venv $VENV_DIR
+python -m venv $VENV_DIR
 . $VENV_DIR/bin/activate
 
 # Instalar dependencias
 echo "Instalando dependencias..."
-pip install -r $PROJECT_DIR/requirements.txt
+pip install -r $PROJECT_DIR/requirements_vercel.txt
 
 # Aplicar migraciones
 echo "Aplicando migraciones"
-python manage.py makemigrations --settings=$DJANGO_SETTINGS_MODULE
-python manage.py migrate --settings=$DJANGO_SETTINGS_MODULE
+#python manage.py makemigrations --settings=$DJANGO_SETTINGS_MODULE
+#python manage.py migrate --settings=$DJANGO_SETTINGS_MODULE
 
 # Cargamos los datos iniciales 
-python3 manage.py loaddata fixtures/users.json --settings=$DJANGO_SETTINGS_MODULE
-python3 manage.py loaddata fixtures/profiles.json --settings=$DJANGO_SETTINGS_MODULE
-python3 manage.py loaddata fixtures/categorias.json --settings=$DJANGO_SETTINGS_MODULE
+#python3 manage.py loaddata fixtures/users.json --settings=$DJANGO_SETTINGS_MODULE
+#python3 manage.py loaddata fixtures/profiles.json --settings=$DJANGO_SETTINGS_MODULE
+#python3 manage.py loaddata fixtures/categorias.json --settings=$DJANGO_SETTINGS_MODULE
 
-chmod +x documentation.sh
-chmod +x tests.sh
+#chmod +x documentation.sh
+#chmod +x tests.sh
 
 # Corremos el proyecto
 echo 'Iniciando Servidor'
-python3 manage.py runserver
+python manage.py runserver --settings=$DJANGO_SETTINGS_MODULE
 
 

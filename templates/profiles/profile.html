@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-{% load thumbnail %}
 {% load static %}
+{% load cloudinary %}
 
 {% block title %}
     Perfil de Usuario | Stark
@@ -17,9 +17,7 @@
         </div>
         <div class="relative flex flex-col items-center -mt-16">
             {% if user.profile.image %}
-                {% thumbnail user.profile.image "100x100" crop="center" as im %}
-                <img class="rounded-full border-4 border-white shadow-md" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
-                {% endthumbnail %}
+                <img class="w-24 h-24" src="{{ user.profile.image.url }}" alt="Thumbnail">
             {% else %}
                 <img src="{% static 'default.png' %}" alt="Default Profile Picture" class="w-24 h-24 rounded-full border-4 border-white shadow-md">
             {% endif %}

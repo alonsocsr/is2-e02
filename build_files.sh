@@ -6,10 +6,10 @@ python3.9 -m venv venv
 # activate the virtual environment
 source venv/bin/activate
 
-# install all deps in the venv
-pip install -r requirements_vercel.txt
+# Instalar dependencias
+pip install -r requirements_vercel.txt || { echo "Error al instalar dependencias"; exit 1; }
 
-# collect static files using the Python interpreter from venv
-python3.9 manage.py collectstatic --noinput --clear
+# Recopilar archivos estáticos
+python3.9 manage.py collectstatic --noinput --clear || { echo "Error al recopilar archivos estáticos"; exit 1; }
 
 echo "BUILD END"
