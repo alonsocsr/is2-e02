@@ -26,7 +26,6 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'sorl.thumbnail',
-    'filebrowser',
     'django.contrib.sites',
     'allauth',
     'allauth.account',

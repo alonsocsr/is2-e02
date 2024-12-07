@@ -1,50 +1,33 @@
-# Framework principal y extensiones para desarrollo web:
-Django==4.2.15  # Framework principal para el desarrollo web.
-django-allauth==64.1.0  # Autenticación y registro de usuarios con integración social.
-django-ckeditor==6.5.0  # Editor de texto enriquecido para contenido dinámico.
-django-cloudinary-storage==0.3.0  # Almacenamiento de archivos en Cloudinary.
-django-filebrowser==4.0.3  # Explorador de archivos en el administrador de Django.
+# Web Framework and Extensions
+Django==4.2.15
+django-allauth==64.1.0
+django-cloudinary-storage==0.3.0
+cloudinary==1.41.0
+django-ckeditor==6.5.0
 
-cloudinary==1.41.0  # Gestión de imágenes en Cloudinary.
-django-select2==8.2.1  # Widgets para selección dinámica.
-python-decouple==3.8
+# Database and ORM
+psycopg2-binary==2.9.9
+sqlparse==0.5.1
 
-# Motor de aplicaciones web en producción:
-gunicorn==23.0.0  # Servidor WSGI para aplicaciones web.
+# HTTP and Networking
+requests==2.32.3
+urllib3==2.2.3
+certifi==2024.8.30
+idna==3.10
+charset-normalizer==3.4.0
 
-# Base de datos y ORM:
-psycopg==3.2.1  # Conector para PostgreSQL.
-psycopg2-binary==2.9.9  # Alternativa binaria para PostgreSQL.
-sqlparse==0.5.1  # Procesamiento y formateo de consultas SQL.
+# Security
+cryptography==43.0.1
+cffi==1.17.1
 
-
-# Gestión de paquetes y dependencias:
-virtualenv==20.26.6  # Creación de entornos virtuales.
-filelock==3.16.1  # Bloqueo de archivos para concurrencia.
-platformdirs==4.3.6  # Directorios para configuraciones y datos.
-
-# Internacionalización y localización:
-babel==2.16.0  # Herramientas para localización.
-pytz==2024.2  # Soporte para zonas horarias.
-tzdata==2024.2  # Base de datos de zonas horarias.
-
-# Redes y solicitudes HTTP:
-requests==2.32.3  # Cliente HTTP para Python.
-requests-toolbelt==1.0.0  # Herramientas adicionales para Requests.
-urllib3==2.2.3  # Cliente HTTP de bajo nivel.
-idna==3.10  # Soporte para nombres de dominio internacionalizados.
-certifi==2024.8.30  # Certificados raíz para conexiones SSL.
-
-# Seguridad y cifrado:
-cryptography==43.0.1  # Biblioteca de cifrado.
-cffi==1.17.1  # Interfaz de Python para bibliotecas C.
-pycparser==2.22  # Analizador de código C para CFFI.
+# Time Zones
+pytz==2024.2
 
 # Generación de reportes y procesamiento de archivos:
 openpyxl==3.1.5  # Manipulación de archivos Excel.
 et_xmlfile==2.0.0  # Soporte XML para OpenPyXL.
 
-charset-normalizer==3.4.0
-six==1.16.0
 stripe==10.11.0
 sorl-thumbnail==12.10.0
+pillow==10.4.0
+python-decouple==3.8
