@@ -31,3 +31,5 @@ stripe==10.11.0
 sorl-thumbnail==12.10.0
 pillow==10.4.0
 python-decouple==3.8
+whitenoise==6.7.0
+gunicorn==23.0.0
