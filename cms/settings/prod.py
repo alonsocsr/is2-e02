@@ -6,7 +6,7 @@ SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = False
 DISQUS_DEVELOPER = False
-ALLOWED_HOSTS = ['https://stark-quz7.onrender.com', '127.0.0.1', '.vercel.app', 'localhost', '.now.sh']
+ALLOWED_HOSTS = ['stark-quz7.onrender.com', '127.0.0.1', 'localhost',]
 
 # DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
